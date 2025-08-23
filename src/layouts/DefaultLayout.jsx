@@ -1,18 +1,22 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function DefaultLayout() {
+  const isLoggedIn = false;
+  const isAdmin = false;
+
   return (
     <div>
-      <header style={{ padding: "1rem", background: "#f4f4f4" }}>
-        <nav>
-          <Link to="/dashboard">Dashboard</Link> |{" "}
-          <Link to="/salles">Salles</Link> |{" "}
-          <Link to="/alertes">Alertes</Link>
-        </nav>
+      <header>
+        <Navbar isLoggedIn={isLoggedIn} isAdmin={isAdmin} />
       </header>
+
       <main style={{ padding: "1rem" }}>
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }
