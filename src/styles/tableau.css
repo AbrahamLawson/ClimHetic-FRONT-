@@ -1,0 +1,31 @@
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.tableau th,
+.tableau td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tableau th {
+  background-color: var(--primary-light);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.tableau tr:hover {
+  background-color: #f1f1f1;
+}
+
+.tableau td.status-cell span {
+  display: inline-block;
+  min-width: 80px; 
+  text-align: center;
+}
