@@ -12,7 +12,7 @@ export default function DefaultLayout() {
         <Navbar isLoggedIn={isLoggedIn} isAdmin={isAdmin} />
       </header>
 
-      <main style={{ padding: "1rem" }}>
+      <main>
         <Outlet />
       </main>
 

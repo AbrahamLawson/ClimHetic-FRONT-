@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --text-color: #000000;
+  --background-color: #f5f5f5; 
+  --primary-dark: #4E148C;
+  --primary-light: #0F1E41;
+  --secondary: #465788;
+  --success: #28a745;
+  --bg-success:#d4edda;
+  --warning: #ffc107;
+  --bg-warning:#fff3cd;
+  --danger: #dc3545;
+  --bg-danger:#f8d7da;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 900;
+  color: var(--primary-light);
+}
+
+p, span, li {
+  font-weight: 400;
+  color: var(--text-color);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-dark);
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.02);
+  background-color: var(--secondary);
+}
+
+button.primary {
+  background-color: var(--primary-dark);
+  color: #ffffff;
+}
+
+button.secondary {
+  background-color: var(--primary-light);
+  color: #ffffff;
+}
+
+.success {
+  background-color: var(--success);
+  color: #ffffff;
+}
+
+.warning {
+  background-color: var(--warning);
+  color: #000000;
+}
+
+.danger {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background-color: white;
+  color: var(--primary-dark);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.navbar-logo img {
+  height: 42px;
+  display: block;
+  object-fit: contain;
+}
+
+.navbar-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.navbar-links a {
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: color 0.2s ease-in-out;
+  padding-bottom: 4px;
+}
+
+.navbar-links a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-dark);
+  transition: width 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--secondary);
+}
+
+.navbar-links a:hover::after {
+  width: 100%;
+}
+
+.navbar-cta {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-cta a {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: var(--primary-dark);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.navbar-cta a:hover {
+  background-color: var(--secondary);
+  transform: scale(1.05);
+}
+
+.footer {
+  background-color: var(--primary-dark);
+  text-align: center;
+  padding: 1rem;
+  color: #ffffff;
+}
+
+.footer,
+.footer p,
+.footer span,
+.footer a {
+  color: #ffffff !important;
+}
+
+.bg-success,
+.bg-warning,
+.bg-danger {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.bg-success {
+  background-color: var(--bg-success);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.bg-warning {
+  background-color: var(--bg-warning);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.bg-danger {
+  background-color: var(--bg-danger);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
