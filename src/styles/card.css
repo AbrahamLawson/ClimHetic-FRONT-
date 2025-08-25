@@ -1,0 +1,64 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+}
+.card-full {
+  flex: 1 1 100%;
+}
+
+.card-half {
+  flex: 1 1 48%;
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.card-content {
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.card-tableau {
+  border: 1px solid var(--terciary);
+  box-shadow: 0 4px 12px rgba(31, 58, 147, 0.25);
+}
+
+.card-alertes {
+  border: 1px solid var(--danger);
+  box-shadow: 0 4px 12px rgba(220, 52, 69, 0.25);
+}
+
+.card-graphiques {
+  border: 1px solid var(--quaternary);
+  box-shadow: 0 4px 12px rgba(0, 126, 167, 0.25);
+}
+
+.card-tableau .card-title {
+  color: var(--terciary);
+}
+
+.card-alertes .card-title {
+  color: var(--danger);
+}
+
+.card-graphiques .card-title {
+  color: var(--quaternary);
+}
