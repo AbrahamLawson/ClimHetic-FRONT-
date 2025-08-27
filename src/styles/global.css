@@ -9,7 +9,9 @@
 :root {
   --text-color: #000000;
   --background-color: #f5f5f5; 
+  --line-color: #ddd;
   --primary-dark: #4E148C;
+  --bg--primary-dark: #EDE7F6;
   --primary-light: #0F1E41;
   --secondary: #465788;
   --terciary: #1F3A93;
@@ -36,71 +38,6 @@ body {
   min-height: 100vh;
 }
 
-main {
-  flex: 1;
-  padding: 1rem;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 900;
-  color: var(--primary-light);
-}
-
-p, span, li {
-  font-weight: 400;
-  color: var(--text-color);
-}
-
-a {
-  text-decoration: none;
-  color: var(--primary-dark);
-  transition: color 0.2s ease-in-out;
-}
-
-a:hover {
-  color: var(--secondary);
-}
-
-button {
-  font-family: inherit;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-}
-
-button:hover {
-  transform: scale(1.02);
-  background-color: var(--secondary);
-}
-
-button.primary {
-  background-color: var(--primary-dark);
-  color: #ffffff;
-}
-
-button.secondary {
-  background-color: var(--primary-light);
-  color: #ffffff;
-}
-
-.success {
-  background-color: var(--success);
-  color: #ffffff;
-}
-
-.warning {
-  background-color: var(--warning);
-  color: #000000;
-}
-
-.danger {
-  background-color: var(--danger);
-  color: #ffffff;
-}
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -112,50 +49,14 @@ button.secondary {
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  height: 64px;
+  width: 100%;
 }
 
 .navbar-logo img {
   height: 42px;
   display: block;
   object-fit: contain;
-}
-
-.navbar-links {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-
-.navbar-links a {
-  color: var(--primary-light);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  letter-spacing: 0.5px;
-  position: relative;
-  transition: color 0.2s ease-in-out;
-  padding-bottom: 4px;
-}
-
-.navbar-links a::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-dark);
-  transition: width 0.3s ease;
-}
-
-.navbar-links a:hover {
-  color: var(--secondary);
-}
-
-.navbar-links a:hover::after {
-  width: 100%;
 }
 
 .navbar-cta {
@@ -170,6 +71,7 @@ button.secondary {
   font-size: 0.9rem;
   color: #fff;
   background-color: var(--primary-dark);
+  text-decoration: none;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
@@ -178,18 +80,86 @@ button.secondary {
   transform: scale(1.05);
 }
 
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 220px;
+  height: calc(100vh - 64px);
+  background-color: #fff;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 900;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sidebar-links a {
+  display: block;                 
+  padding: 0.85rem 1rem;
+  margin: 0.50rem 0;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--primary-light);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.4px;
+  position: relative;
+  background: transparent;
+  border-radius: 0;               
+  transition: color 0.18s ease;
+  outline: none;
+}
+.sidebar-links a:hover {
+  color: var(--primary-dark);
+}
+
+.sidebar-links a.active-link {
+  background-color: var(--bg--primary-dark);
+  color: var(--primary-dark);
+}
+
+.sidebar-separator {
+  border-top: 1px solid var(--line-color);
+  margin: 0.75rem 0;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 220px; 
+  padding: 1rem;
+}
+
 .footer {
-  background-color: var(--primary-light);
+  background-color: var(--background-color);
   text-align: center;
   padding: 1rem;
-  color: #ffffff;
+  color: var(--primary-dark);
+  border-top: 1px solid var(--line-color);
 }
 
 .footer,
 .footer p,
 .footer span,
 .footer a {
-  color: #ffffff !important;
+  color: var(--primary-dark) !important;
 }
 
 .bg-success,
