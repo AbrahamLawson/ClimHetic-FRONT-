@@ -15,6 +15,7 @@
   --primary-light: #0F1E41;
   --secondary: #465788;
   --terciary: #1F3A93;
+  --bg--terciary: #E3F2FD;
   --quaternary: #007EA7;
   --success: #28a745;
   --bg-success:#d4edda;
@@ -101,9 +102,11 @@ body {
 }
 
 .sidebar-links a {
-  display: block;                 
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 0.85rem 1rem;
-  margin: 0.50rem 0;
+  margin: 0.5rem 0;
   text-decoration: none;
   font-weight: 600;
   color: var(--primary-light);
@@ -112,10 +115,10 @@ body {
   letter-spacing: 0.4px;
   position: relative;
   background: transparent;
-  border-radius: 0;               
+  border-radius: 0;
   transition: color 0.18s ease;
-  outline: none;
 }
+
 .sidebar-links a:hover {
   color: var(--primary-dark);
 }
@@ -123,6 +126,12 @@ body {
 .sidebar-links a.active-link {
   background-color: var(--bg--primary-dark);
   color: var(--primary-dark);
+}
+
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-separator {
