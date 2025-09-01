@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --text-color: #000000;
+  --background-color: #f5f5f5; 
+  --line-color: #ddd;
+  --primary-dark: #4E148C;
+  --bg--primary-dark: #EDE7F6;
+  --primary-light: #0F1E41;
+  --secondary: #465788;
+  --terciary: #1F3A93;
+  --bg--terciary: #E3F2FD;
+  --quaternary: #007EA7;
+  --success: #28a745;
+  --bg-success:#d4edda;
+  --warning: #ffc107;
+  --bg-warning:#fff3cd;
+  --danger: #dc3545;
+  --bg-danger:#f8d7da;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background-color: white;
+  color: var(--primary-dark);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  height: 64px;
+  width: 100%;
+}
+
+.navbar-logo img {
+  height: 42px;
+  display: block;
+  object-fit: contain;
+}
+
+.navbar-cta {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-cta a {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: var(--primary-dark);
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.navbar-cta a:hover {
+  background-color: var(--secondary);
+  transform: scale(1.05);
+}
+
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 220px;
+  height: calc(100vh - 64px);
+  background-color: #fff;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 900;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.5rem 0;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--primary-light);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.4px;
+  position: relative;
+  background: transparent;
+  border-radius: 0;
+  transition: color 0.18s ease;
+}
+
+.sidebar-links a:hover {
+  color: var(--primary-dark);
+}
+
+.sidebar-links a.active-link {
+  background-color: var(--bg--primary-dark);
+  color: var(--primary-dark);
+}
+
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-separator {
+  border-top: 1px solid var(--line-color);
+  margin: 0.75rem 0;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 220px; 
+  padding: 1rem;
+}
+
+.footer {
+  background-color: var(--background-color);
+  text-align: center;
+  padding: 1rem;
+  color: var(--primary-dark);
+  border-top: 1px solid var(--line-color);
+}
+
+.footer,
+.footer p,
+.footer span,
+.footer a {
+  color: var(--primary-dark) !important;
+}
+
+.bg-success,
+.bg-warning,
+.bg-danger {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.bg-success {
+  background-color: var(--bg-success);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.bg-warning {
+  background-color: var(--bg-warning);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.bg-danger {
+  background-color: var(--bg-danger);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: var(--primary-dark);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  background-color: var(--secondary);
+  transform: scale(1.05);
+}
