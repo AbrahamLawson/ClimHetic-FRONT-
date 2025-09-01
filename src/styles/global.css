@@ -198,3 +198,21 @@ body {
   color: var(--danger);
   border: 1px solid var(--danger);
 }
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: var(--primary-dark);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  background-color: var(--secondary);
+  transform: scale(1.05);
+}
