@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
+import { logout } from "../services/auth";
 
-export default function Navbar({ isLoggedIn = false }) {
+export default function Navbar({ isLoggedIn = false, user = null }) {
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -16,8 +21,10 @@ export default function Navbar({ isLoggedIn = false }) {
       <div className="navbar-cta">
         {isLoggedIn ? (
           <>
-            <Link to="/profil">Profil</Link>
-            <Link to="/logout">Déconnexion</Link>
+            <span className="user-email">{user?.email}</span>
+            <button onClick={handleLogout} className="logout-button">
+              Déconnexion
+            </button>
           </>
         ) : (
           <Link to="/login">Connexion</Link>
