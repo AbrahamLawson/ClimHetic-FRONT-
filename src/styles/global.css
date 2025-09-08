@@ -62,12 +62,16 @@ body {
 
 .navbar-cta {
   display: flex;
+  align-items: center;       
   gap: 1rem;
 }
 
 .navbar-cta a {
   padding: 0.5rem 1rem;
   border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 600;
   font-size: 0.9rem;
   color: #fff;
@@ -137,6 +141,40 @@ body {
 .sidebar-separator {
   border-top: 1px solid var(--line-color);
   margin: 0.75rem 0;
+}
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background-color: var(--bg--primary-dark);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
+}
+
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: var(--primary-dark);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-family: 'Manrope', sans-serif;
+}
+
+.logout-button:hover {
+  background-color: var(--secondary);
+  transform: scale(1.05);
 }
 
 .layout {
