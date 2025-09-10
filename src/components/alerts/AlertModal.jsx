@@ -1,5 +1,6 @@
 import React from "react";
 import "../../styles/alert.css";
+import Status from "../Status";
 
 export default function AlertModal({ alert, onClose }) {
   const typeClass = alert.type.toLowerCase();
@@ -24,7 +25,7 @@ export default function AlertModal({ alert, onClose }) {
             <p><strong>Recommandation :</strong> {alert.recommendation}</p>
           </div>
         </div>
-
+        <Status value={alert.type} />
         <div className="modal-actions centered">
           <button onClick={onClose}>Fermer</button>
         </div>
