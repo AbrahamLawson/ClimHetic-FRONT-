@@ -243,7 +243,9 @@ export default function Salles({ userRole }) {
   return (
     <div className="page-container page-wrapper">
       <h1 className="salle-title">Salles</h1>
-            <StatCard value={3} label="Salles" icon="house-wifi" />
+      <div className="infos-pages">
+      {/* A FAIRE : changer la value de statcard pour mettre le nb exact de salle */}
+            <StatCard value={salles.length} label="Salles" icon="house-wifi" />
       {userRole === "admin" && (
         <FormModal
           ctaLabel="+ Ajouter une salle"
@@ -254,6 +256,7 @@ export default function Salles({ userRole }) {
           icon="circle-gauge"
         />
       )}
+      </div>
 
       <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
         <Searchbar

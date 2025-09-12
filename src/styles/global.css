@@ -284,3 +284,8 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary-dark);
   border-color: var(--secondary);
 }
+
+.infos-pages{
+  display: flex;
+  justify-content: space-between;
+}
