@@ -8,7 +8,9 @@ import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
+import StatCard from "../components/StatCard";
 import "../styles/searchbar.css";
+import "../styles/salle.css";
 
 export default function Salles({ userRole }) {
   // userRole peut être "admin", "user" ou "non-connecté"
@@ -59,6 +61,88 @@ export default function Salles({ userRole }) {
       pression: 1012,
       etat: "Warning",
     },
+    {
+      id: 3,
+      nom: "Salle 965",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Success",
+    },
+    {
+      id: 4,
+      nom: "Salle 323",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Danger",
+    },
+    {
+      id: 5,
+      nom: "Salle 876",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Warning",
+    },
+    {
+      id: 6,
+      nom: "Salle 965",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Success",
+    },
+    {
+      id: 7,
+      nom: "Salle 697",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Success",
+    },
+    {
+      id: 8,
+      nom: "Salle 468",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Warning",
+    },
+
+    {
+      id: 9,
+      nom: "Salle 369",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Success",
+    },
+    {
+      id: 10,
+      nom: "Salle 478",
+      batiment: "B",
+      capteurs: ["Capteur Temp", "Capteur CO2"],
+      temperature: 28,
+      humidite: 60,
+      pression: 1012,
+      etat: "Warning",
+    },
+    
   ]);
 
   // Champs du formulaire pour add une nouvelle salle (voir ce qu'on inscrit dedans pour le back)
@@ -157,7 +241,9 @@ export default function Salles({ userRole }) {
   }, [salles, search, filters]);
 
   return (
-    <div className="page-container">
+    <div className="page-container page-wrapper">
+      <h1 className="salle-title">Salles</h1>
+            <StatCard value={3} label="Salles" icon="house-wifi" />
       {userRole === "admin" && (
         <FormModal
           ctaLabel="+ Ajouter une salle"
@@ -177,7 +263,7 @@ export default function Salles({ userRole }) {
         />
       </div>
 
-      <div style={{ marginTop: "1.5rem" }}>
+      <div className="filter-sticky">
         <Filter categories={categories} onChange={setFilters} />
       </div>
 

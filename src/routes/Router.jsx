@@ -5,6 +5,7 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 import Dashboard from "../pages/Dashboard";
 import Salles from "../pages/Salles";
+import SalleDetail from "../pages/SalleDetail";
 import Alertes from "../pages/Alertes";
 import Ressources from "../pages/Ressources";
 import Login from "../pages/Login";
@@ -23,6 +24,7 @@ export default function AppRouter() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/salles" element={<Salles />} />
+            <Route path="/salles/:id" element={<SalleDetail />} />
             <Route path="/alertes" element={<Alertes />} />
             <Route path="/ressources" element={<Ressources />} />
           </Route>
