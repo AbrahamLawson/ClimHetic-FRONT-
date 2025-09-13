@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 // Initialiser Firebase Auth
 export const auth = getAuth(app);
 
-// Initialiser Analytics (optionnel)
+// Initialiser Analytics 
 export const analytics = getAnalytics(app);
 
 export default app;
