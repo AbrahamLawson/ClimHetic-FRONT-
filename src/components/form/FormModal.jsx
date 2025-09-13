@@ -129,6 +129,25 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                   );
                 }
 
+                if (field.type === "select") {
+                  return (
+                    <div key={field.name} className="form-group">
+                      <label className="form-label">{field.label}</label>
+                      <select
+                        className="form-input"
+                        value={formData[field.name] || field.options[0]}
+                        onChange={(e) => handleChange(field.name, e.target.value)}
+                      >
+                        {field.options.map((option) => (
+                          <option key={option} value={option}>
+                            {option.charAt(0).toUpperCase() + option.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                }
+
                 return (
                   <div key={field.name} className="form-group">
                     <label className="form-label">{field.label}</label>

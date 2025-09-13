@@ -253,7 +253,7 @@ export default function Salles({ userRole }) {
           onSubmit={handleAddSalle}
           title="Ajouter une salle"
           submitLabel="Créer"
-          icon="circle-gauge"
+          icon="house-wifi"
         />
       )}
       </div>
