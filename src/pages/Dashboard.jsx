@@ -3,6 +3,8 @@
 // }
 
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import SimpleChart from "../components/Graphique";
 import Tableau from "../components/Tableau";
@@ -12,7 +14,12 @@ import StatCard from "../components/StatCard";
 import "../styles/statcard.css";
 import "../styles/global.css";
 
-export default function Dashboard({ role = "guest" }) {
+export default function Dashboard() {
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  
+  // Détermine le rôle basé sur l'utilisateur connecté
+  const role = !isAuthenticated ? "guest" : (user?.email?.includes('admin') ? "admin" : "user");
   // Colonnes et data pour le tableau
   const columns = [
     { key: "id", label: "ID" },
@@ -98,7 +105,30 @@ const filteredData = data.filter((d) => d.status === "Success");
 
   return (
     <div className="page-wrapper">
-      <h1 className="dashboard-title">Dashboard</h1>
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        {!isAuthenticated && (
+          <button 
+            className="login-btn"
+            onClick={() => navigate('/login')}
+            style={{
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginLeft: '20px',
+              transition: 'background-color 0.3s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+          >
+            Se connecter
+          </button>
+        )}
+      </div>
     <div className="card-container">
 {/* A FAIRE : changer la logique de recup des statcard avec les réelles datas */}
       <div className="stat-cards-container">

@@ -18,13 +18,13 @@ export default function AppRouter() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Route publique */}
+          {/* Routes publiques */}
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DefaultLayout><Dashboard /></DefaultLayout>} />
           
           {/* Routes protégées */}
           <Route element={<ProtectedRoute><DefaultLayout /></ProtectedRoute>}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/salles" element={<Salles />} />
             <Route path="/salles/:id" element={<SalleDetail />} />
             <Route path="/alertes" element={<Alertes />} />
