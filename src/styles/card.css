@@ -4,6 +4,7 @@
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--line-color);
 }
 
 .card-container {
@@ -35,23 +36,8 @@
   font-size: 0.95rem;
   color: var(--text-color);
   max-height: 300px;       
-  overflow-y: auto;        
+  overflow: hidden;        
   padding-right: 0.5rem;
-}
-
-.card-tableau {
-  border: 1px solid var(--terciary);
-  box-shadow: 0 4px 12px rgba(31, 58, 147, 0.25);
-}
-
-.card-alertes {
-  border: 1px solid var(--danger);
-  box-shadow: 0 4px 12px rgba(220, 52, 69, 0.25);
-}
-
-.card-graphiques {
-  border: 1px solid var(--quaternary);
-  box-shadow: 0 4px 12px rgba(0, 126, 167, 0.25);
 }
 
 .card-tableau .card-title {

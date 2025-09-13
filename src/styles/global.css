@@ -13,6 +13,7 @@
   --primary-dark: #4E148C;
   --bg--primary-dark: #EDE7F6;
   --primary-light: #0F1E41;
+  --bg--primary-light: #F3F6FB;
   --secondary: #465788;
   --terciary: #1F3A93;
   --bg--terciary: #E3F2FD;
@@ -160,12 +161,19 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.9rem;
-  background-color: var(--bg--primary-dark);
-  color: var(--primary-dark);
-  border: 1px solid var(--primary-dark);
+  color: var(--primary-light);
 }
 
-.logout-button {
+.user-icon{
+  background-color: var(--bg--primary-dark);
+  color: var(--primary-dark);
+  border-radius: 50%;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+}
+
+button.logout-button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -173,15 +181,15 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.9rem;
-  color: #fff;
-  background-color: var(--primary-dark);
-  border: none;
+  color: var(--primary-dark);
+  background-color: white;
+  border: 1.5px solid var(--primary-dark);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
   font-family: 'Manrope', sans-serif;
 }
 
-.logout-button:hover {
+button.logout-button:hover {
   background-color: var(--secondary);
   transform: scale(1.05);
 }

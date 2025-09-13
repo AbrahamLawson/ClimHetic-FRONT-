@@ -28,7 +28,9 @@ export default function Navbar() {
         {isLoggedIn ? (
           <>
             <span className="user-chip">
+              <span className="user-icon">
               <User size={16} aria-hidden="true" />
+              </span>
               <span className="user-chip-email">{user?.email}</span>
             </span>
             <button onClick={handleLogout} className="logout-button">

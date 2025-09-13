@@ -6,8 +6,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid var(--primary-dark);
-  box-shadow: 0 4px 12px rgba(31, 58, 147, 0.25);
+  border: 1px solid var(--line-color);
   transition: transform 0.2s ease;
 }
 

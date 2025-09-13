@@ -13,17 +13,14 @@
 .status-success {
   background-color: var(--bg-success);
   color: var(--success);
-  border: 1px solid var(--success);
 }
 
 .status-warning {
   background-color: var(--bg-warning);
   color: var(--warning);
-  border: 1px solid var(--warning);
 }
 
 .status-danger {
   background-color: var(--bg-danger);
   color: var(--danger);
-  border: 1px solid var(--danger);
 }
