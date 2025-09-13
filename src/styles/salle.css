@@ -1,0 +1,35 @@
+.salle-detail-title {
+  font-size: 2rem;
+}
+
+.salle-detail-container {
+  display: flex;
+  gap: 5rem;
+}
+
+.salle-fiche {
+  position: sticky;
+  top: 90px;
+  align-self: flex-start;
+  width: 350px;
+  flex-shrink: 0;
+}
+
+.salle-graphs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .salle-detail-container {
+    flex-direction: column;
+  }
+
+  .salle-fiche {
+    position: relative;
+    width: 100%;
+    top: auto;
+  }
+}

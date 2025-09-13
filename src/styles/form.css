@@ -47,6 +47,7 @@
   transition: background-color 0.2s ease;
   font-family: 'Manrope', sans-serif;
   margin-bottom: 1rem; 
+  width: 100%;
 }
 
 .form-button:hover {

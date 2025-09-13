@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { logout } from "../services/auth";
+import { User, LogOut } from "lucide-react";
 
-export default function Navbar({ isLoggedIn = false, user = null }) {
+export default function Navbar() {
+  const { user } = useAuth();
+
   const handleLogout = async () => {
     await logout();
   };
+
+  const isLoggedIn = !!user;
 
   return (
     <nav className="navbar">
@@ -21,9 +27,15 @@ export default function Navbar({ isLoggedIn = false, user = null }) {
       <div className="navbar-cta">
         {isLoggedIn ? (
           <>
-            <span className="user-email">{user?.email}</span>
+            <span className="user-chip">
+              <span className="user-icon">
+              <User size={16} aria-hidden="true" />
+              </span>
+              <span className="user-chip-email">{user?.email}</span>
+            </span>
             <button onClick={handleLogout} className="logout-button">
-              Déconnexion
+              <LogOut size={16} aria-hidden="true" />
+              <span>Déconnexion</span>
             </button>
           </>
         ) : (
