@@ -13,10 +13,6 @@ export default function Sidebar() {
     { to: "/ressources", label: "Ressources", icon: <BookOpenText size={18} /> },
   ];
 
-  const userLinks = [
-    { to: "/alertes", label: "Alertes", icon: <Siren size={18} /> },
-  ];
-
   const adminLinks = [
     { to: "/alertes", label: "Alertes", icon: <Siren size={18} /> },
     { to: "/capteurs", label: "Capteurs", icon: <CircleGauge size={18} /> },
@@ -25,7 +21,7 @@ export default function Sidebar() {
 
   const links = [
     ...publicLinks,
-    ...(isAdmin ? adminLinks : isLoggedIn ? userLinks : []),
+    ...(isAdmin ? adminLinks : []),
   ];
 
   return (

@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../services/auth";
+import { getAllUsers } from "../services/userService";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
@@ -20,14 +21,9 @@ export default function Admin() {
     { key: "role", label: "Rôle" },
   ];
 
-  // Fake données utilisateurs (à remplacer par la BDD)
-  const [users, setUsers] = useState([
-    { id: 1, nom: "Sira", email: "sira@climhetic.fr", role: "user" },
-    { id: 2, nom: "Luka", email: "luka@climhetic.fr", role: "user" },
-    { id: 3, nom: "Leo", email: "leo@climhetic.fr", role: "admin" },
-    { id: 4, nom: "Hemmy", email: "hemmy@climhetic.fr", role: "user" },
-    { id: 5, nom: "Abraham", email: "abraham@climhetic.fr", role: "user" },
-  ]);
+  // Données utilisateurs depuis Firestore
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   const fields = [
     { name: "nom", label: "Nom", type: "text", placeholder: "Ex: Sira", required: true },
@@ -38,6 +34,42 @@ export default function Admin() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+
+  // Charger les utilisateurs depuis Firestore
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { users: firestoreUsers, error } = await getAllUsers();
+        if (!error && firestoreUsers) {
+          // Transformer les données pour le tableau
+          const formattedUsers = firestoreUsers.map((user, index) => ({
+            id: index + 1,
+            uid: user.uid,
+            nom: user.displayName || 'Non défini',
+            email: user.email,
+            role: user.role || 'user'
+          }));
+          setUsers(formattedUsers);
+        } else {
+          console.error('Erreur lors du chargement des utilisateurs:', error);
+          setMessage({ 
+            type: 'error', 
+            text: 'Impossible de charger les utilisateurs depuis Firestore' 
+          });
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        setMessage({ 
+          type: 'error', 
+          text: 'Erreur lors du chargement des utilisateurs' 
+        });
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleAddUser = async (values) => {
     setLoading(true);
@@ -53,15 +85,18 @@ export default function Admin() {
           text: `Erreur lors de la création: ${result.error}` 
         });
       } else {
-        // Ajouter l'utilisateur à la liste locale
-        const newUser = { 
-          id: users.length + 1, 
-          nom: values.nom,
-          email: values.email,
-          role: values.role,
-          uid: result.user.uid
-        };
-        setUsers([...users, newUser]);
+        // Recharger la liste des utilisateurs depuis Firestore
+        const { users: firestoreUsers, error: fetchError } = await getAllUsers();
+        if (!fetchError && firestoreUsers) {
+          const formattedUsers = firestoreUsers.map((user, index) => ({
+            id: index + 1,
+            uid: user.uid,
+            nom: user.displayName || 'Non défini',
+            email: user.email,
+            role: user.role || 'user'
+          }));
+          setUsers(formattedUsers);
+        }
         
         if (result.needsReauth) {
           setMessage({ 
@@ -106,7 +141,7 @@ export default function Admin() {
     },
   ];
 
-  const usersFiltres = useMemo(() => {
+  const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const matchSearch =
         user.nom.toLowerCase().includes(search.toLowerCase()) ||
@@ -179,7 +214,13 @@ export default function Admin() {
       </div>
 
       <div className="table-container" style={{ marginTop: "2rem" }}>
-        <Tableau columns={columns} data={usersFiltres} />
+        {loadingUsers ? (
+          <div className="loading-container">
+            <p>Chargement des utilisateurs...</p>
+          </div>
+        ) : (
+          <Tableau columns={columns} data={filteredUsers} />
+        )}
       </div>
     </div>
   );
