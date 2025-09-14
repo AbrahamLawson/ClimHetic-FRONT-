@@ -12,6 +12,7 @@
   flex-wrap: wrap;
   gap: 2%;
 }
+
 .card-full {
   flex: 1 1 100%;
 }
@@ -33,7 +34,6 @@
 }
 
 .card-content {
-  font-size: 0.95rem;
   color: var(--text-color);
   max-height: 300px;       
   overflow: hidden;        

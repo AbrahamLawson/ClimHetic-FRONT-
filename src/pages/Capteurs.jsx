@@ -179,6 +179,7 @@ export default function Capteurs() {
         }}>
           <strong>Erreur:</strong> {error}
           <button 
+          className="btn btn-secondary"
             onClick={chargerDonnees}
             style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
           >
@@ -196,12 +197,12 @@ export default function Capteurs() {
         <StatCard 
           value={statistiques.actifs} 
           label="Actifs" 
-          icon="toggle-right" 
+          icon="circle-check" 
         />
         <StatCard 
           value={statistiques.inactifs} 
           label="Inactifs" 
-          icon="toggle-left" 
+          icon="circle-x" 
         />
 
         <FormModal

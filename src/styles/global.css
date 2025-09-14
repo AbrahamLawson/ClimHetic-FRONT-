@@ -24,6 +24,10 @@
   --bg-warning:#fff3cd;
   --danger: #dc3545;
   --bg-danger:#f8d7da;
+  --active : #07beb8;
+  --bg-active: #d1f2f1;
+  --inactive: #6c757d;
+  --bg-inactive: #e2e3e5;
 }
 
 body {
