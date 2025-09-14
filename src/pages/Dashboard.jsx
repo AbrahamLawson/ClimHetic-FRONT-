@@ -28,7 +28,7 @@ export default function Dashboard() {
     { key: "humidite", label: "Humidité (%)" },
     { key: "pression", label: "Pression (hPa)" },
     { key: "accelerometre", label: "Accéléromètre" },
-    { key: "status", label: "Statut", type: "status" },
+    { key: "status", label: "Etat", type: "status" },
   ];
 
   // Génère data fictive pour le tableau

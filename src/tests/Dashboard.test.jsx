@@ -50,7 +50,7 @@ describe("Dashboard", () => {
       "Humidité (%)",
       "Pression (hPa)",
       "Accéléromètre",
-      "Statut",
+      "Etat",
     ];
     columnHeaders.forEach((header) => {
       expect(screen.getByText(header)).toBeInTheDocument();
