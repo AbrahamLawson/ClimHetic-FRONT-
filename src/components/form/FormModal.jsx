@@ -7,6 +7,19 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
   const [formData, setFormData] = useState({});
   const [capteurs, setCapteurs] = useState([]);
 
+  // Initialiser les valeurs par défaut quand le modal s'ouvre
+  const handleOpen = () => {
+    const defaultValues = {};
+    fields.forEach(field => {
+      if (field.type === 'select' && field.options && field.options.length > 0) {
+        const defaultValue = typeof field.options[0] === 'object' ? field.options[0].value : field.options[0];
+        defaultValues[field.name] = defaultValue;
+      }
+    });
+    setFormData(defaultValues);
+    setOpen(true);
+  };
+
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -29,7 +42,8 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { ...formData, capteurs };
+    // N'ajouter le champ capteurs que s'il y en a
+    const data = capteurs.length > 0 ? { ...formData, capteurs } : formData;
     onSubmit?.(data);
     setOpen(false);
     setFormData({});
@@ -62,7 +76,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   return (
     <div>
-      <button onClick={() => setOpen(true)} className="btn">
+      <button onClick={handleOpen} className="btn">
         {ctaLabel}
       </button>
 
@@ -135,14 +149,21 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                       <label className="form-label">{field.label}</label>
                       <select
                         className="form-input"
-                        value={formData[field.name] || field.options[0]}
+                        value={formData[field.name] || (typeof field.options[0] === 'object' ? field.options[0].value : field.options[0])}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                       >
-                        {field.options.map((option) => (
-                          <option key={option} value={option}>
-                            {option.charAt(0).toUpperCase() + option.slice(1)}
-                          </option>
-                        ))}
+                        {field.options.map((option) => {
+                          // Gérer les options sous forme d'objet {value, label} ou de chaîne simple
+                          const optionValue = typeof option === 'object' ? option.value : option;
+                          const optionLabel = typeof option === 'object' ? option.label : 
+                            option.charAt(0).toUpperCase() + option.slice(1);
+                          
+                          return (
+                            <option key={optionValue} value={optionValue}>
+                              {optionLabel}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   );
