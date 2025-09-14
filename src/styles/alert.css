@@ -131,6 +131,8 @@
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  margin-bottom: 1rem;
+
 }
 
 .modal-left {
@@ -161,10 +163,14 @@
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Manrope', sans-serif;
 }
 
 .modal-actions button:hover {
-  background-color: var(--secondary);
+  background-color: white;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }
 @media (max-width: 768px) {
   .alert-item {
