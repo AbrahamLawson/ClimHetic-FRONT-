@@ -5,9 +5,8 @@ import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
 
 export default function DefaultLayout() {
-  const { user } = useAuth();
-  const isLoggedIn = !!user;
-  const isAdmin = user?.email?.includes('admin'); // Simple admin check
+  const { user, isAuthenticated, isAdmin } = useAuth();
+  const isLoggedIn = isAuthenticated;
 
   return (
     <div className="layout">
