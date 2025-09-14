@@ -2,11 +2,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DefaultLayout from "../layouts/DefaultLayout";
 import Dashboard from "../pages/Dashboard";
 import Salles from "../pages/Salles";
+import SalleDetail from "../pages/SalleDetail";
 import Ressources from "../pages/Ressources";
 import Alertes from "../pages/Alertes";
 import Capteurs from "../pages/Capteurs";
 import Admin from "../pages/Admin";
 import Login from "../pages/Login";
+import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -29,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "salles",
         element: <Salles />
+      },
+      {
+        path: "salles/:id",
+        element: <SalleDetail />
       },
       {
         path: "ressources",
@@ -57,6 +63,10 @@ const router = createBrowserRouter([
             <Admin />
           </ProtectedRoute>
         )
+      },
+      {
+        path: "*",
+        element: <NotFound />
       }
     ]
   }
