@@ -2,100 +2,224 @@
 //   return <h1>Capteurs</h1>;
 // }
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
+import capteurService from "../services/capteurService";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 
 export default function Capteurs() {
   const navigate = useNavigate();
 
-  // Infos tableau à adapter en fonction de la BDD
+  // Infos tableau pour affichage des capteurs
   const columns = [
     { key: "id", label: "ID" },
     { key: "nom", label: "Nom du capteur" },
-    { key: "batiment", label: "Bâtiment" },
-    { key: "salle", label: "Salle" },
-    { key: "temperature", label: "Température (°C)" },
-    { key: "humidite", label: "Humidité (%)" },
-    { key: "pression", label: "Pression (hPa)" },
+    { key: "type_capteur", label: "Type" },
+    { key: "salle_nom", label: "Salle" },
+    { key: "is_active", label: "Statut", render: (value) => value ? "Actif" : "Inactif" },
+    { key: "derniere_mesure", label: "Dernière mesure" },
   ];
 
-  // Fake données des capteurs à remplacer avec celle dispo dans la bdd
-  const [capteurs, setCapteurs] = useState([
-    { id: 1, nom: "Température Salle 101", batiment: "A", salle: "Salle 101", temperature: 22, humidite: 50, pression: 3040, etat: "Success" },
-    { id: 2, nom: "Humidité Salle 202", batiment: "B", salle: "Salle 202", temperature: 22, humidite: 50, pression: 3040, etat: "Warning" },
-    { id: 3, nom: "CO2 Salle 202", batiment: "A", salle: "Salle 202", temperature: 22, humidite: 50, pression: 3040, etat: "Danger" },
-  ]);
+  // États pour les données et le chargement
+  const [capteurs, setCapteurs] = useState([]);
+  const [salles, setSalles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [statistiques, setStatistiques] = useState({ total: 0, actifs: 0, inactifs: 0 });
 
-  // Champs du formulaire d'ajout de capteur
+  // Champs du formulaire d'ajout de capteur (mis à jour selon l'API)
   const fields = [
-    { name: "nom", label: "Nom du capteur", type: "text", placeholder: "Ex: Température Salle 101" },
-    { name: "salle", label: "Salle associée", type: "text", placeholder: "Ex: Salle 101" },
+    { name: "nom", label: "Nom du capteur", type: "text", placeholder: "Ex: Capteur Température 101", required: true },
+    { 
+      name: "type_capteur", 
+      label: "Type de capteur", 
+      type: "select",
+      options: [
+        { value: "temperature", label: "Température" },
+        { value: "humidite", label: "Humidité" },
+        { value: "pression", label: "Pression" }
+      ],
+      required: true
+    },
+    { 
+      name: "id_salle", 
+      label: "Salle", 
+      type: "select",
+      options: salles.map(salle => ({ value: salle.id, label: salle.nom })),
+      required: true
+    }
   ];
 
-  const handleAddCapteur = (values) => {
-    const newCapteur = { id: capteurs.length + 1, ...values, etat: "Success" };
-    setCapteurs([...capteurs, newCapteur]);
+  // Fonction pour charger les données depuis l'API
+  const chargerDonnees = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Charger les capteurs et les salles en parallèle
+      const [capteursResponse, sallesResponse] = await Promise.all([
+        capteurService.getAllCapteurs(),
+        capteurService.getSalles()
+      ]);
+
+      if (capteursResponse.success) {
+        setCapteurs(capteursResponse.data.capteurs || []);
+        setStatistiques(capteursResponse.data.statistiques || { total: 0, actifs: 0, inactifs: 0 });
+      }
+
+      if (sallesResponse.success) {
+        setSalles(sallesResponse.data || []);
+      }
+
+    } catch (err) {
+      setError(err.message);
+      console.error('Erreur lors du chargement des données:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Charger les données au montage du composant
+  useEffect(() => {
+    chargerDonnees();
+  }, []);
+
+  // Fonction pour ajouter un capteur
+  const handleAddCapteur = async (values) => {
+    try {
+      setError(null);
+      console.log('Données envoyées pour ajout capteur:', values);
+      const response = await capteurService.ajouterCapteur(values);
+      
+      if (response.success) {
+        // Recharger les données pour avoir la liste à jour
+        await chargerDonnees();
+        return true; // Indique le succès au modal
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error('Erreur lors de l\'ajout du capteur:', err);
+      throw err; // Relancer l'erreur pour le modal
+    }
   };
 
   const [filters, setFilters] = useState({});
   const [search, setSearch] = useState("");
 
+  // Catégories de filtres mises à jour
   const categories = [
     {
-      title: "Bâtiment",
+      title: "Type",
       options: [
-        { label: "A", value: "A" },
-        { label: "B", value: "B" },
-        { label: "C", value: "C" },
+        { label: "Température", value: "temperature" },
+        { label: "Humidité", value: "humidite" },
+        { label: "Pression", value: "pression" },
+      ],
+    },
+    {
+      title: "Statut",
+      options: [
+        { label: "Actif", value: true },
+        { label: "Inactif", value: false },
       ],
     },
   ];
 
+  // Fonction de filtrage mise à jour pour les vraies données
   const capteursFiltres = useMemo(() => {
     return capteurs.filter((capteur) => {
       const matchSearch =
-        capteur.nom.toLowerCase().includes(search.toLowerCase()) ||
-        capteur.salle.toLowerCase().includes(search.toLowerCase());
+        capteur.nom?.toLowerCase().includes(search.toLowerCase()) ||
+        capteur.salle_nom?.toLowerCase().includes(search.toLowerCase());
 
       const matchType =
         !filters["Type"] || filters["Type"].length === 0
           ? true
-          : filters["Type"].includes(capteur.type);
+          : filters["Type"].includes(capteur.type_capteur);
 
-      const matchEtat =
+      const matchStatut =
         !filters["Statut"] || filters["Statut"].length === 0
           ? true
-          : filters["Statut"].includes(capteur.etat);
+          : filters["Statut"].includes(capteur.is_active);
 
-      return matchSearch && matchType && matchEtat;
+      return matchSearch && matchType && matchStatut;
     });
   }, [capteurs, search, filters]);
 
+  // Affichage conditionnel selon l'état de chargement
+  if (loading) {
+    return (
+      <div className="page-container page-wrapper">
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p>Chargement des capteurs...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container page-wrapper">
-      <h1 className="salle-title">Liste de Capteurs</h1>
-      {/* A FAIRE : changer la value de statcard pour mettre le nb exact de capteur */}
-      <div className="infos-pages">
-      <StatCard value={capteurs.length} label="Capteurs" icon="circle-gauge" />
+      <h1 className="salle-title">Gestion des Capteurs</h1>
+      
+      {/* Affichage des erreurs */}
+      {error && (
+        <div style={{ 
+          background: '#fee', 
+          border: '1px solid #fcc', 
+          padding: '1rem', 
+          borderRadius: '4px',
+          marginBottom: '1rem',
+          color: '#c33'
+        }}>
+          <strong>Erreur:</strong> {error}
+          <button 
+            onClick={chargerDonnees}
+            style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
 
-      <FormModal
-        ctaLabel="+ Ajouter un capteur"
-        fields={fields}
-        onSubmit={handleAddCapteur}
-        title="Ajouter un capteur"
-        submitLabel="Créer"
-        icon="circle-gauge"
-      />
-</div>
+      <div className="infos-pages">
+        <StatCard 
+          value={statistiques.total} 
+          label="Capteurs" 
+          icon="circle-gauge" 
+        />
+        <StatCard 
+          value={statistiques.actifs} 
+          label="Actifs" 
+          icon="toggle-right" 
+        />
+        <StatCard 
+          value={statistiques.inactifs} 
+          label="Inactifs" 
+          icon="toggle-left" 
+        />
+
+        <FormModal
+          ctaLabel="+ Ajouter un capteur"
+          fields={fields}
+          onSubmit={handleAddCapteur}
+          title="Ajouter un capteur"
+          submitLabel="Créer"
+          icon="circle-gauge"
+        />
+      </div>
+
       <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
-        <Searchbar placeholder="Rechercher un capteur ou une salle..." value={search} onChange={setSearch} />
+        <Searchbar 
+          placeholder="Rechercher un capteur ou une salle..." 
+          value={search} 
+          onChange={setSearch} 
+        />
       </div>
 
       <div className="filter-sticky">
@@ -103,7 +227,16 @@ export default function Capteurs() {
       </div>
 
       <div className="table-container" style={{ marginTop: "2rem" }}>
-        <Tableau columns={columns} data={capteursFiltres} />
+        {capteursFiltres.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            {capteurs.length === 0 ? 
+              'Aucun capteur trouvé. Ajoutez-en un nouveau !' : 
+              'Aucun capteur ne correspond à vos critères de recherche.'
+            }
+          </div>
+        ) : (
+          <Tableau columns={columns} data={capteursFiltres} />
+        )}
       </div>
     </div>
   );
