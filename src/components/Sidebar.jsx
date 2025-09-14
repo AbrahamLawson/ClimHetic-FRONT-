@@ -3,14 +3,14 @@ import { useAuth } from "../contexts/AuthContext";
 import {LayoutDashboard, HouseWifi, Siren, UserStar, BookOpenText, CircleGauge,} from "lucide-react";
 
 export default function Sidebar() {
-  const { user } = useAuth();
-  const role = user?.role;
-  const isLoggedIn = !!user;
-  const isAdmin = role === "admin";
+  const { user, isAuthenticated, isAdmin } = useAuth();
+  const isLoggedIn = isAuthenticated;
 
-  const baseLinks = [
+  // Liens publics (toujours visibles)
+  const publicLinks = [
     { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/salles", label: "Salles", icon: <HouseWifi size={18} /> },
+    { to: "/ressources", label: "Ressources", icon: <BookOpenText size={18} /> },
   ];
 
   const userLinks = [
@@ -24,9 +24,8 @@ export default function Sidebar() {
   ];
 
   const links = [
-    ...baseLinks,
+    ...publicLinks,
     ...(isAdmin ? adminLinks : isLoggedIn ? userLinks : []),
-    { to: "/ressources", label: "Ressources", icon: <BookOpenText size={18} /> },
   ];
 
   return (

@@ -1,41 +1,67 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "../contexts/AuthContext";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DefaultLayout from "../layouts/DefaultLayout";
-import ProtectedRoute from "../components/auth/ProtectedRoute";
-
 import Dashboard from "../pages/Dashboard";
 import Salles from "../pages/Salles";
-import SalleDetail from "../pages/SalleDetail";
+import Ressources from "../pages/Ressources";
 import Alertes from "../pages/Alertes";
 import Capteurs from "../pages/Capteurs";
 import Admin from "../pages/Admin";
-import Ressources from "../pages/Ressources";
 import Login from "../pages/Login";
-import NotFound from "../pages/NotFound";
+import ProtectedRoute from "../components/ProtectedRoute";
 
-export default function AppRouter() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Routes publiques */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DefaultLayout><Dashboard /></DefaultLayout>} />
-          
-          {/* Routes protégées */}
-          <Route element={<ProtectedRoute><DefaultLayout /></ProtectedRoute>}>
-            <Route path="/salles" element={<Salles />} />
-            <Route path="/salles/:id" element={<SalleDetail />} />
-            <Route path="/alertes" element={<Alertes />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/capteurs" element={<Capteurs />} />
-            <Route path="/ressources" element={<Ressources />} />
-          </Route>
-          
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  );
+const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />
+  },
+  {
+    path: "/",
+    element: <DefaultLayout />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />
+      },
+      {
+        path: "salles",
+        element: <Salles />
+      },
+      {
+        path: "ressources",
+        element: <Ressources />
+      },
+      {
+        path: "alertes",
+        element: (
+          <ProtectedRoute>
+            <Alertes />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "capteurs",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <Capteurs />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "admin",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <Admin />
+          </ProtectedRoute>
+        )
+      }
+    ]
+  }
+]);
+
+export default function Router() {
+  return <RouterProvider router={router} />;
 }

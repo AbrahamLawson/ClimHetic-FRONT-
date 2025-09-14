@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
@@ -12,9 +13,12 @@ import StatCard from "../components/StatCard";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 
-export default function Salles({ userRole }) {
-  // userRole peut être "admin", "user" ou "non-connecté"
+export default function Salles() {
   const navigate = useNavigate();
+  const { isAuthenticated, isAdmin } = useAuth();
+  
+  // Détermine le rôle utilisateur
+  const userRole = !isAuthenticated ? "guest" : (isAdmin ? "admin" : "user");
 
   // Colonnes pour les admins (+ capteurs)
   const adminColumns = [
