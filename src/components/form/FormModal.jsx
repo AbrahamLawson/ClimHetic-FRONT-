@@ -153,7 +153,6 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                         onChange={(e) => handleChange(field.name, e.target.value)}
                       >
                         {field.options.map((option) => {
-                          // Gérer les options sous forme d'objet {value, label} ou de chaîne simple
                           const optionValue = typeof option === 'object' ? option.value : option;
                           const optionLabel = typeof option === 'object' ? option.label : 
                             option.charAt(0).toUpperCase() + option.slice(1);

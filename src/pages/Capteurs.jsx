@@ -165,7 +165,7 @@ export default function Capteurs() {
 
   return (
     <div className="page-container page-wrapper">
-      <h1 className="salle-title">Gestion des Capteurs</h1>
+      <h1 className="salle-title">Gestion des capteurs</h1>
       
       {/* Affichage des erreurs */}
       {error && (

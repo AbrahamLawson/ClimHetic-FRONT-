@@ -2,7 +2,7 @@
   background: #fff;
   border-radius: 12px;
   padding: 16px 20px;
-  width: 300px;
+  width: 280px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -31,13 +31,13 @@
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #333;
+  color: var(--primary-light);
 }
 
 .stat-label {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #666;
+  color: var(--inactive);
 }
 
 .stat-cards-container {

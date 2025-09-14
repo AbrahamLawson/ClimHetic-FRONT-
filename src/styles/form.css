@@ -51,8 +51,9 @@
 }
 
 .form-button:hover {
-  background-color: var(--secondary);
-  transform: scale(1.02);
+  background-color: white;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }
 
 .modal-overlay {

@@ -194,8 +194,9 @@ button.logout-button {
 }
 
 button.logout-button:hover {
-  background-color: var(--secondary);
-  transform: scale(1.05);
+  background-color: var(--primary-dark);
+  color: white;
+  border: 1px solid var(--primary-dark);
 }
 
 .layout {
@@ -273,12 +274,13 @@ button.logout-button:hover {
 }
 
 .btn:hover {
-  background-color: var(--secondary);
-  transform: scale(1.05);
+  background-color: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }
 
 .btn-secondary {
-  background: #fff;
+  background: white;
   color: var(--primary-dark);
   border: 1.5px solid var(--primary-dark);
   font-weight: 600;
@@ -292,9 +294,8 @@ button.logout-button:hover {
 }
 
 .btn-secondary:hover {
-  background: var(--bg--primary-dark);
-  color: var(--primary-dark);
-  border-color: var(--secondary);
+  background: var(--primary-dark);
+  color: white;
 }
 
 .infos-pages{

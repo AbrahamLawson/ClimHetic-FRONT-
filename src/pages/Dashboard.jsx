@@ -105,7 +105,7 @@ const filteredData = data.filter((d) => d.status === "Success");
 
   return (
     <div className="page-wrapper">
-      <h1 className="dashboard-title">Dashboard</h1>
+      <h1 className="dashboard-title" style={{ marginBottom: "1.5rem" }}>Dashboard</h1>
     <div className="card-container">
 {/* A FAIRE : changer la logique de recup des statcard avec les réelles datas */}
       <div className="stat-cards-container">
