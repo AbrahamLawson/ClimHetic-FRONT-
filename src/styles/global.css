@@ -313,3 +313,14 @@ button.logout-button:hover {
 .dashboard-title {
   margin-bottom: 0;
 }
+
+.notfound-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: var(--bg-inactive);
+  border-radius: 50%;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
