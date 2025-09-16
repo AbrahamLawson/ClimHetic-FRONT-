@@ -11,6 +11,8 @@ import Tableau from "../components/Tableau";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";
+import { WeatherProvider } from "../features/weather/context/WeatherContext";
+import WeatherCard from "../features/weather/WeatherCard";
 import "../styles/statcard.css";
 import "../styles/global.css";
 
@@ -119,6 +121,11 @@ const filteredData = data.filter((d) => d.status === "Success");
             <StatCard value={12} label="Capteurs" icon="circle-gauge" />
           </>
         )}
+        <WeatherProvider>
+          <Card title="Météo locale" category="meteo">
+            <WeatherCard />
+          </Card>
+        </WeatherProvider>
       </div>
 
       <Card title="Données capteurs" category="tableau" fullWidth>
