@@ -20,8 +20,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>×</button>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} tabIndex={-1} role="dialog" aria-modal="true">
+        <button className="modal-close" onClick={onClose} tabIndex={0} aria-label="Fermer">×</button>
         
         {error && (
           <div className="error-message">
@@ -40,7 +40,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
             <p>
               Pas encore de compte ?{' '}
               <button 
-                type="button" 
+                type="button"
+                tabIndex={0} 
                 onClick={() => setIsLogin(false)}
                 className="link-button"
               >

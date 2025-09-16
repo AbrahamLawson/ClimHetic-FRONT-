@@ -164,18 +164,25 @@ export default function Capteurs() {
   }
 
   return (
-    <div className="page-container page-wrapper">
+    <main className="page-container page-wrapper" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+      <div id="main-content" tabIndex={-1}>
       <h1 className="salle-title">Gestion des capteurs</h1>
       
       {/* Affichage des erreurs */}
       {error && (
-        <div style={{ 
-          background: '#fee', 
-          border: '1px solid #fcc', 
+        <div 
+        role="alert"
+        aria-live="polite" 
+        style={{ 
+          background: 'var(--bg-danger)', 
+          border: '1px solid var(--danger)', 
           padding: '1rem', 
           borderRadius: '4px',
           marginBottom: '1rem',
-          color: '#c33'
+          color: 'var(--danger)'
         }}>
           <strong>Erreur:</strong> {error}
           <button 
@@ -187,19 +194,23 @@ export default function Capteurs() {
           </button>
         </div>
       )}
-
-      <div className="infos-pages">
-        <StatCard 
+    <section className="statistics-section" aria-labelledby="stats-title">
+      <h2 id="stats-title" className="visually-hidden">Statistiques</h2>
+      <div className="infos-pages" >
+        <StatCard
+          aria-label="Nombre de capteurs" 
           value={statistiques.total} 
           label="Capteurs" 
           icon="circle-gauge" 
         />
-        <StatCard 
+        <StatCard
+          aria-label="Nombre de capteurs actifs" 
           value={statistiques.actifs} 
           label="Actifs" 
           icon="circle-check" 
         />
-        <StatCard 
+        <StatCard
+          aria-label="Nombre de capteurs inactifs" 
           value={statistiques.inactifs} 
           label="Inactifs" 
           icon="circle-x" 
@@ -214,19 +225,25 @@ export default function Capteurs() {
           icon="circle-gauge"
         />
       </div>
-
-      <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
+    </section>
+    <section className="search-section" aria-labelledby="search-title">
+      <h2 id="search-title" className="visually-hidden">Recherche et filtres</h2>
+      <div className="search-wrapper" style={{ marginTop: "1.5rem" }} aria-label="Recherches capteurs">
         <Searchbar 
-          placeholder="Rechercher un capteur ou une salle..." 
+          placeholder="Rechercher un capteur..." 
           value={search} 
-          onChange={setSearch} 
+          onChange={setSearch}
+          aria-label="Rechercher un capteur" 
         />
       </div>
 
       <div className="filter-sticky">
         <Filter categories={categories} onChange={setFilters} />
       </div>
+    </section>
 
+    <section className="data-section" aria-labelledby="data-title">
+      <h2 id="data-title" className="visually-hidden">Liste des capteurs</h2>
       <div className="table-container" style={{ marginTop: "2rem" }}>
         {capteursFiltres.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
@@ -236,9 +253,11 @@ export default function Capteurs() {
             }
           </div>
         ) : (
-          <Tableau columns={columns} data={capteursFiltres} />
+          <Tableau columns={columns} data={capteursFiltres} aria-label="Tableau des capteurs"/>
         )}
       </div>
-    </div>
+      </section>
+      </div>
+    </main>
   );
 }

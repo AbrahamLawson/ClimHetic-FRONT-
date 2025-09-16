@@ -8,7 +8,10 @@ export default function Searchbar({ placeholder = "Rechercher...", value, onChan
         <Search size={18} />
       </span>
       <input
-        type="text"
+        type="search"
+        aria-label="Rechercher"
+        tabIndex={0}
+        role="searchbox"
         placeholder={placeholder}
         value={value}
         onChange={e => onChange(e.target.value)}
