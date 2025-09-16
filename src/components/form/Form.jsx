@@ -8,7 +8,7 @@ export default function Form({ fields, onSubmit, submitLabel = "Valider" }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <form onSubmit={handleSubmit} className="form-container" role="form" aria-labelledby="modal-title">
       {fields.map((field) => (
         <div key={field.name} className="form-group">
           <label htmlFor={field.name} className="form-label">

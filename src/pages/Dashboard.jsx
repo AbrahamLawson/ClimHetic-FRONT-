@@ -104,40 +104,46 @@ export default function Dashboard() {
 const filteredData = data.filter((d) => d.status === "Success");
 
   return (
-    <div className="page-wrapper">
+    <main className="page-wrapper" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+      <div id="main-content" tabIndex={-1}>
       <h1 className="dashboard-title" style={{ marginBottom: "1.5rem" }}>Dashboard</h1>
     <div className="card-container">
+      <section className="statistics-section">
 {/* A FAIRE : changer la logique de recup des statcard avec les réelles datas */}
-      <div className="stat-cards-container">
-        <StatCard value={3} label="Salles" icon="house-wifi" />
+      <div className="stat-cards-container" aria-label="Section statistiques">
+        <StatCard value={3} label="Salles" icon="house-wifi" aria-label="Nombre de salles"/>
         {role !== "guest" && (
-          <StatCard value={alerts.length} label="Alertes" icon="siren" />
+          <StatCard value={alerts.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
         )}
         {role === "admin" && (
           <>
-            <StatCard value={45} label="Utilisateurs" icon="user" />
-            <StatCard value={12} label="Capteurs" icon="circle-gauge" />
+            <StatCard value={45} label="Utilisateurs" icon="user" aria-label="Nombre d'utilisateurs"/>
+            <StatCard value={12} label="Capteurs" icon="circle-gauge" aria-label="Nombre de capteurs"/>
           </>
         )}
       </div>
-
-      <Card title="Données capteurs" category="tableau" fullWidth>
-        <Tableau columns={columns} data={filteredData} />
+      </section>
+      <Card title="Données salles" category="tableau" aria-labelledby="data-heading" fullWidth>
+        <Tableau columns={columns} data={filteredData} aria-label="Tableau des salles" />
       </Card>
-
       <Card
         title="Température moyenne par bâtiment (H24 fictif)"
         category="graphiques"
-      >
+        aria-labelledby="data-graphs"
+        >
         <SimpleChart
           data={graphData}
           metrics={["Bat A", "Bat B", "Bat C"]}
           alertZone={{ min: 20, max: 25 }}
-        />
+          aria-label="Graphiques des salles"
+          />
       </Card>
 
       {role !== "guest" && (
-        <Card title="Alertes critiques" category="alertes">
+        <Card title="Alertes critiques" category="alertes" aria-labelledby="data-alert">
           <AlertList alerts={alerts} onAlertClick={handleAlertClick} />
         </Card>
       )}
@@ -147,5 +153,6 @@ const filteredData = data.filter((d) => d.status === "Success");
       )}
     </div>
     </div>
+    </main>
   );
 }

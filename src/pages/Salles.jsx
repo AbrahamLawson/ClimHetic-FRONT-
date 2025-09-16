@@ -245,9 +245,13 @@ export default function Salles() {
   }, [salles, search, filters]);
 
   return (
-    <div className="page-container page-wrapper">
+    <main className="page-container page-wrapper" tabIndex={-1}>
+      <div id="main-content" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
       <h1 className="salle-title">Salles</h1>
-      <div className="infos-pages">
+      <div className="infos-pages" aria-label="Informations salles">
       {/* A FAIRE : changer la value de statcard pour mettre le nb exact de salle */}
             <StatCard value={salles.length} label="Salles" icon="house-wifi" />
       {userRole === "admin" && (
@@ -284,6 +288,7 @@ export default function Salles() {
           }}
         />
       </div>
-    </div>
+      </div>
+    </main>
   );
 }

@@ -17,13 +17,11 @@ const ProtectedRoute = ({ children, requiredRole = null, redirectTo = '/login' }
       }
 
       try {
-        // Récupérer le profil utilisateur depuis Firestore
         const { user: profile, error } = await getUserProfile(user.uid);
         
         if (!error && profile) {
           setUserRole(profile.role);
           
-          // Vérifier si l'utilisateur a le rôle requis
           if (requiredRole && profile.role !== requiredRole) {
             setAccessDenied(true);
           }
@@ -42,7 +40,6 @@ const ProtectedRoute = ({ children, requiredRole = null, redirectTo = '/login' }
     checkUserRole();
   }, [user, requiredRole]);
 
-  // Affichage de chargement
   if (authLoading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -51,12 +48,10 @@ const ProtectedRoute = ({ children, requiredRole = null, redirectTo = '/login' }
     );
   }
 
-  // Utilisateur non connecté
   if (!user) {
     return <Navigate to={redirectTo} replace />;
   }
 
-  // Accès refusé (rôle insuffisant)
   if (accessDenied) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -79,7 +74,6 @@ const ProtectedRoute = ({ children, requiredRole = null, redirectTo = '/login' }
     );
   }
 
-  // Accès autorisé
   return children;
 };
 

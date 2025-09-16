@@ -35,13 +35,11 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  // Charger les utilisateurs depuis Firestore
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const { users: firestoreUsers, error } = await getAllUsers();
         if (!error && firestoreUsers) {
-          // Transformer les données pour le tableau
           const formattedUsers = firestoreUsers.map((user, index) => ({
             id: index + 1,
             uid: user.uid,
@@ -76,7 +74,6 @@ export default function Admin() {
     setMessage({ type: '', text: '' });
     
     try {
-      // Créer l'utilisateur dans Firebase avec le rôle spécifié
       const result = await createUser(values.email, values.password, values.nom, values.role);
       
       if (result.error) {
@@ -85,7 +82,6 @@ export default function Admin() {
           text: `Erreur lors de la création: ${result.error}` 
         });
       } else {
-        // Recharger la liste des utilisateurs depuis Firestore
         const { users: firestoreUsers, error: fetchError } = await getAllUsers();
         if (!fetchError && firestoreUsers) {
           const formattedUsers = firestoreUsers.map((user, index) => ({
@@ -103,7 +99,6 @@ export default function Admin() {
             type: 'warning', 
             text: 'Utilisateur créé avec succès ! Vous devez vous reconnecter pour continuer à administrer.' 
           });
-          // Rediriger vers la page de connexion après 3 secondes
           setTimeout(() => {
             navigate('/login');
           }, 3000);
@@ -121,7 +116,6 @@ export default function Admin() {
       });
     } finally {
       setLoading(false);
-      // Effacer le message après 5 secondes
       setTimeout(() => {
         setMessage({ type: '', text: '' });
       }, 5000);
@@ -157,29 +151,35 @@ export default function Admin() {
   }, [users, search, filters]);
 
   return (
-    <div className="page-container page-wrapper">
+    <main className="page-container page-wrapper" tabIndex={-1}>
+    
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+      <div id="main-content" tabIndex={-1}>
       <h1 className="salle-title">Gestion des utilisateurs</h1>
 
-      {/* Messages de notification */}
       {message.text && (
-        <div 
+        <div
+          role="alert"
+          aria-live="polite" 
           className={`notification ${message.type}`}
           style={{
             padding: '1rem',
             marginBottom: '1rem',
             borderRadius: '6px',
             backgroundColor: 
-              message.type === 'success' ? '#d4edda' :
-              message.type === 'error' ? '#f8d7da' :
-              message.type === 'warning' ? '#fff3cd' : '#e2e3e5',
+              message.type === 'success' ? 'var(--bg-success)' :
+              message.type === 'error' ? 'var(--bg-danger)' :
+              message.type === 'warning' ? 'var(--bg-warning)' : '#e2e3e5',
             color: 
-              message.type === 'success' ? '#155724' :
-              message.type === 'error' ? '#721c24' :
-              message.type === 'warning' ? '#856404' : '#383d41',
+              message.type === 'success' ? 'var(--success)' :
+              message.type === 'error' ? 'var(--danger)' :
+              message.type === 'warning' ? 'var(--warning)' : '#383d41',
             border: `1px solid ${
-              message.type === 'success' ? '#c3e6cb' :
-              message.type === 'error' ? '#f5c6cb' :
-              message.type === 'warning' ? '#ffeaa7' : '#d1ecf1'
+              message.type === 'success' ? 'var(--success)' :
+              message.type === 'error' ? 'var(--danger)' :
+              message.type === 'warning' ? 'var(--warning)' : '#d1ecf1'
             }`
           }}
         >
@@ -187,7 +187,9 @@ export default function Admin() {
         </div>
       )}
 
-      <div className="infos-pages">
+      <section aria-labelledby="stats-section">
+        <h2 id="stats-section" className="visually-hidden">Statistiques et actions</h2>
+        <div className="infos-pages" >
         <StatCard value={users.length} label="Utilisateurs" icon="user" />
 
         <FormModal
@@ -199,29 +201,36 @@ export default function Admin() {
           icon="user-plus"
           disabled={loading}
         />
-      </div>
+        </div>
+      </section>
+      <section aria-labelledby="search-section">
+        <h2 id="search-section" className="visually-hidden">Recherche et filtres</h2>
+        <div className="search-wrapper" style={{ marginTop: "1.5rem" }} aria-label="Recherche utilisateur">
+          <Searchbar
+            aria-label="Rechercher un utilisateur"
+            placeholder="Rechercher un utilisateur ou un email..."
+            value={search}
+            onChange={setSearch}
+          />
+        </div>
 
-      <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
-        <Searchbar
-          placeholder="Rechercher un utilisateur ou un email..."
-          value={search}
-          onChange={setSearch}
-        />
-      </div>
-
-      <div className="filter-sticky">
-        <Filter categories={categories} onChange={setFilters} />
-      </div>
-
+        <div className="filter-sticky" aria-label="Filtre caractéristiques utilisateurs">
+          <Filter categories={categories} onChange={setFilters} />
+        </div>
+      </section>
+      <section aria-labelledby="table-section">
+        <h2 id="table-section" className="visually-hidden">Liste des utilisateurs</h2>
       <div className="table-container" style={{ marginTop: "2rem" }}>
         {loadingUsers ? (
           <div className="loading-container">
             <p>Chargement des utilisateurs...</p>
           </div>
         ) : (
-          <Tableau columns={columns} data={filteredUsers} />
+          <Tableau aria-label="Tableau utilisateurs" columns={columns} data={filteredUsers} />
         )}
       </div>
-    </div>
+      </section>
+      </div>
+    </main>
   );
 }
