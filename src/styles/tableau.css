@@ -36,15 +36,16 @@
 }
 
 .tableau tbody tr:nth-child(odd) {
-  background-color: #fafafa; 
+  background-color: var(--second--tableau); 
 }
 
 .tableau tbody tr:nth-child(even) {
-  background-color: #ffffff; 
+  background-color: var(--body-tableau); 
 }
 
 .tableau tr:hover {
   background-color: #f1f1f1;
+  cursor: pointer;
 }
 
 .tableau td.status-cell {

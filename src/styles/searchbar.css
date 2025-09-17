@@ -6,7 +6,7 @@
   margin: 0 auto;
   border: 1px solid var(--line-color);
   border-radius: 6px;
-  background-color: #fff;
+  background-color: var(--bg--cards);
   padding: 0 0.5rem;
 }
 
@@ -24,7 +24,7 @@
   outline: none;
   padding: 0.5rem 0;
   font-size: 0.95rem;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
   color: var(--text-color);
   background-color: transparent;
 }
