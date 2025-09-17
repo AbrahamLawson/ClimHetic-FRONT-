@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { logout } from "../services/auth";
 import { User, LogOut } from "lucide-react";
+import { useContext } from "react";
+import { PreferencesContext } from "../contexts/PreferencesContext";
 
 export default function Navbar() {
   const { user } = useAuth();
+  const { darkMode, highContrast } = useContext(PreferencesContext);
 
   const handleLogout = async () => {
     await logout();
@@ -12,12 +15,18 @@ export default function Navbar() {
 
   const isLoggedIn = !!user;
 
+  const logoSrc = highContrast
+    ? "/assets/climhetic-complet_high-contrast.png"
+    : darkMode
+    ? "/assets/climhetic-complet_dark-mode.png"
+    : "/assets/climhetic-complet.png";
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
         <Link to="/">
           <img
-            src="/assets/climhetic-complet.png"
+            src={logoSrc}
             alt="Clim'Hetic logo"
             className="logo-img"
           />
@@ -29,7 +38,7 @@ export default function Navbar() {
           <>
             <span className="user-chip">
               <span className="user-icon">
-              <User size={16} aria-hidden="true" />
+                <User size={16} aria-hidden="true" />
               </span>
               <span className="user-chip-email">{user?.email}</span>
             </span>

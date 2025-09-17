@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
+import AccessibilityButton from "../components/AccessibilityButton";
 
 export default function DefaultLayout() {
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -19,7 +20,7 @@ export default function DefaultLayout() {
           <Outlet />
         </main>
       </div>
-
+        <AccessibilityButton />
       <Footer />
     </div>
   );
