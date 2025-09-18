@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../../styles/form.css";
 import { UserPlus, HouseWifi, CircleGauge, X } from "lucide-react";
 
-export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider" }) {
+export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider", buttonStyle }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [capteurs, setCapteurs] = useState([]);
@@ -76,7 +76,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   return (
     <div>
-      <button onClick={handleOpen} className="btn">
+      <button onClick={handleOpen} className="btn" style={buttonStyle}>
         {ctaLabel}
       </button>
 

@@ -293,6 +293,25 @@ button.logout-button:hover {
   border-color: var(--secondary);
 }
 
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+  border: 1.5px solid var(--danger);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-family: 'Manrope', sans-serif;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  transform: scale(1.05);
+}
+
 .infos-pages{
   display: flex;
   justify-content: space-between;

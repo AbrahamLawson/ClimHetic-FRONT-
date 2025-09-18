@@ -87,6 +87,41 @@ export const capteurService = {
     }
   },
 
+  /**
+   * Changer la salle d'un capteur
+   * @param {number} capteurId - ID du capteur à déplacer
+   * @param {number} nouvelleSalleId - ID de la nouvelle salle
+   */
+  async changerSalleCapteur(capteurId, nouvelleSalleId) {
+    try {
+      const response = await apiClient.put(`/admin/capteurs/${capteurId}/changer-salle`, {
+        nouvelle_salle_id: nouvelleSalleId
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(`Erreur lors du changement de salle: ${error.message}`);
+    }
+  },
+
+  /**
+   * Dissocier un capteur de sa salle
+   * @param {number} capteurId - ID du capteur à dissocier
+   */
+  async dissocierCapteur(capteurId) {
+    try {
+      const response = await apiClient.put(`/admin/capteurs/${capteurId}/dissocier`);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(`Erreur lors de la dissociation du capteur: ${error.message}`);
+    }
+  },
+
   // ===== CONSULTATION - Données des capteurs =====
 
   /**
@@ -138,6 +173,33 @@ export const capteurService = {
       return response.data;
     } catch (error) {
       throw new Error(`Erreur lors de la récupération des températures du capteur: ${error.message}`);
+    }
+  },
+
+  /**
+   * Récupérer la conformité de toutes les salles
+   * @param {number} limit - Nombre de mesures pour calculer la moyenne (défaut: 10)
+   */
+  async getConformiteSalles(limit = 10) {
+    try {
+      const response = await apiClient.get(`/capteurs/conformite?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération de la conformité des salles: ${error.message}`);
+    }
+  },
+
+  /**
+   * Récupérer les moyennes d'une salle spécifique
+   * @param {number} salleId - ID de la salle
+   * @param {number} limit - Nombre de mesures pour la moyenne (défaut: 10)
+   */
+  async getMoyennesBySalle(salleId, limit = 10) {
+    try {
+      const response = await apiClient.get(`/capteurs/salles/${salleId}/moyennes?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
     }
   }
 };
