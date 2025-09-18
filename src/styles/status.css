@@ -20,6 +20,11 @@
   color: var(--warning);
 }
 
+.status-alert {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
 .status-danger {
   background-color: var(--bg-danger);
   color: var(--danger);

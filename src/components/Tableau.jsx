@@ -8,7 +8,7 @@ export default function Tableau({ columns, data, onRowClick }) {
         <thead>
           <tr>
             {columns.map((col) => (
-              <th key={col.key}>{col.label}</th>
+              <th key={col.key} className={col.className || ''}>{col.label}</th>
             ))}
           </tr>
         </thead>
@@ -21,17 +21,18 @@ export default function Tableau({ columns, data, onRowClick }) {
               onClick={() => onRowClick && onRowClick(row)}
             >
               {columns.map((col) => {
+                const cellClassName = col.className || '';
                 if (col.type === "status") {
                   return (
-                    <td key={col.key} className="status-cell">
+                    <td key={col.key} className={`status-cell ${cellClassName}`}>
                       <Status value={row[col.key]} />
                     </td>
                   );
                 }
-                if (col.key === "actions" && typeof col.render === "function") {
-                  return <td key={col.key}>{col.render(row)}</td>;
+                if (typeof col.render === "function") {
+                  return <td key={col.key} className={cellClassName}>{col.render(row[col.key], row)}</td>;
                 }
-                return <td key={col.key}>{row[col.key]}</td>;
+                return <td key={col.key} className={cellClassName}>{row[col.key]}</td>;
               })}
             </tr>
           ))}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../../styles/form.css";
 import { UserPlus, HouseWifi, CircleGauge, X } from "lucide-react";
 
-export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider" }) {
+export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider", buttonStyle }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [capteurs, setCapteurs] = useState([]);
@@ -41,6 +41,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const data = capteurs.length > 0 ? { ...formData, capteurs } : formData;
     onSubmit?.(data);
     setOpen(false);
@@ -74,7 +75,8 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   return (
     <div>
-      <button onClick={handleOpen} className="btn" tabIndex={0}>
+      <button onClick={handleOpen} className="btn" style={buttonStyle} tabIndex={0}>
+
         {ctaLabel}
       </button>
 
@@ -153,6 +155,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                         onChange={(e) => handleChange(field.name, e.target.value)}
                       >
                         {field.options.map((option) => {
+
                           const optionValue = typeof option === 'object' ? option.value : option;
                           const optionLabel = typeof option === 'object' ? option.label : 
                             option.charAt(0).toUpperCase() + option.slice(1);
