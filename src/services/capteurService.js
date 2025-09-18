@@ -1,14 +1,12 @@
 import axios from 'axios';
 import API_CONFIG from '../config/api';
 
-// Instance axios configurée
 const apiClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   headers: API_CONFIG.DEFAULT_HEADERS,
   timeout: API_CONFIG.TIMEOUT,
 });
 
-// Intercepteur pour gérer les erreurs globalement
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -17,12 +15,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const capteurService = {
-  // ===== ADMIN - Gestion des capteurs =====
-  
-  /**
-   * Récupérer tous les capteurs avec leurs statistiques
-   */
+export const capteurService = {  
   async getAllCapteurs() {
     try {
       const response = await apiClient.get('/admin/capteurs');
@@ -122,11 +115,6 @@ export const capteurService = {
     }
   },
 
-  // ===== CONSULTATION - Données des capteurs =====
-
-  /**
-   * Récupérer toutes les salles actives
-   */
   async getSalles() {
     try {
       const response = await apiClient.get('/capteurs/salles');
@@ -201,6 +189,7 @@ export const capteurService = {
     } catch (error) {
       throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
     }
+
   }
 };
 

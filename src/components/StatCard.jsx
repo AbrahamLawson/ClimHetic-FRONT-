@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/statcard.css";
-import { User, HouseWifi, CircleGauge,Siren } from "lucide-react";
+import { User, HouseWifi, CircleGauge,Siren, CircleX, CircleCheck,} from "lucide-react";
 
 export default function StatCard({ value, label, icon, type }) {
   const renderIcon = () => {
@@ -21,13 +21,23 @@ export default function StatCard({ value, label, icon, type }) {
         break;
       case "circle-gauge":
         IconComponent = CircleGauge;
-        bgColor = "var(--bg-success)";
-        iconColor = "var(--success)";
+        bgColor = "var(--bg-active)";
+        iconColor = "var(--active)";
         break;
-        case "siren":
+      case "siren":
         IconComponent = Siren;
         bgColor = "var(--bg-danger)";
         iconColor = "var(--danger)";
+        break;
+      case "circle-x":
+        IconComponent = CircleX;
+        bgColor = "var(--bg-inactive)";
+        iconColor = "var(--inactive)";
+        break;
+      case "circle-check":
+        IconComponent = CircleCheck;
+        bgColor = "var(--bg-success)";
+        iconColor = "var(--success)";
         break;
       default:
         return null;

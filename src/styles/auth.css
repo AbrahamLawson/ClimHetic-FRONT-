@@ -3,13 +3,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6a4c93 0%, #8e44ad 100%);
+  background: linear-gradient(135deg, var(--primary-light) 0%,var(--primary-dark) 50%, var(--active)100%);
   position: relative;
 }
 
-
 .auth-container {
-  background: white;
+  background: var(--bg--cards);
   padding: 2.5rem;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(106, 76, 147, 0.3);
@@ -23,20 +22,28 @@
 .auth-container::before {
   content: '';
   position: absolute;
-  top: -2rem;
+  top: -0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
+  width: 145px;
   height: 80px;
-  background: url('/assets/climhetic-complet.png') center/contain no-repeat;
+  background: url('/assets/climhetic-complet.png') no-repeat center/contain;
   z-index: 2;
+}
+
+body.dark-mode .auth-container::before {
+  background-image: url('/assets/climhetic-complet_dark-mode.png');
+}
+
+body.high-contrast .auth-container::before {
+  background-image: url('/assets/climhetic-complet_high-contrast.png');
 }
 
 .auth-container h2 {
   text-align: center;
   margin-bottom: 1.5rem;
   margin-top: 1rem;
-  color: #6a4c93;
+  color: var(--primary-light);
   font-size: 1.8rem;
   font-weight: 600;
 }
@@ -58,13 +65,13 @@
 }
 
 .auth-divider span {
-  background: white;
+  background: var(--bg--cards);
   padding: 0 1rem;
   color: #666;
   font-size: 0.9rem;
 }
 
-.google-auth-button {
+/* .google-auth-button {
   width: 100%;
   padding: 12px;
   border: 2px solid #e0e0e0;
@@ -78,9 +85,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
+} */
 
-.google-auth-button:hover {
+/* .google-auth-button:hover {
   border-color: #4285f4;
   background: #f8f9ff;
 }
@@ -88,7 +95,7 @@
 .google-auth-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
+} */
 
 .auth-switch {
   text-align: center;
@@ -98,7 +105,7 @@
 .link-button {
   background: none;
   border: none;
-  color: #6a4c93;
+  color: var(--primary-dark);
   text-decoration: underline;
   cursor: pointer;
   font-size: inherit;
@@ -109,24 +116,23 @@
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
+  background: var(--bg-danger);
+  color: var(--danger);
   padding: 12px;
   border-radius: 6px;
   margin-bottom: 1rem;
-  border: 1px solid #fcc;
+  border: 1px solid var(--danger);
 }
 
 .success-message {
-  background: #efe;
-  color: #363;
+  background: var(--bg-success);
+  color: var(--success);
   padding: 12px;
   border-radius: 6px;
   margin-bottom: 1rem;
-  border: 1px solid #cfc;
+  border: 1px solid var(--success);
 }
 
-/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -141,7 +147,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg--cards);
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
@@ -172,7 +178,6 @@
   background: #f0f0f0;
 }
 
-/* Loading styles */
 .loading-container {
   display: flex;
   align-items: center;
@@ -183,10 +188,9 @@
 .loading-spinner {
   padding: 2rem;
   font-size: 1.2rem;
-  color: #6a4c93;
+  color: var(--primary-dark);
 }
 
-/* Navbar auth styles */
 .user-email {
   margin-right: 1rem;
   color: #666;
@@ -194,7 +198,7 @@
 }
 
 .logout-button {
-  background: #6a4c93;
+  background: var(--primary-dark);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -205,5 +209,7 @@
 }
 
 .logout-button:hover {
-  background: #8e44ad;
+  background: white;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }

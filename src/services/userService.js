@@ -16,16 +16,15 @@ export const createUserProfile = async (uid, userData) => {
   }
 };
 
-// Récupérer le profil utilisateur depuis Firestore
+// Récupérer un profil utilisateur
 export const getUserProfile = async (uid) => {
   try {
-    const userRef = doc(db, 'users', uid);
-    const userSnap = await getDoc(userRef);
+    const userDoc = await getDoc(doc(db, 'users', uid));
     
-    if (userSnap.exists()) {
-      return { user: userSnap.data(), error: null };
+    if (userDoc.exists()) {
+      return { user: userDoc.data(), error: null };
     } else {
-      return { user: null, error: 'Profil utilisateur non trouvé' };
+      return { user: null, error: 'Utilisateur non trouvé' };
     }
   } catch (error) {
     return { user: null, error: error.message };

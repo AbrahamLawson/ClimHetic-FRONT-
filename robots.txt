@@ -1,0 +1,15 @@
+User-agent: *
+
+Allow: /
+Allow: /login
+Allow: /dashboard
+Allow: /salles
+Allow: /ressources
+
+Disallow: /admin
+Disallow: /alertes
+Disallow: /capteurs
+
+Disallow: /api/
+Disallow: /config/
+Disallow: /services/

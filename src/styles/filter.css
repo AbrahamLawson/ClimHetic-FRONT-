@@ -4,7 +4,7 @@
   gap: 1rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--line-color);
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .filter-dropdown {
@@ -12,8 +12,9 @@
 }
 
 .filter-trigger {
-  background: #fff;
+  background: var(--bg--cards);
   border: 1px solid var(--line-color);
+  color: var(--primary-dark);
   border-radius: 6px;
   padding: 0.4rem 0.75rem;
   font-size: 0.9rem;
@@ -23,7 +24,7 @@
   gap: 0.4rem;
   font-weight: 500;
   transition: border-color 0.2s ease;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .filter-trigger:hover {
@@ -38,7 +39,7 @@
   position: absolute;
   top: calc(100% + 0.3rem);
   left: 0;
-  background: #fff;
+  background: var(--bg--cards);
   border: 1px solid var(--line-color);
   border-radius: 6px;
   padding: 0.75rem;
@@ -46,7 +47,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: none;
   z-index: 20;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .filter-dropdown:hover .filter-menu {
@@ -77,7 +78,7 @@
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .filter-sticky {

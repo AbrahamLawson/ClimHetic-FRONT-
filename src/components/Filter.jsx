@@ -36,6 +36,7 @@ export default function Filter({ categories, onChange }) {
                 <label key={opt.value} className="filter-option">
                   <input
                     type="checkbox"
+                    tabIndex={0}
                     checked={(selectedValues[cat.title] || []).includes(opt.value)}
                     onChange={() => handleToggle(cat.title, opt.value)}
                   />

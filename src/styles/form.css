@@ -60,11 +60,13 @@
 .form-input,
 .form-select {
   border: 1px solid var(--line-color);
+  background-color: var(--bg--cards);
+  color: var(--text-color);
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
   outline: none;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .form-input:focus,
@@ -75,21 +77,22 @@
 
 .form-button {
   background-color: var(--primary-dark);
-  color: #fff;
+  color: var(--bg--cards);
   font-weight: 600;
   padding: 0.6rem 1rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
   margin-bottom: 1rem; 
   width: 100%;
 }
 
 .form-button:hover {
-  background-color: var(--secondary);
-  transform: scale(1.02);
+  background-color: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }
 
 .modal-overlay {
@@ -104,13 +107,13 @@
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--bg--cards);
   border-radius: 12px;
   padding: 2rem;
   width: 400px;
   max-width: 90%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .modal-header {
@@ -127,7 +130,7 @@
   border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .modal-header-wrapper {

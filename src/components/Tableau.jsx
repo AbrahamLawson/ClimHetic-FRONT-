@@ -16,6 +16,7 @@ export default function Tableau({ columns, data, onRowClick }) {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
+              tabIndex={0}
               className={onRowClick ? "clickable-row" : ""}
               onClick={() => onRowClick && onRowClick(row)}
             >
