@@ -45,9 +45,13 @@ jobs:
           # Cloner ou mettre à jour le code
           if [ -d ".git" ]; then
             echo "📥 Mise à jour du code..."
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
           else
-            echo "📥 Clonage du projet..."
+            echo "📥 Nettoyage et clonage du projet..."
+            rm -rf *
+            rm -rf .*
             git clone https://github.com/${{ github.repository }}.git .
           fi
           
@@ -60,6 +64,10 @@ jobs:
             sudo systemctl start docker
             sudo systemctl enable docker
           fi
+          
+          # Vérifier que les fichiers sont présents
+          echo "🔍 Vérification des fichiers..."
+          ls -la deployment/
           
           # Arrêter l'ancienne version
           echo "🛑 Arrêt de l'ancienne version..."
