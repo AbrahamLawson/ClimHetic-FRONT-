@@ -44,12 +44,12 @@ npm install
 
 ```javascript
 const firebaseConfig = {
-  apiKey: "votre-api-key",
-  authDomain: "votre-projet.firebaseapp.com",
-  projectId: "votre-projet-id",
-  storageBucket: "votre-projet.appspot.com",
+  apiKey: "AIzaSyDZ9X6zQ8XqZzQ8XqZzQ8XqZzQ8XqZzQ8Xq",
+  authDomain: "climhetic-frontend.firebaseapp.com",
+  projectId: "climhetic-frontend",
+  storageBucket: "climhetic-frontend.appspot.com",
   messagingSenderId: "123456789",
-  appId: "votre-app-id"
+  appId: "1:123456789:web:123456789"
 };
 ```
 
@@ -86,9 +86,45 @@ src/
 ├── services/          # Services (auth.js)
 ├── config/            # Configuration (Firebase)
 ├── pages/             # Pages de l'application
-├── layouts/           # Layouts (mise en page)
-├── routes/            # Configuration des routes
-└── styles/            # Fichiers CSS
+├── layouts/         ### Sur serveur (production)
+```
+
+## Déploiement
+
+```bash
+# 1. Transférer les fichiers
+./upload.sh
+
+# 2. Se connecter au serveur
+ssh abraham@admin-hetic.arcplex.tech -p 2326
+cd climhetic-front
+
+# 3. Déployer
+./deploy.sh
+```
+
+## Documentation
+
+- **[Guide Débutant](deployment/GUIDE-DEBUTANT.md)** - Instructions détaillées pour déployer
+- **[Dossier Deployment](deployment/)** - Tous les fichiers de déploiement
+- **Accès production** : http://09.hetic.arcplex.dev
+
+## Structure du projet
+
+```
+ClimHetic-FRONT/
+├── src/                    # Code source React
+├── public/                 # Assets statiques
+├── deployment/             # Fichiers de déploiement
+│   ├── Dockerfile         # Configuration Docker
+│   ├── docker-compose.yml # Lance l'application
+│   ├── deploy.sh          # Script de déploiement
+│   ├── upload.sh          # Transfert vers serveur
+│   ├── nginx.conf         # Configuration serveur web
+│   └── GUIDE-DEBUTANT.md  # Guide détaillé
+├── deploy.sh              # Script principal (appelle deployment/)
+├── upload.sh              # Script principal (appelle deployment/)
+└── README.md              # Ce fichier
 ```
 
 ## Routes
