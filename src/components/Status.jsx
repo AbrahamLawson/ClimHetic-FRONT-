@@ -1,8 +1,30 @@
 import React from "react";
-import { Check, TriangleAlert, Skull } from "lucide-react";
+import { Check, TriangleAlert, AlertTriangle, Skull } from "lucide-react";
 import "../styles/status.css";
 
 const statusConfig = {
+  // Nouveaux statuts avec les 4 niveaux souhaités
+  Confortable: {
+    label: "Confortable",
+    className: "status-success",
+    Icon: Check,
+  },
+  Attention: {
+    label: "Attention",
+    className: "status-warning",
+    Icon: TriangleAlert,
+  },
+  Alerte: {
+    label: "Alerte",
+    className: "status-alert",
+    Icon: AlertTriangle,
+  },
+  Danger: {
+    label: "Danger",
+    className: "status-danger",
+    Icon: Skull,
+  },
+  // Anciens statuts pour rétrocompatibilité
   Success: {
     label: "Confortable",
     className: "status-success",
@@ -13,10 +35,10 @@ const statusConfig = {
     className: "status-warning",
     Icon: TriangleAlert,
   },
-  Danger: {
-    label: "Danger",
-    className: "status-danger",
-    Icon: Skull,
+  Info: {
+    label: "Attention",
+    className: "status-warning",
+    Icon: TriangleAlert,
   },
 };
 

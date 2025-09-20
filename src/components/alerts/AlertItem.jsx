@@ -7,8 +7,10 @@ export default function AlertItem({ alert, onClick }) {
 
   return (
     <div
+      role="alert"
       className={`alert-item alert-${typeClass} ${readClass}`}
       onClick={() => onClick(alert)}
+      tabIndex={0}
       style={{ cursor: "pointer" }}
     >
       <div className="alert-left">

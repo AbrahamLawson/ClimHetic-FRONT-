@@ -19,7 +19,7 @@ export default function Gauge({ metric, value }) {
         segmentColors={colors}
         needleColor="#345243"
         currentValueText={`${value}${unit}`}
-        textColor="#333"
+        textColor="Var(--gauge--text)"
         height={200}
         width={300}
       />

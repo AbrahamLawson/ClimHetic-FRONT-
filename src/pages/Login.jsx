@@ -16,16 +16,24 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
+    <main className="auth-page" aria-labelledby="auth-form" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+
+      <div id="main-content" tabIndex={-1}>
+      <div className="auth-container" aria-label="Formulaire d'authentification">
+      <section className="auth-section">
         {error && (
-          <div className="error-message">
+          <div role="alert" aria-live="polite" className="error-message">
             {error}
           </div>
         )}
         
-        <LoginForm onSuccess={handleSuccess} onError={handleError} />
+        <LoginForm onSuccess={handleSuccess} onError={handleError} aria-label="Formulaire de connexion"/>
+      </section>
       </div>
-    </div>
+      </div>
+    </main>
   );
 }

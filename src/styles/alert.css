@@ -10,9 +10,9 @@
   padding: 0.9rem 1rem;
   border-radius: 8px;
   border: 1px solid var(--line-color);
-  background-color: #fff;
+  background-color: var(--bg--cards);
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
   flex-wrap: wrap; 
   gap: 0.75rem;
   transition: all 0.2s ease-in-out;
@@ -108,7 +108,7 @@
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: var(--bg--cards);
   border-radius: 8px;
   border: 1px solid var(--line-color);
   padding: 1.5rem;
@@ -164,11 +164,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .modal-actions button:hover {
-  background-color: white;
+  background-color: var(--bg--cards);
   color: var(--primary-dark);
   border: 1px solid var(--primary-dark);
 }

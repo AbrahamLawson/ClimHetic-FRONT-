@@ -9,7 +9,12 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="notfound-content " style={{ textAlign: "center", padding: "6rem" }}>
+    <main className="notfound-content " style={{ textAlign: "center", padding: "6rem" }} tabIndex={-1} aria-labelledby="notfound-title">
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+
+      <div id="main-content" tabIndex={-1}>
       <div className="notfound-icon">
         <CircleX size={75} color="var(--inactive)" />
       </div>
@@ -29,6 +34,7 @@ export default function NotFound() {
       <button className="btn" onClick={() => navigate("/dashboard")}>
         Retour au Dashboard
       </button>
-    </div>
+      </div>
+    </main>
   );
 }

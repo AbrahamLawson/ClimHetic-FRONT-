@@ -2,12 +2,11 @@ import { useState } from "react";
 import "../../styles/form.css";
 import { UserPlus, HouseWifi, CircleGauge, X } from "lucide-react";
 
-export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider" }) {
+export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, submitLabel = "Valider", buttonStyle }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [capteurs, setCapteurs] = useState([]);
 
-  // Initialiser les valeurs par défaut quand le modal s'ouvre
   const handleOpen = () => {
     const defaultValues = {};
     fields.forEach(field => {
@@ -42,7 +41,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // N'ajouter le champ capteurs que s'il y en a
+
     const data = capteurs.length > 0 ? { ...formData, capteurs } : formData;
     onSubmit?.(data);
     setOpen(false);
@@ -76,7 +75,8 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
   return (
     <div>
-      <button onClick={handleOpen} className="btn">
+      <button onClick={handleOpen} className="btn" style={buttonStyle} tabIndex={0}>
+
         {ctaLabel}
       </button>
 
@@ -95,7 +95,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
               <h2 className="modal-header">{title}</h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="form-wrapper">
+            <form onSubmit={handleSubmit} className="form-wrapper" role="form" aria-labelledby="modal-title">
               {fields.map((field) => {
                 if (field.type === "array") {
                   return (
@@ -114,6 +114,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                           <input
                             type="text"
                             className="form-input"
+                            tabIndex={0}
                             placeholder={field.placeholder}
                             value={capteur}
                             onChange={(e) =>
@@ -132,6 +133,7 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                         </div>
                       ))}
                       <button
+                        tabIndex={0}
                         type="button"
                         onClick={handleAddCapteur}
                         className="btn-secondary"
@@ -146,13 +148,14 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                 if (field.type === "select") {
                   return (
                     <div key={field.name} className="form-group">
-                      <label className="form-label">{field.label}</label>
+                      <label htmlFor={field.name} className="form-label">{field.label}</label>
                       <select
                         className="form-input"
                         value={formData[field.name] || (typeof field.options[0] === 'object' ? field.options[0].value : field.options[0])}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                       >
                         {field.options.map((option) => {
+
                           const optionValue = typeof option === 'object' ? option.value : option;
                           const optionLabel = typeof option === 'object' ? option.label : 
                             option.charAt(0).toUpperCase() + option.slice(1);
@@ -170,10 +173,11 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
 
                 return (
                   <div key={field.name} className="form-group">
-                    <label className="form-label">{field.label}</label>
+                    <label htmlFor={field.name} className="form-label">{field.label}</label>
                     <input
                       type={field.type}
                       className="form-input"
+                      tabIndex={0}
                       placeholder={field.placeholder}
                       value={formData[field.name] || ""}
                       onChange={(e) =>
@@ -184,12 +188,14 @@ export default function FormModal({ title, fields, onSubmit, ctaLabel, icon, sub
                 );
               })}
 
-              <button type="submit" className="form-button" style={{ marginBottom: 0, marginTop: "0.5rem" }}>
+              <button type="submit" className="form-button" style={{ marginBottom: 0, marginTop: "0.5rem" }} tabIndex={0}>
                 {submitLabel}
               </button>
             </form>
 
             <button
+              aria-label="Fermer le formulaire"
+              tabIndex={0}
               onClick={() => setOpen(false)}
               className="btn-secondary"
               type="button"

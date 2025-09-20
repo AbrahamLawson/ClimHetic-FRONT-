@@ -38,7 +38,10 @@ export default function LoginForm({ onSuccess, onError }) {
     <div className="login-form">
       <h2>Connexion</h2>
       
-      <Form 
+      <Form
+        role="form" 
+        aria-labelledby="modal-title"
+        tabIndex={0}
         fields={loginFields}
         onSubmit={handleLogin}
         submitLabel={loading ? "Connexion..." : "Se connecter"}

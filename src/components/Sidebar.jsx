@@ -27,6 +27,7 @@ export default function Sidebar() {
         key={link.to}
         to={link.to}
         className={({ isActive }) => (isActive ? "active-link" : "")}
+        tabIndex={0}
       >
         <span className="sidebar-icon">{link.icon}</span>
         <span>{link.label}</span>
@@ -35,14 +36,14 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-links">
+      <nav className="sidebar-links" role="navigation" aria-label="Entrées principales">
         {renderLinks(publicLinks)}
         {isAdmin && <hr className="sidebar-separator" />}
         {isAdmin && renderLinks(adminLinks)}
         
         <hr className="sidebar-separator" />
         {renderLinks(otherLinks)}
-      </div>
+      </nav>
     </aside>
   );
 }

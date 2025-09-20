@@ -13,13 +13,13 @@
   fill: var(--primary-dark); 
   text-anchor: middle;
   dominant-baseline: middle;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 .gauge-wrapper text {
   font-size: 0.85rem; 
-  fill: #555;          
-  font-family: 'Manrope', sans-serif;
+  fill: var(--gauge--text);          
+  font-family: var(--font-body);
 }
 
 .gauge-wrapper .segment {

@@ -4,7 +4,11 @@ export default function Ressources() {
   const { isAuthenticated, isAdmin } = useAuth();
 
   return (
-    <div className="page-wrapper">
+    <main className="page-wrapper" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+      <div id="main-content" tabIndex={-1}>
       <h1>Ressources</h1>
       
       <div className="resources-content">
@@ -51,6 +55,7 @@ export default function Ressources() {
         
         {}
       </div>
-    </div>
+      </div>
+    </main>
   );
 }

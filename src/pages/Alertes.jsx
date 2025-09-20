@@ -78,25 +78,36 @@ export default function Alertes() {
   });
 
   return (
-    <div className="page-wrapper">
+    <main className="page-wrapper" tabIndex={-1}>
+      <a href="#main-content" className="skip-link visually-hidden">
+        Aller au contenu principal
+      </a>
+      <div id="main-content" tabIndex={-1}>
       <h1 className="page-title" style={{ marginBottom: "1.5rem" }}>
         Alertes
       </h1>
-
+    <section aria-labelledby="stats-section">
+      <h2 id="stats-section" className="visually-hidden">Statistiques</h2>
       <div className="stat-cards-container" style={{ marginBottom: "2rem" }}>
-        <StatCard value={alerts.length} label="Alertes" icon="siren" />
+        <StatCard aria-label="Informations nombre d'alertes" value={alerts.length} label="Alertes" icon="siren" />
       </div>
-
+    </section>
+    <section aria-labelledby="filter-section">
+      <h2 id="search-section" className="visually-hidden">Filtres</h2>
       <div className="filter-sticky" style={{ marginBottom: "1.5rem" }}>
-      <Filter
-        categories={categories} onChange={setFilters}/>
+      <Filter 
+      aria-label="Filtrer des alertes" 
+      categories={categories} 
+      onChange={setFilters}
+      />
       </div>
-
+    </section>
       <AlertList alerts={filteredAlerts} onAlertClick={handleAlertClick} />
 
       {selectedAlert && (
         <AlertModal alert={selectedAlert} onClose={handleCloseModal} />
       )}
-    </div>
+      </div>
+    </main>
   );
 }

@@ -8,7 +8,7 @@
 }
 
 .auth-container {
-  background: white;
+  background: var(--bg--cards);
   padding: 2.5rem;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(106, 76, 147, 0.3);
@@ -29,6 +29,14 @@
   height: 80px;
   background: url('/assets/climhetic-complet.png') no-repeat center/contain;
   z-index: 2;
+}
+
+body.dark-mode .auth-container::before {
+  background-image: url('/assets/climhetic-complet_dark-mode.png');
+}
+
+body.high-contrast .auth-container::before {
+  background-image: url('/assets/climhetic-complet_high-contrast.png');
 }
 
 .auth-container h2 {
@@ -57,7 +65,7 @@
 }
 
 .auth-divider span {
-  background: white;
+  background: var(--bg--cards);
   padding: 0 1rem;
   color: #666;
   font-size: 0.9rem;
@@ -139,7 +147,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg--cards);
   padding: 2rem;
   border-radius: 12px;
   width: 90%;

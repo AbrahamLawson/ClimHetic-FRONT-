@@ -7,7 +7,7 @@ export default function AlertModal({ alert, onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content" tabIndex={-1} role="dialog" aria-modal="true">
         <h2 className="modal-title centered">{alert.title}</h2>
 
         <div className="modal-body">
@@ -27,7 +27,7 @@ export default function AlertModal({ alert, onClose }) {
         </div>
         <Status value={alert.type} />
         <div className="modal-actions centered">
-          <button onClick={onClose}>Fermer</button>
+          <button onClick={onClose} className="modal-close" tabIndex={0} aria-label="Fermer">Fermer</button>
         </div>
       </div>
     </div>
