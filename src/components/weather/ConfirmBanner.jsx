@@ -1,4 +1,4 @@
-import "../../../styles/weather.css";
+import "../../styles/weather.css";
 
 export default function ConfirmBanner({ locLabel, accuracy, onConfirm, onSearch }) {
   return (

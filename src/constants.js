@@ -4,5 +4,5 @@ export const OWM_GEO_DIRECT = "https://api.openweathermap.org/geo/1.0/direct";
 export const OWM_GEO_REVERSE = "https://api.openweathermap.org/geo/1.0/reverse";
 
 export const COOKIE_NAME = "preferredLocation";
-export const POLL_MS = 10 * 60 * 1000; // 10 minutes
-export const TEMP_DELTA = 1;           // ±1°C
+export const POLL_MS = 10 * 60 * 1000;
+export const TEMP_DELTA = 1;           

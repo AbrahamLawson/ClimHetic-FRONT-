@@ -11,18 +11,17 @@ import Tableau from "../components/Tableau";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";
-import { WeatherProvider } from "../features/weather/context/WeatherContext";
-import WeatherCard from "../features/weather/WeatherCard";
+import { WeatherProvider } from "../contexts/WeatherContext";
+import WeatherCard from "../components/weather/WeatherCard";
 import "../styles/statcard.css";
 import "../styles/global.css";
 
 export default function Dashboard() {
   const { user, isAuthenticated, isAdmin, userProfile } = useAuth();
   const navigate = useNavigate();
-  
-  // Détermine le rôle basé sur l'utilisateur connecté
+
   const role = !isAuthenticated ? "guest" : (isAdmin ? "admin" : "user");
-  // Colonnes et data pour le tableau
+
   const columns = [
     { key: "id", label: "ID" },
     { key: "salle", label: "Salle" },
@@ -33,7 +32,6 @@ export default function Dashboard() {
     { key: "status", label: "Etat", type: "status" },
   ];
 
-  // Génère data fictive pour le tableau
   const data = Array.from({ length: 25 }, (_, i) => ({
     id: i + 1,
     salle: `Salle ${i + 1}`,
@@ -44,7 +42,6 @@ export default function Dashboard() {
     status: i % 5 === 0 ? "Warning" : "Success",
   }));
 
-  // data fictives H24 pour le graphique principal
   const graphData = Array.from({ length: 24 }, (_, i) => ({
     time: `${i}h`,
     "Bat A": 22 + Math.round(Math.random() * 3),
@@ -52,7 +49,6 @@ export default function Dashboard() {
     "Bat C": 23 + Math.round(Math.random() * 2),
   }));
 
-  // fake données alertes à remplacer par nos vraies alertes
   const [alerts, setAlerts] = useState([
     {
       room: "Salle 101",
@@ -102,30 +98,35 @@ export default function Dashboard() {
     setSelectedAlert(null);
   };
 
- 
-const filteredData = data.filter((d) => d.status === "Success");
+  const filteredData = data.filter((d) => d.status === "Success");
 
   return (
     <div className="page-wrapper">
       <h1 className="dashboard-title" style={{ marginBottom: "1.5rem" }}>Dashboard</h1>
-    <div className="card-container">
-{/* A FAIRE : changer la logique de recup des statcard avec les réelles datas */}
-      <div className="stat-cards-container">
-        <StatCard value={3} label="Salles" icon="house-wifi" />
-        {role !== "guest" && (
-          <StatCard value={alerts.length} label="Alertes" icon="siren" />
-        )}
-        {role === "admin" && (
-          <>
-            <StatCard value={45} label="Utilisateurs" icon="user" />
-            <StatCard value={12} label="Capteurs" icon="circle-gauge" />
-          </>
-        )}
-        <WeatherProvider>
-          <Card title="Météo locale" category="meteo">
-            <WeatherCard />
-          </Card>
-        </WeatherProvider>
+
+      <div className="top-dashboard">
+        <div className="stats-column">
+          <div className="stat-cards-grid">
+            <StatCard value={3} label="Salles" icon="house-wifi" />
+            {role !== "guest" && (
+              <StatCard value={alerts.length} label="Alertes" icon="siren" />
+            )}
+            {role === "admin" && (
+              <>
+                <StatCard value={45} label="Utilisateurs" icon="user" />
+                <StatCard value={12} label="Capteurs" icon="circle-gauge" />
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="weather-column">
+          <WeatherProvider>
+            <Card title="Météo locale" category="meteo">
+              <WeatherCard />
+            </Card>
+          </WeatherProvider>
+        </div>
       </div>
 
       <Card title="Données capteurs" category="tableau" fullWidth>
@@ -152,7 +153,6 @@ const filteredData = data.filter((d) => d.status === "Success");
       {selectedAlert && (
         <AlertModal alert={selectedAlert} onClose={handleCloseModal} />
       )}
-    </div>
     </div>
   );
 }

@@ -1,30 +1,4 @@
 import { useAuth } from "../contexts/AuthContext";
-import Card from "../components/Card";
-
-import { WeatherProvider, useWeatherContext } from "../features/weather/context/WeatherContext";
-import WeatherCard from "../features/weather/WeatherCard";
-
-function WeatherToolbar() {
-  const { openSearch, clearPlace, locLabel } = useWeatherContext();
-
-  return (
-    <div style={{ display: "flex", gap: 8, alignItems: "center", margin: "12px 0" }}>
-      <span style={{ opacity: 0.8 }}>Lieu actuel : {locLabel}</span>
-      <button
-        onClick={openSearch}
-        style={{ padding: "6px 10px", border: "1px solid #444", borderRadius: 8, background: "#2b2b2b", color: "#f0f0f0", cursor: "pointer" }}
-      >
-        Changer de lieu
-      </button>
-      <button
-        onClick={clearPlace}
-        style={{ padding: "6px 10px", border: "1px solid #444", borderRadius: 8, background: "transparent", color: "#f0f0f0", cursor: "pointer" }}
-      >
-        Réinitialiser
-      </button>
-    </div>
-  );
-}
 
 export default function Ressources() {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -76,20 +50,6 @@ export default function Ressources() {
         )}
         
         {}
-        <div className="resource-section">
-          <h2>Météo locale</h2>
-
-          {}
-          <WeatherProvider>
-            {}
-            <WeatherToolbar />
-
-            {}
-            <Card title="Météo locale" category="meteo">
-              <WeatherCard />
-            </Card>
-          </WeatherProvider>
-        </div>
       </div>
     </div>
   );

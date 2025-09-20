@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import {LayoutDashboard, HouseWifi, Siren, UserStar, BookOpenText, CircleGauge,} from "lucide-react";
+import {LayoutDashboard, HouseWifi, Siren, UserStar, BookOpenText, CircleGauge, Settings} from "lucide-react";
 
 export default function Sidebar() {
   const { isAdmin } = useAuth();
@@ -13,6 +13,7 @@ export default function Sidebar() {
   const adminLinks = [
     { to: "/alertes", label: "Alertes", icon: <Siren size={18} /> },
     { to: "/capteurs", label: "Capteurs", icon: <CircleGauge size={18} /> },
+    {to: "parametres", label: "Paramètres", icon: <Settings size={18} /> },
     { to: "/admin", label: "Admin", icon: <UserStar size={18} /> },
   ];
 
