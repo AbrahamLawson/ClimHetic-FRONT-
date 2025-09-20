@@ -87,10 +87,18 @@ src/
 ├── config/            # Configuration (Firebase)
 ├── pages/             # Pages de l'application
 ├── layouts/         ### Sur serveur (production)
+
+#### Méthode automatique (Recommandée)
+```bash
+# 1. Pousser sur GitHub
+git add .
+git commit -m "Mes changements"
+git push
+
+# 2. L'app se déploie automatiquement ! 
 ```
 
-## Déploiement
-
+#### Méthode manuelle (Alternative)
 ```bash
 # 1. Transférer les fichiers
 ./upload.sh
@@ -105,6 +113,7 @@ cd climhetic-front
 
 ## Documentation
 
+- **[GitHub Actions](deployment/GITHUB-ACTIONS.md)** - Déploiement automatique (Recommandé)
 - **[Guide Débutant](deployment/GUIDE-DEBUTANT.md)** - Instructions détaillées pour déployer
 - **[Dossier Deployment](deployment/)** - Tous les fichiers de déploiement
 - **Accès production** : http://09.hetic.arcplex.dev
@@ -121,7 +130,10 @@ ClimHetic-FRONT/
 │   ├── deploy.sh          # Script de déploiement
 │   ├── upload.sh          # Transfert vers serveur
 │   ├── nginx.conf         # Configuration serveur web
+│   ├── GITHUB-ACTIONS.md  # Guide déploiement automatique
 │   └── GUIDE-DEBUTANT.md  # Guide détaillé
+├── .github/workflows/     # GitHub Actions
+│   └── deploy.yml         # Déploiement automatique
 ├── deploy.sh              # Script principal (appelle deployment/)
 ├── upload.sh              # Script principal (appelle deployment/)
 └── README.md              # Ce fichier
@@ -144,3 +156,4 @@ Les utilisateurs doivent être créés manuellement dans la console Firebase :
 4. L'utilisateur pourra ensuite se connecter avec ces identifiants
 >>>>>>> Stashed changes
 >>>>>>> origin/main
+# Test
