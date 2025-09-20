@@ -26,7 +26,7 @@ export default function Ressources() {
           <div className="contact-info">
             <p><strong>Support technique :</strong> support@climhetic.fr</p>
             <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
-            <p><strong>Horaires :</strong> Lun-Ven 9h-18h</p>
+            <p><strong>Horaires :</strong> Lundi - Vendredi | 9h - 18h</p>
           </div>
         </div>
 
@@ -52,6 +52,8 @@ export default function Ressources() {
             </ul>
           </div>
         )}
+        
+        {}
       </div>
       </div>
     </main>

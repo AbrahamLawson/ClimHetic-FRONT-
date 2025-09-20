@@ -11,6 +11,8 @@ import Tableau from "../components/Tableau";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";
+import { WeatherProvider } from "../contexts/WeatherContext";
+import WeatherCard from "../components/weather/WeatherCard";
 import capteurService from "../services/capteurService";
 import "../styles/statcard.css";
 import "../styles/global.css";
@@ -235,6 +237,7 @@ export default function Dashboard() {
 
   const data = salles;
 
+
   const graphData = Array.from({ length: 24 }, (_, i) => ({
     time: `${i}h`,
     "Bat A": 22 + Math.round(Math.random() * 3),
@@ -255,7 +258,6 @@ export default function Dashboard() {
     setSelectedAlert(null);
   };
 
- 
 const filteredData = data;
 
   return (
@@ -266,21 +268,34 @@ const filteredData = data;
       </a>
       <div id="main-content" tabIndex={-1}>
       <h1 className="dashboard-title" style={{ marginBottom: "1.5rem" }}>Dashboard</h1>
+
+
+      <section className="top-dashboard" aria-label="Statistiques et météo">
+        <div className="stats-column" aria-label="Section statistiques">
+          <div className="stat-cards-grid">
+            <StatCard value={salles.length} label="Salles" icon="house-wifi" aria-label="Nombre de salles" />
+            {role !== "guest" && (
+              <StatCard value={alertesCritiques.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
+            )}
+            {role === "admin" && (
+              <>
+                <StatCard value={4} label="Utilisateurs" icon="user" aria-label="Nombre d'utilisateurs" />
+                <StatCard value={nombreCapteurs} label="Capteurs" icon="circle-gauge" aria-label="Nombre de capteurs"/>
+              </>
+            )}
+          </div>
+        </div>
+
+        <section className="weather-column" aria-label="Section météo">
+          <WeatherProvider>
+            <Card title="Météo locale" category="meteo">
+              <WeatherCard />
+            </Card>
+          </WeatherProvider>
+        </section>
+        </section>
+
     <div className="card-container">
-      <section className="statistics-section">
-      <div className="stat-cards-container" aria-label="Section statistiques">
-        <StatCard value={salles.length} label="Salles" icon="house-wifi" aria-label="Nombre de salles"/>
-        {role !== "guest" && (
-          <StatCard value={alertesCritiques.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
-        )}
-        {role === "admin" && (
-          <>
-            <StatCard value={45} label="Utilisateurs" icon="user" aria-label="Nombre d'utilisateurs"/>
-            <StatCard value={nombreCapteurs} label="Capteurs" icon="circle-gauge" aria-label="Nombre de capteurs"/>
-          </>
-        )}
-      </div>
-      </section>
 
       <Card title="Données capteurs" category="tableau" aria-labelledby="data-heading" fullWidth>
         {loading ? (
@@ -314,6 +329,7 @@ const filteredData = data;
         <AlertModal alert={selectedAlert} onClose={handleCloseModal} />
       )}
     </div>
+
     </div>
     </main>
   );
