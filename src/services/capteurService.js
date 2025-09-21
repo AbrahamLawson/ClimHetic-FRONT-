@@ -1,7 +1,7 @@
 import axios from 'axios';
 import API_CONFIG from '../config/api';
 
-// Instance axios configurée
+
 const apiClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   headers: API_CONFIG.DEFAULT_HEADERS,
@@ -18,11 +18,8 @@ apiClient.interceptors.response.use(
 );
 
 export const capteurService = {
-  // ===== ADMIN - Gestion des capteurs =====
   
-  /**
-   * Récupérer tous les capteurs avec leurs statistiques
-   */
+  /** Récupérer tous les capteurs avec leurs statistiques */
   async getAllCapteurs() {
     try {
       const response = await apiClient.get('/admin/capteurs');
@@ -32,10 +29,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Ajouter un nouveau capteur
-   * @param {Object} capteurData - Données du capteur (nom, type_capteur, id_salle)
-   */
+  /** Ajouter un nouveau capteur */
   async ajouterCapteur(capteurData) {
     try {
       const response = await apiClient.post('/admin/capteurs', capteurData);
@@ -48,10 +42,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Désactiver un capteur
-   * @param {number} capteurId - ID du capteur à désactiver
-   */
+  /** Désactiver un capteur */
   async desactiverCapteur(capteurId) {
     try {
       const response = await apiClient.put(`/admin/capteurs/${capteurId}/desactiver`);
@@ -61,10 +52,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Réactiver un capteur
-   * @param {number} capteurId - ID du capteur à réactiver
-   */
+  /** Réactiver un capteur */
   async reactiverCapteur(capteurId) {
     try {
       const response = await apiClient.put(`/admin/capteurs/${capteurId}/reactiver`);
@@ -74,10 +62,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Supprimer définitivement un capteur
-   * @param {number} capteurId - ID du capteur à supprimer
-   */
+  /** Supprimer définitivement un capteur */
   async supprimerCapteur(capteurId) {
     try {
       const response = await apiClient.delete(`/admin/capteurs/${capteurId}?confirmer=true`);
@@ -87,11 +72,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Changer la salle d'un capteur
-   * @param {number} capteurId - ID du capteur à déplacer
-   * @param {number} nouvelleSalleId - ID de la nouvelle salle
-   */
+  /** Changer la salle d'un capteur */
   async changerSalleCapteur(capteurId, nouvelleSalleId) {
     try {
       const response = await apiClient.put(`/admin/capteurs/${capteurId}/changer-salle`, {
@@ -106,11 +87,7 @@ export const capteurService = {
     }
   },
 
-  // ===== CONSULTATION - Données des capteurs =====
-
-  /**
-   * Récupérer toutes les salles actives
-   */
+  /** Récupérer toutes les salles actives */
   async getSalles() {
     try {
       const response = await apiClient.get('/capteurs/salles');
@@ -120,10 +97,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Récupérer les capteurs d'une salle spécifique
-   * @param {number} salleId - ID de la salle
-   */
+  /** Récupérer les capteurs d'une salle spécifique */
   async getCapteursBySalle(salleId) {
     try {
       const response = await apiClient.get(`/capteurs/salles/${salleId}/capteurs`);
@@ -133,24 +107,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Récupérer les moyennes d'une salle
-   * @param {number} salleId - ID de la salle
-   */
-  async getMoyennesBySalle(salleId) {
-    try {
-      const response = await apiClient.get(`/capteurs/salles/${salleId}/moyennes`);
-      return response.data;
-    } catch (error) {
-      throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
-    }
-  },
-
-  /**
-   * Récupérer les données de température d'un capteur
-   * @param {number} capteurId - ID du capteur
-   * @param {number} limit - Nombre de données à récupérer (défaut: 10)
-   */
+  /** Récupérer les données de température d'un capteur */
   async getTemperatureByCapteur(capteurId, limit = 10) {
     try {
       const response = await apiClient.get(`/capteurs/${capteurId}/temperature?limit=${limit}`);
@@ -160,10 +117,7 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Vérifier la conformité de toutes les salles
-   * @param {number} limit - Nombre de mesures pour calculer les moyennes (défaut: 10)
-   */
+  /** Vérifier la conformité de toutes les salles */
   async getConformiteSalles(limit = 10) {
     try {
       const response = await apiClient.get(`/capteurs/conformite?limit=${limit}`);
@@ -171,7 +125,28 @@ export const capteurService = {
     } catch (error) {
       throw new Error(`Erreur lors de la récupération de la conformité des salles: ${error.message}`);
     }
-  }
+  },
+
+  /** Récupérer les moyennes d'une salle  */
+  async getMoyennesBySalle(salleId, limit = 10) {
+    try {
+      const response = await apiClient.get(`/capteurs/salles/${salleId}/moyennes?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
+    }
+  },
+
+  /** Récupérer la conformité d'une salle  */
+  async getConformiteBySalle(salleId, limit = 10) {
+    try {
+      const response = await apiClient.get(`/capteurs/salles/${salleId}/conformite?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération de la conformité de la salle: ${error.message}`);
+    }
+  },
 };
 
 export default capteurService;
+

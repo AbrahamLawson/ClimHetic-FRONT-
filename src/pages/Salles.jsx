@@ -26,9 +26,9 @@ export default function Salles() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  // --- util: map backend conformité -> statut UI
+  // map backend conformité -> statut UI
   const mapConformiteToUIStatus = (item) => {
-    // item: { statut, details_verification: { score_conformite, niveau_conformite } ... }
+    // { statut, details_verification: { score_conformite, niveau_conformite }
     let status = "Confortable";
     const dv = item.details_verification;
 
@@ -39,7 +39,7 @@ export default function Salles() {
     } else if (item.statut === "NON_CONFORME") {
       if (dv) {
         const score = dv.score_conformite;
-        const niveau = dv.niveau_conformite; // EXCELLENT/BON/MOYEN/MAUVAIS
+        const niveau = dv.niveau_conformite; 
         if (niveau === "EXCELLENT" || score === 1)      status = "Confortable";
         else if (niveau === "BON" || score === 2)       status = "Attention";
         else if (niveau === "MOYEN" || score === 3)     status = "Alerte";
@@ -51,12 +51,12 @@ export default function Salles() {
     return status;
   };
 
-  // --- Chargement API
+ 
   const load = async () => {
     setLoading(true); setErr("");
     try {
-      // 1) Liste des salles (admin endpoint)
-      const resp = await adminSalleService.list(); // GET /api/admin/salles/
+      //Liste des salles
+      const resp = await adminSalleService.list(); 
       const rows = resp?.data ?? [];
       let base = rows.map(r => ({
         id: r.id,
@@ -64,11 +64,11 @@ export default function Salles() {
         batiment: r.batiment,
         etage: r.etage,
         capacite: r.capacite,
-        etat: r.etat,         // "active" | "inactive" (utile pour admin)
-        confort: null,        // on le remplira pour non-admin
+        etat: r.etat,        
+        confort: null,       
       }));
 
-      // 2) Si non-admin, récupérer la conformité et calculer le confort par salle
+      //Cotès utilisateur récupére la conformité et calculer le confort par salle
       if (!isAdminRole) {
         base = base.filter(s => s.etat === "active");
         const conf = await capteurService.getConformiteSalles(10);
@@ -92,7 +92,7 @@ export default function Salles() {
   };
   useEffect(() => { load(); }, [isAdminRole]);
 
-  // --- Création (FormModal Admin)
+  //Création Form Admin
   const createFields = [
     { name: "nom", label: "Nom de la salle", type: "text", placeholder: "Ex: Salle 404", required: true },
     { name: "batiment", label: "Bâtiment", type: "text", placeholder: "Ex: A, B, C", required: true },
@@ -126,12 +126,12 @@ export default function Salles() {
     }
   };
 
-  // --- Actions Admin
+  // Actions cotés Admin
   const handleDelete = async (row) => {
     if (!window.confirm(`Supprimer la salle "${row.nom}" ?`)) return;
     try {
       await adminSalleService.remove(row.id);
-      setSalles(prev => prev.filter(s => s.id !== row.id));  // retrait optimiste
+      setSalles(prev => prev.filter(s => s.id !== row.id));  
     } catch (e) {
       alert(e.message || "Erreur suppression");
       await load();
@@ -177,14 +177,14 @@ export default function Salles() {
     }
   };
 
-  // --- Colonnes tableau
+  // Colonnes tableau
   const adminColumns = [
     { key: "id", label: "ID" },
     { key: "nom", label: "Salle" },
     { key: "batiment", label: "Bâtiment" },
     { key: "etage", label: "Étage" },
     { key: "capacite", label: "Capacité" },
-    { key: "etat", label: "Statut", type: "status" }, // active/inactive
+    { key: "etat", label: "Statut", type: "status" }, 
     {
       key: "_actions",
       label: "Actions",
@@ -235,12 +235,12 @@ export default function Salles() {
     { key: "batiment", label: "Bâtiment" },
     { key: "etage", label: "Étage" },
     { key: "capacite", label: "Capacité" },
-    { key: "confort", label: "Confort", type: "status" }, // Confortable/Attention/Alerte/Danger
+    { key: "confort", label: "Confort", type: "status" },
   ];
 
   const columnsToUse = isAdminRole ? adminColumns : userColumns;
 
-  // --- Filtres & recherche (locaux)
+  // Filtres & recherche 
   const [filters, setFilters] = useState({});
   const [search, setSearch] = useState("");
 

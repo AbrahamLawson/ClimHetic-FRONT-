@@ -8,7 +8,7 @@ import filtreService from "./filterService";
 const searchService = {
   async searchSalles(term, opts = {}) {
     const resp = await filtreService.getSallesSQL(opts);
-    const list = resp?.data ?? resp ?? []; // selon format { success, data } ou data direct
+    const list = resp?.data ?? resp ?? [];
     const t = (term || "").toString().toLowerCase().trim();
     if (!t) return list;
 
