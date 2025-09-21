@@ -1,12 +1,14 @@
 import axios from 'axios';
 import API_CONFIG from '../config/api';
 
+// Instance axios configurée
 const apiClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   headers: API_CONFIG.DEFAULT_HEADERS,
   timeout: API_CONFIG.TIMEOUT,
 });
 
+// Intercepteur pour gérer les erreurs globalement
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -15,7 +17,12 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const capteurService = {  
+export const capteurService = {
+  // ===== ADMIN - Gestion des capteurs =====
+  
+  /**
+   * Récupérer tous les capteurs avec leurs statistiques
+   */
   async getAllCapteurs() {
     try {
       const response = await apiClient.get('/admin/capteurs');
@@ -99,22 +106,11 @@ export const capteurService = {
     }
   },
 
-  /**
-   * Dissocier un capteur de sa salle
-   * @param {number} capteurId - ID du capteur à dissocier
-   */
-  async dissocierCapteur(capteurId) {
-    try {
-      const response = await apiClient.put(`/admin/capteurs/${capteurId}/dissocier`);
-      return response.data;
-    } catch (error) {
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
-      }
-      throw new Error(`Erreur lors de la dissociation du capteur: ${error.message}`);
-    }
-  },
+  // ===== CONSULTATION - Données des capteurs =====
 
+  /**
+   * Récupérer toutes les salles actives
+   */
   async getSalles() {
     try {
       const response = await apiClient.get('/capteurs/salles');
@@ -165,8 +161,8 @@ export const capteurService = {
   },
 
   /**
-   * Récupérer la conformité de toutes les salles
-   * @param {number} limit - Nombre de mesures pour calculer la moyenne (défaut: 10)
+   * Vérifier la conformité de toutes les salles
+   * @param {number} limit - Nombre de mesures pour calculer les moyennes (défaut: 10)
    */
   async getConformiteSalles(limit = 10) {
     try {
@@ -175,21 +171,6 @@ export const capteurService = {
     } catch (error) {
       throw new Error(`Erreur lors de la récupération de la conformité des salles: ${error.message}`);
     }
-  },
-
-  /**
-   * Récupérer les moyennes d'une salle spécifique
-   * @param {number} salleId - ID de la salle
-   * @param {number} limit - Nombre de mesures pour la moyenne (défaut: 10)
-   */
-  async getMoyennesBySalle(salleId, limit = 10) {
-    try {
-      const response = await apiClient.get(`/capteurs/salles/${salleId}/moyennes?limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
-    }
-
   }
 };
 

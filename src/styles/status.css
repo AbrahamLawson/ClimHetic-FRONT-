@@ -20,9 +20,14 @@
   color: var(--warning);
 }
 
+.status-critical {
+  background-color: var(--bg-critical);
+  color: var(--critical);
+}
+
 .status-alert {
-  background-color: #fef3c7;
-  color: #d97706;
+  background-color: var(--bg-warning);
+  color: var(--warning);
 }
 
 .status-danger {
