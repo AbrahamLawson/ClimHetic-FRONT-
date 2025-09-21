@@ -571,6 +571,30 @@ button.logout-button:hover {
   margin-bottom: 2rem;
 }
 
+
+.top-dashboard {
+  display: grid;
+  grid-template-columns: .5fr 1fr; 
+  gap: 4rem; 
+  margin-bottom: 1.5rem; 
+}
+
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem; 
+}
+
+.stats-column,
+.weather-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; 
+}
+
+.weather-column .card {
+  min-height: 100%;
+}
 .font-size-controls {
   display: flex;
   align-items: center;
@@ -589,6 +613,7 @@ button.logout-button:hover {
 .font-size-controls span {
   min-width: 40px;
   text-align: center;
+
 }
 
 /* Style pour le select de filtre */

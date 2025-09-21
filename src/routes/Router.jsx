@@ -6,6 +6,7 @@ import SalleDetail from "../pages/SalleDetail";
 import Ressources from "../pages/Ressources";
 import Alertes from "../pages/Alertes";
 import Capteurs from "../pages/Capteurs";
+import Parametres from "../pages/Parametres";
 import Admin from "../pages/Admin";
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute requiredRole="admin">
             <Admin />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "parametres",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <Parametres />
           </ProtectedRoute>
         )
       },
