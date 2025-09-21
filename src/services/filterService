@@ -1,0 +1,49 @@
+import apiClient from "../services/apiClient"; // ← CORRECTION
+
+const filtreService = {
+  async getSallesSQL(params = {}) {
+    try {
+      const searchParams = new URLSearchParams();
+      const add = (k, v) => (v !== undefined && v !== null && v !== "" ? searchParams.append(k, v) : null);
+
+      if (Array.isArray(params.batiment)) params.batiment.forEach(b => add("batiment", b));
+      else add("batiment", params.batiment);
+
+      if (Array.isArray(params.etage)) params.etage.forEach(e => add("etage", e));
+      else add("etage", params.etage);
+
+      add("capacite", params.capacite);
+      add("order_by", params.order_by ?? "nom");
+      add("order", params.order ?? "asc");
+      add("limit", params.limit ?? 20);
+      add("offset", params.offset ?? 0);
+
+      const { data } = await apiClient.get(`/filter?${searchParams.toString()}`);
+      return data;
+    } catch (error) {
+      throw new Error(error?.response?.data?.message || `Erreur filtre SQL: ${error.message}`);
+    }
+  },
+
+
+  async getConfort(params = {}) {
+    try {
+      const searchParams = new URLSearchParams();
+      const add = (k, v) => (v !== undefined && v !== null && v !== "" ? searchParams.append(k, v) : null);
+
+      if (Array.isArray(params.niveau)) params.niveau.forEach(n => add("niveau", n));
+      else add("niveau", params.niveau);
+
+      add("tri", params.tri ?? "score");
+      add("ordre", params.ordre ?? "asc");
+      add("limit_mesures", params.limit_mesures ?? 10);
+
+      const { data } = await apiClient.get(`/filters/confort?${searchParams.toString()}`);
+      return data; // attendu: { items:[...], count:n }
+    } catch (error) {
+      throw new Error(error?.response?.data?.message || `Erreur filtre confort: ${error.message}`);
+    }
+  },
+};
+
+export default filtreService;
