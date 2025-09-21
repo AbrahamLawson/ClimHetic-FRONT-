@@ -2,7 +2,7 @@
 //   return <h1>Salles</h1>;
 // }
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Tableau from "../components/Tableau";
@@ -12,282 +12,342 @@ import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
+import adminSalleService from "../services/AdminSalle";
+import capteurService from "../services/capteurService";
 
 export default function Salles() {
   const navigate = useNavigate();
   const { isAuthenticated, isAdmin } = useAuth();
-  
-  // Détermine le rôle utilisateur
   const userRole = !isAuthenticated ? "guest" : (isAdmin ? "admin" : "user");
+  const isAdminRole = userRole === "admin";
 
-  // Colonnes pour les admins (+ capteurs)
+  // --- État principal
+  const [salles, setSalles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  // --- util: map backend conformité -> statut UI
+  const mapConformiteToUIStatus = (item) => {
+    // item: { statut, details_verification: { score_conformite, niveau_conformite } ... }
+    let status = "Confortable";
+    const dv = item.details_verification;
+
+    if (item.statut === "AUCUNE_DONNEE" || item.statut === "SEUILS_NON_DEFINIS") {
+      status = "Attention";
+    } else if (item.statut === "CONFORME") {
+      status = "Confortable";
+    } else if (item.statut === "NON_CONFORME") {
+      if (dv) {
+        const score = dv.score_conformite;
+        const niveau = dv.niveau_conformite; // EXCELLENT/BON/MOYEN/MAUVAIS
+        if (niveau === "EXCELLENT" || score === 1)      status = "Confortable";
+        else if (niveau === "BON" || score === 2)       status = "Attention";
+        else if (niveau === "MOYEN" || score === 3)     status = "Alerte";
+        else if (niveau === "MAUVAIS" || score === 4)   status = "Danger";
+      } else {
+        status = "Attention";
+      }
+    }
+    return status;
+  };
+
+  // --- Chargement API
+  const load = async () => {
+    setLoading(true); setErr("");
+    try {
+      // 1) Liste des salles (admin endpoint)
+      const resp = await adminSalleService.list(); // GET /api/admin/salles/
+      const rows = resp?.data ?? [];
+      let base = rows.map(r => ({
+        id: r.id,
+        nom: r.nom,
+        batiment: r.batiment,
+        etage: r.etage,
+        capacite: r.capacite,
+        etat: r.etat,         // "active" | "inactive" (utile pour admin)
+        confort: null,        // on le remplira pour non-admin
+      }));
+
+      // 2) Si non-admin, récupérer la conformité et calculer le confort par salle
+      if (!isAdminRole) {
+        base = base.filter(s => s.etat === "active");
+        const conf = await capteurService.getConformiteSalles(10);
+        const items = conf?.data?.salles || [];
+        const byId = new Map();
+        for (const it of items) {
+          const salleId = it?.salle?.id ?? it?.salle_id;
+          if (salleId != null) {
+            byId.set(salleId, mapConformiteToUIStatus(it));
+          }
+        }
+        base = base.map(s => ({ ...s, confort: byId.get(s.id) || "Attention" })); // défaut prudent
+      }
+
+      setSalles(base);
+    } catch (e) {
+      setErr(e.message || "Erreur de chargement");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => { load(); }, [isAdminRole]);
+
+  // --- Création (FormModal Admin)
+  const createFields = [
+    { name: "nom", label: "Nom de la salle", type: "text", placeholder: "Ex: Salle 404", required: true },
+    { name: "batiment", label: "Bâtiment", type: "text", placeholder: "Ex: A, B, C", required: true },
+    { name: "etage", label: "Étage", type: "number", placeholder: "Ex: 1", required: true },
+    { name: "capacite", label: "Capacité", type: "number", placeholder: "Ex: 24", required: true },
+    { name: "etat", label: "État", type: "select", options: [
+      { label: "active", value: "active" },
+      { label: "inactive", value: "inactive" },
+    ], required: true },
+  ];
+
+  const handleAddSalle = async (values) => {
+    try {
+      await adminSalleService.create({
+        nom: values.nom?.trim(),
+        batiment: values.batiment?.trim(),
+        etage: Number(values.etage ?? 0),
+        capacite: Number(values.capacite ?? 0),
+        etat: values.etat || "active",
+      });
+      return true;
+    } catch (e) {
+      if (String(e.message).includes("Network Error")) {
+        console.warn("POST /admin/salles/ a probablement réussi, mais la réponse a échoué. On recharge la liste.");
+        return true;
+      }
+      alert(e.message || "Erreur lors de la création");
+      throw e;
+    } finally {
+      await load();
+    }
+  };
+
+  // --- Actions Admin
+  const handleDelete = async (row) => {
+    if (!window.confirm(`Supprimer la salle "${row.nom}" ?`)) return;
+    try {
+      await adminSalleService.remove(row.id);
+      setSalles(prev => prev.filter(s => s.id !== row.id));  // retrait optimiste
+    } catch (e) {
+      alert(e.message || "Erreur suppression");
+      await load();
+    }
+  };
+
+  const toggleEtat = async (row) => {
+    const next = row.etat === "active" ? "inactive" : "active";
+    try {
+      await adminSalleService.patch(row.id, { etat: next });
+      await load();
+    } catch (e) {
+      alert(e.message || "Erreur changement d'état");
+    }
+  };
+
+  const editFields = (row) => ([
+    { name: "nom", label: "Nom de la salle", type: "text", defaultValue: row.nom, required: true },
+    { name: "batiment", label: "Bâtiment", type: "text", defaultValue: row.batiment, required: true },
+    { name: "etage", label: "Étage", type: "number", defaultValue: row.etage, required: true },
+    { name: "capacite", label: "Capacité", type: "number", defaultValue: row.capacite, required: true },
+    { name: "etat", label: "État", type: "select", options: [
+      { label: "active", value: "active" },
+      { label: "inactive", value: "inactive" },
+    ], defaultValue: row.etat, required: true },
+  ]);
+
+  const handleEditSalle = async (row, values) => {
+    const payload = {
+      nom: values.nom?.trim(),
+      batiment: values.batiment?.trim(),
+      etage: Number(values.etage ?? row.etage),
+      capacite: Number(values.capacite ?? row.capacite),
+      etat: values.etat || row.etat,
+    };
+    try {
+      await adminSalleService.patch(row.id, payload);
+      await load();
+      return true;
+    } catch (e) {
+      alert(e.message || "Erreur mise à jour");
+      throw e;
+    }
+  };
+
+  // --- Colonnes tableau
   const adminColumns = [
     { key: "id", label: "ID" },
     { key: "nom", label: "Salle" },
     { key: "batiment", label: "Bâtiment" },
-    { key: "capteurs", label: "Capteurs" },
-    { key: "temperature", label: "Température (°C)" },
-    { key: "humidite", label: "Humidité (%)" },
-    { key: "pression", label: "Pression (hPa)" },
-    { key: "etat", label: "Statut", type: "status" },
+    { key: "etage", label: "Étage" },
+    { key: "capacite", label: "Capacité" },
+    { key: "etat", label: "Statut", type: "status" }, // active/inactive
+    {
+      key: "_actions",
+      label: "Actions",
+      className: "actions-column",
+      render: (value, row) => (
+        <div
+          className="actions-cell"
+          onClick={(e) => e.stopPropagation()}
+          style={{ display: "flex", gap: "0.4rem", flexWrap: "nowrap" }}
+        >
+          <span onClick={(e) => e.stopPropagation()}>
+            <FormModal
+              ctaLabel="Éditer"
+              fields={editFields(row)}
+              onSubmit={(vals) => handleEditSalle(row, vals)}
+              title={`Modifier "${row.nom}"`}
+              submitLabel="Enregistrer"
+              icon="pen-to-square"
+              buttonStyle={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem", minWidth: "auto" }}
+            />
+          </span>
+
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => { e.stopPropagation(); toggleEtat(row); }}
+            style={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem" }}
+          >
+            {row.etat === "active" ? "Désactiver" : "Activer"}
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={(e) => { e.stopPropagation(); handleDelete(row); }}
+            style={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem", background: "#dc3545", color: "#fff", border: "1px solid #dc3545" }}
+          >
+            Supprimer
+          </button>
+        </div>
+      ),
+    },
   ];
 
-  // Colonnes pour user et non-connecté (sans capteurs)
   const userColumns = [
     { key: "id", label: "ID" },
     { key: "nom", label: "Salle" },
     { key: "batiment", label: "Bâtiment" },
-    { key: "temperature", label: "Température (°C)" },
-    { key: "humidite", label: "Humidité (%)" },
-    { key: "pression", label: "Pression (hPa)" },
-    { key: "etat", label: "Statut", type: "status" },
+    { key: "etage", label: "Étage" },
+    { key: "capacite", label: "Capacité" },
+    { key: "confort", label: "Confort", type: "status" }, // Confortable/Attention/Alerte/Danger
   ];
 
-  // Fausses datas des salles à changer avec elle dispo dans la bdd
-  const [salles, setSalles] = useState([
-    {
-      id: 1,
-      nom: "Salle 101",
-      batiment: "A",
-      capteurs: ["Capteur Temp", "Capteur Humidité"],
-      temperature: 22,
-      humidite: 45,
-      pression: 1015,
-      etat: "Success",
-    },
-    {
-      id: 2,
-      nom: "Salle 202",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Warning",
-    },
-    {
-      id: 3,
-      nom: "Salle 965",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Success",
-    },
-    {
-      id: 4,
-      nom: "Salle 323",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Danger",
-    },
-    {
-      id: 5,
-      nom: "Salle 876",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Warning",
-    },
-    {
-      id: 6,
-      nom: "Salle 965",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Success",
-    },
-    {
-      id: 7,
-      nom: "Salle 697",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Success",
-    },
-    {
-      id: 8,
-      nom: "Salle 468",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Warning",
-    },
+  const columnsToUse = isAdminRole ? adminColumns : userColumns;
 
-    {
-      id: 9,
-      nom: "Salle 369",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Success",
-    },
-    {
-      id: 10,
-      nom: "Salle 478",
-      batiment: "B",
-      capteurs: ["Capteur Temp", "Capteur CO2"],
-      temperature: 28,
-      humidite: 60,
-      pression: 1012,
-      etat: "Warning",
-    },
-    
-  ]);
-
-  // Champs du formulaire pour add une nouvelle salle (voir ce qu'on inscrit dedans pour le back)
-  const fields = [
-    {
-      name: "nom",
-      label: "Nom de la salle",
-      type: "text",
-      placeholder: "Ex: Salle 404",
-    },
-    {
-      name: "batiment",
-      label: "Bâtiment",
-      type: "text",
-      placeholder: "Ex: A, B, C",
-    },
-    {
-      name: "capteurs",
-      label: "Capteurs",
-      type: "array",
-      placeholder: "Nom du capteur",
-    },
-  ];
-
-  const handleAddSalle = (values) => {
-    // A FAIRE: Envoyer la nouvelle salle au back quand on en add une (juste local pour l'instant)
-    const newSalle = {
-      id: salles.length + 1,
-      ...values,
-      etat: "Success",
-    };
-    setSalles([...salles, newSalle]);
-  };
-
+  // --- Filtres & recherche (locaux)
   const [filters, setFilters] = useState({});
   const [search, setSearch] = useState("");
 
-
-  // Filtre à changer si nécessaire avec sous catégories
-  const categories = [
-    {
-      title: "Bâtiment",
-      options: [
-        { label: "A", value: "A" },
-        { label: "B", value: "B" },
-        { label: "C", value: "C" },
-      ],
-    },
-    {
-      title: "Statut",
-      options: [
-        { label: "Confortable", value: "Success" },
-        { label: "Attention", value: "Warning" },
-        { label: "Danger", value: "Danger" },
-      ],
-    },
-    {
-      title: "Température",
-      options: [
-        { label: "< 20°C", value: "low" },
-        { label: "20-25°C", value: "normal" },
-        { label: "> 25°C", value: "high" },
-      ],
-    },
-  ];
+  const categories = isAdminRole
+    ? [
+        {
+          title: "Bâtiment",
+          options: [
+            { label: "A", value: "A" },
+            { label: "B", value: "B" },
+            { label: "C", value: "C" },
+          ],
+        },
+        {
+          title: "Statut",
+          options: [
+            { label: "active", value: "active" },
+            { label: "inactive", value: "inactive" },
+          ],
+        },
+      ]
+    : [
+        {
+          title: "Bâtiment",
+          options: [
+            { label: "A", value: "A" },
+            { label: "B", value: "B" },
+            { label: "C", value: "C" },
+          ],
+        },
+        {
+          title: "Statut",
+          options: [
+            { label: "Confortable", value: "Confortable" },
+            { label: "Attention",   value: "Attention" },
+            { label: "Alerte",      value: "Alerte" },
+            { label: "Danger",      value: "Danger" },
+          ],
+        },
+      ];
 
   const sallesFiltrees = useMemo(() => {
-    return salles.filter((salle) => {
+    return salles.filter((s) => {
+      const sterm = (search || "").toLowerCase();
       const matchSearch =
-        salle.nom.toLowerCase().includes(search.toLowerCase()) ||
-        salle.batiment.toLowerCase().includes(search.toLowerCase());
+        (s.nom || "").toLowerCase().includes(sterm) ||
+        (s.batiment || "").toLowerCase().includes(sterm);
 
-      const matchBatiment =
-        !filters["Bâtiment"] || filters["Bâtiment"].length === 0
-          ? true
-          : filters["Bâtiment"].includes(salle.batiment);
+      const matchBat =
+        !filters["Bâtiment"]?.length ? true : filters["Bâtiment"].includes(s.batiment);
 
-      const matchEtat =
-        !filters["Statut"] || filters["Statut"].length === 0
-          ? true
-          : filters["Statut"].includes(salle.etat);
+      // admin -> filtre sur etat ; non-admin -> filtre sur "confort"
+      const statutVals = filters["Statut"] || [];
+      const matchStatut = statutVals.length === 0
+        ? true
+        : (isAdminRole ? statutVals.includes(s.etat) : statutVals.includes(s.confort));
 
-      const matchTemp =
-        !filters["Température"] || filters["Température"].length === 0
-          ? true
-          : filters["Température"].some((filter) => {
-              if (filter === "low") return salle.temperature < 20;
-              if (filter === "normal")
-                return salle.temperature >= 20 && salle.temperature <= 25;
-              if (filter === "high") return salle.temperature > 25;
-              return true;
-            });
-
-      return matchSearch && matchBatiment && matchEtat && matchTemp;
+      return matchSearch && matchBat && matchStatut;
     });
-  }, [salles, search, filters]);
+  }, [salles, search, filters, isAdminRole]);
 
   return (
     <main className="page-container page-wrapper" tabIndex={-1}>
       <div id="main-content" tabIndex={-1}>
-      <a href="#main-content" className="skip-link visually-hidden">
-        Aller au contenu principal
-      </a>
-      <h1 className="salle-title">Salles</h1>
-      <div className="infos-pages" aria-label="Informations salles">
-      {/* A FAIRE : changer la value de statcard pour mettre le nb exact de salle */}
-            <StatCard value={salles.length} label="Salles" icon="house-wifi" />
-      {userRole === "admin" && (
-        <FormModal
-          ctaLabel="+ Ajouter une salle"
-          fields={fields}
-          onSubmit={handleAddSalle}
-          title="Ajouter une salle"
-          submitLabel="Créer"
-          icon="house-wifi"
-        />
-      )}
-      </div>
+        <a href="#main-content" className="skip-link visually-hidden">
+          Aller au contenu principal
+        </a>
 
-      <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
-        <Searchbar
-          placeholder="Rechercher une salle ou un bâtiment..."
-          value={search}
-          onChange={setSearch}
-        />
-      </div>
+        <h1 className="salle-title">Salles</h1>
 
-      <div className="filter-sticky">
-        <Filter categories={categories} onChange={setFilters} />
-      </div>
+        <div className="infos-pages" aria-label="Informations salles">
+          <StatCard value={salles.length} label="Salles" icon="house-wifi" />
 
-      <div className="table-container" style={{ marginTop: "2rem" }}>
-        <Tableau
-          columns={userRole === "admin" ? adminColumns : userColumns}
-          data={sallesFiltrees}
-          onRowClick={(salle) => {
-            // A FAIRE: Recup infos de la salle via l'id après avoir click sur la ligne d'une salle
-            navigate(`/salles/${salle.id}`);
-          }}
-        />
-      </div>
+          {isAdminRole && (
+            <FormModal
+              ctaLabel="+ Ajouter une salle"
+              fields={createFields}
+              onSubmit={handleAddSalle}
+              title="Ajouter une salle"
+              submitLabel="Créer"
+              icon="house-wifi"
+            />
+          )}
+        </div>
+
+        {err && <div className="mt-3 text-red-600">Erreur : {err}</div>}
+
+        <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
+          <Searchbar
+            placeholder="Rechercher une salle ou un bâtiment..."
+            value={search}
+            onChange={setSearch}
+          />
+        </div>
+
+        <div className="filter-sticky">
+          <Filter categories={categories} onChange={setFilters} />
+        </div>
+
+        <div className="table-container" style={{ marginTop: "2rem" }}>
+          <Tableau
+            columns={columnsToUse}
+            data={loading ? [] : sallesFiltrees}
+            loading={loading}
+            onRowClick={(row) => navigate(`/salles/${row.id}`)}
+          />
+        </div>
       </div>
     </main>
   );
