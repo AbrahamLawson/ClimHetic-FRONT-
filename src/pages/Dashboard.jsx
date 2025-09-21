@@ -11,7 +11,10 @@ import Tableau from "../components/Tableau";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";
+import { WeatherProvider } from "../contexts/WeatherContext";
+import WeatherCard from "../components/weather/WeatherCard";
 import capteurService from "../services/capteurService";
+import { getAllUsers } from "../services/userService";
 import "../styles/statcard.css";
 import "../styles/global.css";
 
@@ -24,20 +27,26 @@ export default function Dashboard() {
   const [salles, setSalles] = useState([]);
   const [alertesCritiques, setAlertesCritiques] = useState([]);
   const [nombreCapteurs, setNombreCapteurs] = useState(0);
+  const [nombreUtilisateurs, setNombreUtilisateurs] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const chargerDonnees = async () => {
     try {
       setLoading(true);
       
-      const [capteursResponse, conformiteResponse] = await Promise.all([
+      const [capteursResponse, conformiteResponse, usersResponse] = await Promise.all([
         capteurService.getAllCapteurs(),
-        capteurService.getConformiteSalles(10) 
+        capteurService.getConformiteSalles(10),
+        getAllUsers()
       ]);
       
       if (capteursResponse.success && capteursResponse.data) {
         const capteurs = capteursResponse.data.capteurs || [];
         setNombreCapteurs(capteurs.length);
+      }
+      
+      if (usersResponse && !usersResponse.error && usersResponse.users) {
+        setNombreUtilisateurs(usersResponse.users.length);
       }
       
       if (conformiteResponse.success && conformiteResponse.data) {
@@ -49,16 +58,16 @@ export default function Dashboard() {
           const detailsVerification = item.details_verification;
           const alertes = item.alertes || [];
           
-          let status = "Confortable";
+          let status = "Success";
           
           if (item.statut === 'AUCUNE_DONNEE') {
-            status = "Attention"; 
+            status = "Warning"; 
           }
           else if (item.statut === 'SEUILS_NON_DEFINIS') {
-            status = "Attention"; 
+            status = "Warning"; 
           }
           else if (item.statut === 'CONFORME') {
-            status = "Confortable"; 
+            status = "Success"; 
           }
           else if (item.statut === 'NON_CONFORME') {
             if (detailsVerification) {
@@ -67,16 +76,16 @@ export default function Dashboard() {
               const pourcentageConformite = detailsVerification.pourcentage_conformite;
               
               if (niveauConformite === "EXCELLENT" || scoreConformite === 1) {
-                status = "Confortable";
+                status = "Success";
               } else if (niveauConformite === "BON" || scoreConformite === 2) {
-                status = "Attention";
+                status = "Warning";
               } else if (niveauConformite === "MOYEN" || scoreConformite === 3) {
-                status = "Alerte";
+                status = "Critical";
               } else if (niveauConformite === "MAUVAIS" || scoreConformite === 4) {
                 status = "Danger";
               }
             } else {
-              status = "Attention";
+              status = "Warning";
               console.warn(`Salle ${salle.nom}: NON_CONFORME mais pas de details_verification`);
             }
           }
@@ -105,23 +114,16 @@ export default function Dashboard() {
           return salle.temperature !== null || salle.humidite !== null || salle.pression !== null;
         });
 
-        const sallesConfortables = toutesLesSalles
-          .filter((salle) => salle.status === "Confortable")
-          .map((salle) => ({
-            ...salle,
-            temperature: salle.temperature !== null ? salle.temperature : 'N/A',
-            humidite: salle.humidite !== null ? salle.humidite : 'N/A',
-            pression: salle.pression !== null ? salle.pression : 'N/A',
-          }));
-
-        const sallesProblematiques = toutesLesSalles.filter((salle) => salle.status !== "Confortable");
+        console.log('🔍 Dashboard - Statuts des salles:', toutesLesSalles.map(s => ({nom: s.salle, status: s.status})));
+        
+        const sallesProblematiques = toutesLesSalles.filter((salle) => salle.status !== "Success");
         
         const alertesGenerees = sallesProblematiques.map((salle) => {
           const rawData = salle.rawData;
           const alertes = rawData.alertes || [];
           const moyennes = rawData.moyennes;
           const capteurs = rawData.capteurs || []; 
-          const derniereMesureDate = rawData.derniereMesureDate; 
+          const derniereMesureDate = moyennes?.derniere_mesure_date; 
           
           let type = "Warning";
           let title = "Problème détecté";
@@ -129,10 +131,10 @@ export default function Dashboard() {
           if (salle.status === "Danger") {
             type = "Danger";
             title = "Situation critique";
-          } else if (salle.status === "Alerte") {
-            type = "Warning";
+          } else if (salle.status === "Critical") {
+            type = "Critical";
             title = "Alerte conformité";
-          } else if (salle.status === "Attention") {
+          } else if (salle.status === "Warning") {
             type = "Warning";
             title = "Surveillance requise";
           }
@@ -161,11 +163,33 @@ export default function Dashboard() {
           let dateFormatee = new Date().toLocaleDateString('fr-FR');
           let heureFormatee = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
           
-          if (derniereMesureDate) {
+          if (derniereMesureDate && derniereMesureDate !== '1900-01-01 00:00:00') {
             const dateMesure = new Date(derniereMesureDate);
             dateFormatee = dateMesure.toLocaleDateString('fr-FR');
             heureFormatee = dateMesure.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
           }
+          
+          const capteursStrings = capteurs.length > 0 
+            ? (() => {
+                const capteursUniques = {};
+                capteurs.forEach(capteur => {
+                  const nom = capteur.nom;
+                  if (!capteursUniques[nom]) {
+                    capteursUniques[nom] = [];
+                  }
+                  capteursUniques[nom].push(capteur.type_capteur);
+                });
+                
+                return Object.keys(capteursUniques).map(nom => {
+                  const types = capteursUniques[nom];
+                  if (types.length === 1) {
+                    return `${nom} (${types[0]})`;
+                  } else {
+                    return nom;
+                  }
+                });
+              })()
+            : [`Statut: ${salle.status}`];
           
           return {
             room: salle.salle,
@@ -174,7 +198,7 @@ export default function Dashboard() {
             type: type,
             date: dateFormatee, 
             time: heureFormatee, 
-            sensors: capteurs.length > 0 ? capteurs : [`Statut: ${salle.status}`],
+            sensors: capteursStrings,
             recommendation: alertes.length > 0 ? alertes.join(" | ") : "Aucune recommandation spécifique", 
             read: false,
             details: {
@@ -189,17 +213,12 @@ export default function Dashboard() {
         const alertesTriees = alertesGenerees.sort((a, b) => {
           const prioriteNiveau = {
             'Danger': 1,     
-            'Alerte': 2,     
-            'Attention': 3   
+            'Critical': 2,     
+            'Warning': 3   
           };
           
-          const niveauA = a.title.includes('critique') ? 'Danger' : 
-                         a.title.includes('Alerte') ? 'Alerte' : 'Attention';
-          const niveauB = b.title.includes('critique') ? 'Danger' : 
-                         b.title.includes('Alerte') ? 'Alerte' : 'Attention';
-          
-          const prioriteA = prioriteNiveau[niveauA] || 4;
-          const prioriteB = prioriteNiveau[niveauB] || 4;
+          const prioriteA = prioriteNiveau[a.type] || 4;
+          const prioriteB = prioriteNiveau[b.type] || 4;
           
           if (prioriteA !== prioriteB) {
             return prioriteA - prioriteB; 
@@ -209,6 +228,15 @@ export default function Dashboard() {
           const dateB = new Date(`${b.date} ${b.time}`);
           return dateB.getTime() - dateA.getTime(); 
         });
+        
+        const sallesConfortables = toutesLesSalles
+          .filter((salle) => salle.status === "Success")
+          .map((salle) => ({
+            ...salle,
+            temperature: salle.temperature !== null ? salle.temperature : 'N/A',
+            humidite: salle.humidite !== null ? salle.humidite : 'N/A',
+            pression: salle.pression !== null ? salle.pression : 'N/A',
+          }));
         
         setSalles(sallesConfortables);
         setAlertesCritiques(alertesTriees);
@@ -235,6 +263,7 @@ export default function Dashboard() {
 
   const data = salles;
 
+
   const graphData = Array.from({ length: 24 }, (_, i) => ({
     time: `${i}h`,
     "Bat A": 22 + Math.round(Math.random() * 3),
@@ -255,7 +284,6 @@ export default function Dashboard() {
     setSelectedAlert(null);
   };
 
- 
 const filteredData = data;
 
   return (
@@ -266,22 +294,34 @@ const filteredData = data;
       </a>
       <div id="main-content" tabIndex={-1}>
       <h1 className="dashboard-title" style={{ marginBottom: "1.5rem" }}>Dashboard</h1>
-    <div className="card-container">
-      <section className="statistics-section">
-      <div className="stat-cards-container" aria-label="Section statistiques">
-        <StatCard value={salles.length} label="Salles" icon="house-wifi" aria-label="Nombre de salles"/>
-        {role !== "guest" && (
-          <StatCard value={alertesCritiques.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
-        )}
-        {role === "admin" && (
-          <>
-            <StatCard value={45} label="Utilisateurs" icon="user" aria-label="Nombre d'utilisateurs"/>
-            <StatCard value={nombreCapteurs} label="Capteurs" icon="circle-gauge" aria-label="Nombre de capteurs"/>
-          </>
-        )}
-      </div>
-      </section>
 
+
+      <section className="top-dashboard" aria-label="Statistiques et météo">
+        <div className="stats-column" aria-label="Section statistiques">
+          <div className="stat-cards-grid">
+            <StatCard value={salles.length + alertesCritiques.length} label="Salles" icon="house-wifi" aria-label="Nombre de salles" />
+            {role !== "guest" && (
+              <StatCard value={alertesCritiques.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
+            )}
+            {role === "admin" && (
+              <>
+                <StatCard value={nombreUtilisateurs} label="Utilisateurs" icon="user" aria-label="Nombre d'utilisateurs" />
+                <StatCard value={nombreCapteurs} label="Capteurs" icon="circle-gauge" aria-label="Nombre de capteurs"/>
+              </>
+            )}
+          </div>
+        </div>
+
+        <section className="weather-column" aria-label="Section météo">
+          <WeatherProvider>
+            <Card title="Météo locale" category="meteo">
+              <WeatherCard />
+            </Card>
+          </WeatherProvider>
+        </section>
+        </section>
+
+    <div className="card-container">
       <Card title="Données capteurs" category="tableau" aria-labelledby="data-heading" fullWidth>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -314,6 +354,7 @@ const filteredData = data;
         <AlertModal alert={selectedAlert} onClose={handleCloseModal} />
       )}
     </div>
+
     </div>
     </main>
   );

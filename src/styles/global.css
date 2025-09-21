@@ -28,6 +28,8 @@
   --bg-success:#d4edda;
   --warning: #ffc107;
   --bg-warning:#fff3cd;
+  --critical: #dc6a35;
+  --bg-critical:#fae3c8;
   --danger: #dc3545;
   --bg-danger:#f8d7da;
   --active : #07beb8;
@@ -58,6 +60,8 @@ body.dark-mode {
   --bg-success:#004d40;
   --warning: #ffb300;
   --bg-warning:#663c00;
+  --critical: #fe5100;
+  --bg-critical:#452500;
   --danger: #cf6679;
   --bg-danger:#66000b;
   --active : #03dac6;
@@ -89,6 +93,8 @@ body.dark-mode {
   --bg-success:#003300;
   --warning: #ffff00;
   --bg-warning:#333300;
+  --critical: #fe4c00;
+  --bg-critical:#321b00;
   --danger: #ff0000;
   --bg-danger:#330000;
   --active : #00ffff;
@@ -565,6 +571,30 @@ button.logout-button:hover {
   margin-bottom: 2rem;
 }
 
+
+.top-dashboard {
+  display: grid;
+  grid-template-columns: .5fr 1fr; 
+  gap: 4rem; 
+  margin-bottom: 1.5rem; 
+}
+
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem; 
+}
+
+.stats-column,
+.weather-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; 
+}
+
+.weather-column .card {
+  min-height: 100%;
+}
 .font-size-controls {
   display: flex;
   align-items: center;
@@ -583,4 +613,29 @@ button.logout-button:hover {
 .font-size-controls span {
   min-width: 40px;
   text-align: center;
+
+}
+
+/* Style pour le select de filtre */
+.filter-select {
+  padding: 0.5rem;
+  border: 1px solid var(--line-color);
+  border-radius: 6px;
+  min-width: 180px;
+  background-color: var(--bg--cards);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 2px rgba(78, 20, 140, 0.1);
+}
+
+.filter-select:hover {
+  border-color: var(--primary-dark);
 }
