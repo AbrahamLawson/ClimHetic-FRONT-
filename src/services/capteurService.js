@@ -190,7 +190,19 @@ export const capteurService = {
       throw new Error(`Erreur lors de la récupération des moyennes de la salle: ${error.message}`);
     }
 
-  }
+  },
+
+  async getConformiteBySalle(salleId, limit = 10) {
+    try {
+      const response = await apiClient.get(`/capteurs/salles/${salleId}/conformite?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération de la conformité de la salle: ${error.message}`);
+    }
+  },
 };
+
+
+
 
 export default capteurService;
