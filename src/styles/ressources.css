@@ -1,0 +1,34 @@
+.basic_link {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.basic_link:hover {
+  text-decoration: none;
+  cursor: pointer;
+  transition: 2s;
+}
+
+.external-link {
+  background-color: var(--bg--primary-dark);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  gap: 0.2rem;
+  display: inline-block;
+  margin: 0.2rem 0;
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+.external-link:hover {
+  background-color: var(--primary-dark);
+  color: var(--bg--primary-dark);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .resources-grid {
+    grid-template-columns: 1fr;
+  }
+}
