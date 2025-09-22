@@ -35,33 +35,30 @@ jobs:
         script: |
           echo "🚀 Début du déploiement automatique..."
           
-          # Définir le répertoire de travail
-          PROJECT_DIR="/home/abraham/climhetic-front"
+          # Définir les répertoires de travail
+          BASE_DIR="/home/abraham"
+          OLD_PROJECT_DIR="/home/abraham/climhetic-front"
+          NEW_PROJECT_DIR="/home/abraham/climhetic-front-new"
           
           # Arrêter les conteneurs Docker en cours si ils existent
           echo "🛑 Arrêt des conteneurs existants..."
-          cd "$PROJECT_DIR" 2>/dev/null && docker-compose -f deployment/docker-compose.yml down 2>/dev/null || true
+          cd "$OLD_PROJECT_DIR" 2>/dev/null && docker-compose -f deployment/docker-compose.yml down 2>/dev/null || true
           
-          # Créer le répertoire s'il n'existe pas
-          mkdir -p "$PROJECT_DIR"
-          cd "$PROJECT_DIR"
+          # Supprimer l'ancien répertoire temporaire s'il existe
+          sudo rm -rf "$NEW_PROJECT_DIR" 2>/dev/null || true
           
-          # Gérer le code source
-          if [ -d ".git" ]; then
-            echo "📥 Mise à jour du code existant..."
-            # Nettoyer tous les changements locaux
-            git reset --hard HEAD
-            git clean -fd
-            # Récupérer les dernières modifications
-            git fetch origin main
-            git reset --hard origin/main
-          else
-            echo "📥 Premier clonage du projet..."
-            # Supprimer tout contenu existant (sauf les dossiers cachés système)
-            find . -maxdepth 1 ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
-            # Cloner le projet
-            git clone https://github.com/${{ github.repository }}.git .
-          fi
+          # Cloner dans un nouveau répertoire propre
+          echo "📥 Clonage du code dans un répertoire propre..."
+          cd "$BASE_DIR"
+          git clone https://github.com/${{ github.repository }}.git climhetic-front-new
+          
+          # Remplacer l'ancien répertoire par le nouveau
+          echo "🔄 Remplacement de l'ancien code..."
+          sudo rm -rf "$OLD_PROJECT_DIR" 2>/dev/null || true
+          mv "$NEW_PROJECT_DIR" "$OLD_PROJECT_DIR"
+          
+          # Aller dans le répertoire final
+          cd "$OLD_PROJECT_DIR"
           
           # Vérifier que le code est présent
           if [ ! -f "deployment/docker-compose.yml" ]; then
