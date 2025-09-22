@@ -10,6 +10,7 @@ import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
+import { Pencil, Trash2, CirclePower } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 import adminSalleService from "../services/AdminSalle";
@@ -21,14 +22,25 @@ export default function Salles() {
   const userRole = !isAuthenticated ? "guest" : (isAdmin ? "admin" : "user");
   const isAdminRole = userRole === "admin";
 
-  // --- État principal
   const [salles, setSalles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const afficherMessageSucces = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(null), 5000);
+  };
+
+  const afficherMessageErreur = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(null), 3000);
+  };
+
   // --- util: map backend conformité -> statut UI
   const mapConformiteToUIStatus = (item) => {
-    // item: { statut, details_verification: { score_conformite, niveau_conformite } ... }
     let status = "Confortable";
     const dv = item.details_verification;
 
@@ -39,7 +51,7 @@ export default function Salles() {
     } else if (item.statut === "NON_CONFORME") {
       if (dv) {
         const score = dv.score_conformite;
-        const niveau = dv.niveau_conformite; // EXCELLENT/BON/MOYEN/MAUVAIS
+        const niveau = dv.niveau_conformite;
         if (niveau === "EXCELLENT" || score === 1)      status = "Confortable";
         else if (niveau === "BON" || score === 2)       status = "Attention";
         else if (niveau === "MOYEN" || score === 3)     status = "Alerte";
@@ -55,8 +67,7 @@ export default function Salles() {
   const load = async () => {
     setLoading(true); setErr("");
     try {
-      // 1) Liste des salles (admin endpoint)
-      const resp = await adminSalleService.list(); // GET /api/admin/salles/
+      const resp = await adminSalleService.list();
       const rows = resp?.data ?? [];
       let base = rows.map(r => ({
         id: r.id,
@@ -64,11 +75,10 @@ export default function Salles() {
         batiment: r.batiment,
         etage: r.etage,
         capacite: r.capacite,
-        etat: r.etat,         // "active" | "inactive" (utile pour admin)
-        confort: null,        // on le remplira pour non-admin
+        etat: r.etat,
+        confort: null,
       }));
 
-      // 2) Si non-admin, récupérer la conformité et calculer le confort par salle
       if (!isAdminRole) {
         base = base.filter(s => s.etat === "active");
         const conf = await capteurService.getConformiteSalles(10);
@@ -80,7 +90,7 @@ export default function Salles() {
             byId.set(salleId, mapConformiteToUIStatus(it));
           }
         }
-        base = base.map(s => ({ ...s, confort: byId.get(s.id) || "Attention" })); // défaut prudent
+        base = base.map(s => ({ ...s, confort: byId.get(s.id) || "Attention" }));
       }
 
       setSalles(base);
@@ -90,6 +100,7 @@ export default function Salles() {
       setLoading(false);
     }
   };
+
   useEffect(() => { load(); }, [isAdminRole]);
 
   // --- Création (FormModal Admin)
@@ -99,8 +110,8 @@ export default function Salles() {
     { name: "etage", label: "Étage", type: "number", placeholder: "Ex: 1", required: true },
     { name: "capacite", label: "Capacité", type: "number", placeholder: "Ex: 24", required: true },
     { name: "etat", label: "État", type: "select", options: [
-      { label: "active", value: "active" },
-      { label: "inactive", value: "inactive" },
+      { label: "Actif", value: "active" },
+      { label: "Inactif", value: "inactive" },
     ], required: true },
   ];
 
@@ -113,27 +124,29 @@ export default function Salles() {
         capacite: Number(values.capacite ?? 0),
         etat: values.etat || "active",
       });
+      afficherMessageSucces(`Salle "${values.nom}" créée avec succès !`);
       return true;
     } catch (e) {
       if (String(e.message).includes("Network Error")) {
         console.warn("POST /admin/salles/ a probablement réussi, mais la réponse a échoué. On recharge la liste.");
+        afficherMessageSucces(`Salle "${values.nom}" créée (réponse réseau manquante).`);
         return true;
       }
-      alert(e.message || "Erreur lors de la création");
+      afficherMessageErreur(e.message || "Erreur lors de la création");
       throw e;
     } finally {
       await load();
     }
   };
 
-  // --- Actions Admin
   const handleDelete = async (row) => {
     if (!window.confirm(`Supprimer la salle "${row.nom}" ?`)) return;
     try {
-      await adminSalleService.remove(row.id);
-      setSalles(prev => prev.filter(s => s.id !== row.id));  // retrait optimiste
+      await adminSalleService.remove(row.id); 
+      afficherMessageSucces(`Salle "${row.nom}" supprimée avec succès !`);
+      setSalles(prev => prev.filter(s => s.id !== row.id));
     } catch (e) {
-      alert(e.message || "Erreur suppression");
+      afficherMessageErreur(e.message || "Erreur lors de la suppression");
       await load();
     }
   };
@@ -142,9 +155,10 @@ export default function Salles() {
     const next = row.etat === "active" ? "inactive" : "active";
     try {
       await adminSalleService.patch(row.id, { etat: next });
+      afficherMessageSucces(`Salle "${row.nom}" ${next === "active" ? "activée" : "désactivée"} avec succès !`);
       await load();
     } catch (e) {
-      alert(e.message || "Erreur changement d'état");
+      afficherMessageErreur(e.message || "Erreur changement d'état");
     }
   };
 
@@ -154,8 +168,8 @@ export default function Salles() {
     { name: "etage", label: "Étage", type: "number", defaultValue: row.etage, required: true },
     { name: "capacite", label: "Capacité", type: "number", defaultValue: row.capacite, required: true },
     { name: "etat", label: "État", type: "select", options: [
-      { label: "active", value: "active" },
-      { label: "inactive", value: "inactive" },
+      { label: "Actif", value: "active" },
+      { label: "Inactif", value: "inactive" },
     ], defaultValue: row.etat, required: true },
   ]);
 
@@ -169,10 +183,11 @@ export default function Salles() {
     };
     try {
       await adminSalleService.patch(row.id, payload);
+      afficherMessageSucces(`Salle "${payload.nom}" mise à jour avec succès !`);
       await load();
       return true;
     } catch (e) {
-      alert(e.message || "Erreur mise à jour");
+      afficherMessageErreur(e.message || "Erreur lors de la mise à jour");
       throw e;
     }
   };
@@ -184,7 +199,12 @@ export default function Salles() {
     { key: "batiment", label: "Bâtiment" },
     { key: "etage", label: "Étage" },
     { key: "capacite", label: "Capacité" },
-    { key: "etat", label: "Statut", type: "status" }, // active/inactive
+    {
+      key: "etat",
+      label: "Statut",
+      type: "status",
+      render: (value) => (value === "active" ? "Active" : "Inactive"),
+    },
     {
       key: "_actions",
       label: "Actions",
@@ -193,40 +213,46 @@ export default function Salles() {
         <div
           className="actions-cell"
           onClick={(e) => e.stopPropagation()}
-          style={{ display: "flex", gap: "0.4rem", flexWrap: "nowrap" }}
+          style={{ display: "flex", gap: "0.25rem", flexWrap: "nowrap", justifyContent: "space-around", alignItems: "center", width: "100%" }}
         >
-          <span onClick={(e) => e.stopPropagation()}>
-            <FormModal
-              ctaLabel="Éditer"
-              fields={editFields(row)}
-              onSubmit={(vals) => handleEditSalle(row, vals)}
-              title={`Modifier "${row.nom}"`}
-              submitLabel="Enregistrer"
-              icon="pen-to-square"
-              buttonStyle={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem", minWidth: "auto" }}
-            />
-          </span>
+          {row && (
+            <>
+              <FormModal
+                ctaLabel={<Pencil size={16} title={`Modifier la salle "${row.nom}"`} />}
+                fields={editFields(row)}
+                onSubmit={(vals) => handleEditSalle(row, vals)}
+                title={`Modifier "${row.nom}"`}
+                submitLabel="Enregistrer"
+              />
 
-          <button
-            type="button"
-            className="btn"
-            onClick={(e) => { e.stopPropagation(); toggleEtat(row); }}
-            style={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem" }}
-          >
-            {row.etat === "active" ? "Désactiver" : "Activer"}
-          </button>
+              <FormModal
+                buttonStyle={{
+                  backgroundColor: row.etat === "active" ? 'var(--success)' : 'var(--bg-danger-life)',
+                  color: row.etat === "active" ? 'white' : 'var(--danger-life)',
+                }}
+                ctaLabel={<CirclePower size={16} title={`${row.etat === "active" ? "Désactiver" : "Activer"} ${row.nom}`} />}
+                fields={[]}
+                onSubmit={async () => toggleEtat(row)}
+                title={`${row.etat === "active" ? "Désactiver" : "Activer"} "${row.nom}"`}
+                submitLabel={row.etat === "active" ? "Désactiver" : "Activer"}
+              />
 
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={(e) => { e.stopPropagation(); handleDelete(row); }}
-            style={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem", background: "#dc3545", color: "#fff", border: "1px solid #dc3545" }}
-          >
-            Supprimer
-          </button>
+              <FormModal
+                buttonStyle={{
+                  backgroundColor: 'var(--danger)',
+                  color: 'white',
+                }}
+                ctaLabel={<Trash2 size={16} title={`Supprimer ${row.nom}`} />}
+                fields={[]}
+                onSubmit={async () => handleDelete(row)}
+                title={`Supprimer "${row.nom}"`}
+                submitLabel="Supprimer définitivement"
+              />
+            </>
+          )}
         </div>
       ),
-    },
+    }
   ];
 
   const userColumns = [
@@ -235,69 +261,55 @@ export default function Salles() {
     { key: "batiment", label: "Bâtiment" },
     { key: "etage", label: "Étage" },
     { key: "capacite", label: "Capacité" },
-    { key: "confort", label: "Confort", type: "status" }, // Confortable/Attention/Alerte/Danger
+    {
+      key: "confort",
+      label: "Confort",
+      type: "status",
+      render: (value) => {
+        if (!value) return value;
+        const mapping = {
+          confortable: "Success",
+          alerte: "Alerte",
+          danger: "Danger",
+          critique: "Critical",
+          attention: "Warning",
+        };
+        return mapping[value.toLowerCase()] || value;
+      },
+    }
   ];
 
   const columnsToUse = isAdminRole ? adminColumns : userColumns;
 
-  // --- Filtres & recherche (locaux)
+  // --- Filtres & recherche
   const [filters, setFilters] = useState({});
   const [search, setSearch] = useState("");
 
   const categories = isAdminRole
     ? [
-        {
-          title: "Bâtiment",
-          options: [
-            { label: "A", value: "A" },
-            { label: "B", value: "B" },
-            { label: "C", value: "C" },
-          ],
-        },
-        {
-          title: "Statut",
-          options: [
-            { label: "active", value: "active" },
-            { label: "inactive", value: "inactive" },
-          ],
-        },
+        { title: "Bâtiment", options: [{ label: "A", value: "A" }, { label: "B", value: "B" }, { label: "C", value: "C" }] },
+        { title: "Statut", options: [{ label: "Actif", value: "active" }, { label: "Inactif", value: "inactive" }] },
       ]
     : [
-        {
-          title: "Bâtiment",
-          options: [
-            { label: "A", value: "A" },
-            { label: "B", value: "B" },
-            { label: "C", value: "C" },
-          ],
-        },
-        {
-          title: "Statut",
-          options: [
+        { title: "Bâtiment", options: [{ label: "A", value: "A" }, { label: "B", value: "B" }, { label: "C", value: "C" }] },
+        { title: "Statut", options: [
             { label: "Confortable", value: "Confortable" },
-            { label: "Attention",   value: "Attention" },
-            { label: "Alerte",      value: "Alerte" },
-            { label: "Danger",      value: "Danger" },
-          ],
+            { label: "Attention", value: "Attention" },
+            { label: "Alerte", value: "Alerte" },
+            { label: "Danger", value: "Danger" },
+          ]
         },
       ];
 
   const sallesFiltrees = useMemo(() => {
     return salles.filter((s) => {
       const sterm = (search || "").toLowerCase();
-      const matchSearch =
-        (s.nom || "").toLowerCase().includes(sterm) ||
-        (s.batiment || "").toLowerCase().includes(sterm);
-
-      const matchBat =
-        !filters["Bâtiment"]?.length ? true : filters["Bâtiment"].includes(s.batiment);
-
-      // admin -> filtre sur etat ; non-admin -> filtre sur "confort"
+      const matchSearch = (s.nom || "").toLowerCase().includes(sterm) || (s.batiment || "").toLowerCase().includes(sterm);
+      const matchBat = !filters["Bâtiment"]?.length ? true : filters["Bâtiment"].includes(s.batiment);
       const statutVals = filters["Statut"] || [];
       const matchStatut = statutVals.length === 0
         ? true
         : (isAdminRole ? statutVals.includes(s.etat) : statutVals.includes(s.confort));
-
       return matchSearch && matchBat && matchStatut;
     });
   }, [salles, search, filters, isAdminRole]);
@@ -305,14 +317,40 @@ export default function Salles() {
   return (
     <main className="page-container page-wrapper" tabIndex={-1}>
       <div id="main-content" tabIndex={-1}>
-        <a href="#main-content" className="skip-link visually-hidden">
-          Aller au contenu principal
-        </a>
+        <a href="#main-content" className="skip-link visually-hidden">Aller au contenu principal</a>
 
         <h1 className="salle-title">Salles</h1>
 
+        {successMessage && (
+          <div style={{
+            background: 'var(--bg-success)',
+            border: '1px solid var(--success)',
+            padding: '1rem',
+            borderRadius: '4px',
+            marginBottom: '1rem',
+            color: 'var(--success)'
+          }}>
+            <strong>Succès:</strong> {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div style={{
+            background: 'var(--bg-danger)',
+            border: '1px solid var(--danger)',
+            padding: '1rem',
+            borderRadius: '4px',
+            marginBottom: '1rem',
+            color: 'var(--danger)'
+          }}>
+            <strong>Erreur:</strong> {errorMessage}
+          </div>
+        )}
+
         <div className="infos-pages" aria-label="Informations salles">
-          <StatCard value={salles.length} label="Salles" icon="house-wifi" />
+          <StatCard aria-label="Nombre total de salles" value={salles.length} label="Salles" icon="house-wifi" />
+          <StatCard aria-label="Nombre de salles actifs" value={salles.filter(s => s.etat === "active").length} label="Actifs" icon="circle-check" />
+          <StatCard aria-label="Nombre de salles inactifs" value={salles.filter(s => s.etat === "inactive").length} label="Inactifs" icon="circle-x" />
 
           {isAdminRole && (
             <FormModal
@@ -329,11 +367,7 @@ export default function Salles() {
         {err && <div className="mt-3 text-red-600">Erreur : {err}</div>}
 
         <div className="search-wrapper" style={{ marginTop: "1.5rem" }}>
-          <Searchbar
-            placeholder="Rechercher une salle ou un bâtiment..."
-            value={search}
-            onChange={setSearch}
-          />
+          <Searchbar placeholder="Rechercher une salle ou un bâtiment..." value={search} onChange={setSearch} />
         </div>
 
         <div className="filter-sticky">

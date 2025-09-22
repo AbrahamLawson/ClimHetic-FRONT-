@@ -138,7 +138,7 @@ export default function Alertes() {
               aria-label="Alertes attention" 
               value={stats.warning} 
               label="Attention" 
-              icon="triangle-alert" 
+              icon="circle-alert" 
             />
           </div>
         </section>
@@ -157,7 +157,6 @@ export default function Alertes() {
           </div>
         </div>
 
-        {/* Liste des alertes */}
         <section aria-labelledby="alerts-section">
           <h2 id="alerts-section" className="visually-hidden">Liste des alertes</h2>
           {loading ? (

@@ -15,11 +15,14 @@ export default function Navbar() {
 
   const isLoggedIn = !!user;
 
-  const logoSrc = highContrast
-    ? "/assets/climhetic-complet_high-contrast.png"
-    : darkMode
-    ? "/assets/climhetic-complet_dark-mode.png"
-    : "/assets/climhetic-complet.png";
+  function getLogo(darkMode, highContrast) {
+  if (darkMode) return "/assets/climhetic-complet_dark-mode.png";
+  if (highContrast) return "/assets/climhetic-complet_high-contrast.png";
+  return "/assets/climhetic-complet.png";
+}
+
+const logoSrc = getLogo(darkMode, highContrast);
+
 
   return (
     <nav className="navbar">

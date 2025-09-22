@@ -1,5 +1,5 @@
 import React from "react";
-import { Check, TriangleAlert, AlertTriangle, Skull } from "lucide-react";
+import { Check, TriangleAlert, AlertTriangle, Skull, CircleAlert, CircleX, CircleCheck } from "lucide-react";
 import "../styles/status.css";
 
 const statusConfig = {  
@@ -26,7 +26,17 @@ const statusConfig = {
   Warning: {
     label: "Attention",
     className: "status-warning",
-    Icon: TriangleAlert,
+    Icon: CircleAlert,
+  },
+  Active: {
+    label: "Actif",
+    className: "status-active",
+    Icon: CircleCheck,
+  },
+  Inactive: {
+    label: "Inactif",
+    className: "status-inactive",
+    Icon: CircleX,
   },
 };
 
