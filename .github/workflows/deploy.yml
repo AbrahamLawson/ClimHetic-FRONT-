@@ -42,19 +42,32 @@ jobs:
           echo "🛑 Arrêt des conteneurs existants..."
           cd "$PROJECT_DIR" 2>/dev/null && docker-compose -f deployment/docker-compose.yml down 2>/dev/null || true
           
-          # Nettoyer complètement le répertoire avec sudo si nécessaire
-          echo "🧹 Nettoyage complet du répertoire..."
-          sudo rm -rf "$PROJECT_DIR" 2>/dev/null || true
+          # Créer le répertoire s'il n'existe pas
           mkdir -p "$PROJECT_DIR"
           cd "$PROJECT_DIR"
           
-          # Cloner le projet
-          echo "📥 Clonage du projet..."
-          git clone https://github.com/${{ github.repository }}.git .
+          # Gérer le code source
+          if [ -d ".git" ]; then
+            echo "📥 Mise à jour du code existant..."
+            # Nettoyer tous les changements locaux
+            git reset --hard HEAD
+            git clean -fd
+            # Récupérer les dernières modifications
+            git fetch origin main
+            git reset --hard origin/main
+          else
+            echo "📥 Premier clonage du projet..."
+            # Supprimer tout contenu existant (sauf les dossiers cachés système)
+            find . -maxdepth 1 ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+            # Cloner le projet
+            git clone https://github.com/${{ github.repository }}.git .
+          fi
           
-          # Vérifier que le clonage a réussi
+          # Vérifier que le code est présent
           if [ ! -f "deployment/docker-compose.yml" ]; then
             echo "❌ Erreur: fichier docker-compose.yml non trouvé"
+            echo "📋 Contenu du répertoire:"
+            ls -la
             exit 1
           fi
           
@@ -82,7 +95,12 @@ jobs:
           
           # Construire et lancer la nouvelle version
           echo "🔨 Construction et lancement..."
-          docker-compose -f deployment/docker-compose.yml up --build -d
+          if ! docker-compose -f deployment/docker-compose.yml up --build -d; then
+            echo "❌ Erreur lors du lancement des conteneurs"
+            echo "📋 Logs d'erreur:"
+            docker-compose -f deployment/docker-compose.yml logs
+            exit 1
+          fi
           
           # Attendre un peu que les conteneurs démarrent
           echo "⏳ Attente du démarrage des conteneurs..."
