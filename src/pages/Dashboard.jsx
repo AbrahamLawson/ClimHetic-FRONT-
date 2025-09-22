@@ -3,7 +3,7 @@
 // }
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import SimpleChart from "../components/Graphique";

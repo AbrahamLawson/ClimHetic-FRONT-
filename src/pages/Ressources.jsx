@@ -1,4 +1,4 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import Card from "../components/Card";
 import '../styles/ressources.css';
 

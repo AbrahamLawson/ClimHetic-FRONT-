@@ -4,7 +4,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";

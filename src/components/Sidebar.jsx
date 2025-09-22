@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import {LayoutDashboard, HouseWifi, Siren, UserStar, BookOpenText, CircleGauge, Settings} from "lucide-react";
 
 export default function Sidebar() {

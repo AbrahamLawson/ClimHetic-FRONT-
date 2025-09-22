@@ -3,7 +3,6 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 
-// Configuration Firebase
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyA8kBWBf2HMvnuJK3XXg_umR7cDEGJN1Fc",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "climheticback.firebaseapp.com",
@@ -14,16 +13,10 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-G21KVE9YT8"
 };
 
-// Initialiser Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialiser Firebase Auth
 export const auth = getAuth(app);
-
-// Initialiser Firestore
 export const db = getFirestore(app);
-
-// Initialiser Analytics 
 export const analytics = getAnalytics(app);
 
 export default app;

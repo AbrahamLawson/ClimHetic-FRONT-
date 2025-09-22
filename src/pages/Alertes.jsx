@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";

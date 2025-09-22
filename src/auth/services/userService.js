@@ -1,7 +1,6 @@
 import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase-config';
+import { db } from '../config/firebase';
 
-// Créer un profil utilisateur dans Firestore
 export const createUserProfile = async (uid, userData) => {
   try {
     const userRef = doc(db, 'users', uid);
@@ -16,7 +15,6 @@ export const createUserProfile = async (uid, userData) => {
   }
 };
 
-// Récupérer un profil utilisateur
 export const getUserProfile = async (uid) => {
   try {
     const userDoc = await getDoc(doc(db, 'users', uid));
@@ -31,7 +29,6 @@ export const getUserProfile = async (uid) => {
   }
 };
 
-// Mettre à jour le rôle d'un utilisateur
 export const updateUserRole = async (uid, role) => {
   try {
     const userRef = doc(db, 'users', uid);
@@ -45,7 +42,6 @@ export const updateUserRole = async (uid, role) => {
   }
 };
 
-// Vérifier si un utilisateur est admin
 export const isUserAdmin = async (uid) => {
   try {
     const { user, error } = await getUserProfile(uid);
@@ -56,7 +52,6 @@ export const isUserAdmin = async (uid) => {
   }
 };
 
-// Récupérer tous les utilisateurs (pour les admins)
 export const getAllUsers = async () => {
   try {
     const usersRef = collection(db, 'users');
