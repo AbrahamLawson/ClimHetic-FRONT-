@@ -35,24 +35,27 @@ jobs:
         script: |
           echo "🚀 Début du déploiement automatique..."
           
-          # Aller dans le répertoire du projet
-          cd /home/abraham/climhetic-front || {
-            echo "📁 Création du répertoire projet..."
-            mkdir -p /home/abraham/climhetic-front
-            cd /home/abraham/climhetic-front
-          }
+          # Définir le répertoire de travail
+          PROJECT_DIR="/home/abraham/climhetic-front"
           
-          # Cloner ou mettre à jour le code
-          if [ -d ".git" ]; then
-            echo "📥 Mise à jour du code..."
-            git fetch origin main
-            git reset --hard origin/main
-            git clean -fd
-          else
-            echo "📥 Nettoyage et clonage du projet..."
-            rm -rf *
-            rm -rf .*
-            git clone https://github.com/${{ github.repository }}.git .
+          # Arrêter les conteneurs Docker en cours si ils existent
+          echo "🛑 Arrêt des conteneurs existants..."
+          cd "$PROJECT_DIR" 2>/dev/null && docker-compose -f deployment/docker-compose.yml down 2>/dev/null || true
+          
+          # Nettoyer complètement le répertoire avec sudo si nécessaire
+          echo "🧹 Nettoyage complet du répertoire..."
+          sudo rm -rf "$PROJECT_DIR" 2>/dev/null || true
+          mkdir -p "$PROJECT_DIR"
+          cd "$PROJECT_DIR"
+          
+          # Cloner le projet
+          echo "📥 Clonage du projet..."
+          git clone https://github.com/${{ github.repository }}.git .
+          
+          # Vérifier que le clonage a réussi
+          if [ ! -f "deployment/docker-compose.yml" ]; then
+            echo "❌ Erreur: fichier docker-compose.yml non trouvé"
+            exit 1
           fi
           
           # Vérifier que Docker est installé
@@ -69,21 +72,29 @@ jobs:
           echo "🔍 Vérification des fichiers..."
           ls -la deployment/
           
-          # Arrêter l'ancienne version
-          echo "🛑 Arrêt de l'ancienne version..."
-          docker-compose -f deployment/docker-compose.yml down || true
-          
           # Nettoyer les images Docker anciennes
-          echo "🧹 Nettoyage..."
+          echo "🧹 Nettoyage des images Docker..."
           docker system prune -f || true
+          
+          # S'assurer que l'utilisateur peut utiliser Docker
+          echo "🔧 Configuration des permissions Docker..."
+          sudo usermod -aG docker abraham || true
           
           # Construire et lancer la nouvelle version
           echo "🔨 Construction et lancement..."
           docker-compose -f deployment/docker-compose.yml up --build -d
           
+          # Attendre un peu que les conteneurs démarrent
+          echo "⏳ Attente du démarrage des conteneurs..."
+          sleep 10
+          
           # Vérifier que ça marche
-          echo "📊 Vérification..."
+          echo "📊 Vérification des conteneurs..."
           docker-compose -f deployment/docker-compose.yml ps
+          
+          # Vérifier les logs en cas de problème
+          echo "📋 Logs des conteneurs:"
+          docker-compose -f deployment/docker-compose.yml logs --tail=20
           
           echo "✅ Déploiement automatique terminé !"
           echo "🌐 Application accessible sur : http://09.hetic.arcplex.dev"
