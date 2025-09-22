@@ -3,7 +3,7 @@
 // }
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import SimpleChart from "../components/Graphique";
@@ -14,7 +14,7 @@ import StatCard from "../components/StatCard";
 import { WeatherProvider } from "../contexts/WeatherContext";
 import WeatherCard from "../components/weather/WeatherCard";
 import capteurService from "../services/capteurService";
-import { getAllUsers } from "../services/userService";
+import { getAllUsers } from "../auth";
 import "../styles/statcard.css";
 import "../styles/global.css";
 

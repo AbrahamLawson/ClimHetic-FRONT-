@@ -4,7 +4,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
@@ -26,6 +26,7 @@ export default function Salles() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -39,8 +40,10 @@ export default function Salles() {
     setTimeout(() => setErrorMessage(null), 3000);
   };
 
-  // --- util: map backend conformité -> statut UI
+  // map backend conformité -> statut UI
   const mapConformiteToUIStatus = (item) => {
+    // { statut, details_verification: { score_conformite, niveau_conformite }
+
     let status = "Confortable";
     const dv = item.details_verification;
 
@@ -51,7 +54,8 @@ export default function Salles() {
     } else if (item.statut === "NON_CONFORME") {
       if (dv) {
         const score = dv.score_conformite;
-        const niveau = dv.niveau_conformite;
+        const niveau = dv.niveau_conformite; 
+
         if (niveau === "EXCELLENT" || score === 1)      status = "Confortable";
         else if (niveau === "BON" || score === 2)       status = "Attention";
         else if (niveau === "MOYEN" || score === 3)     status = "Alerte";
@@ -63,11 +67,13 @@ export default function Salles() {
     return status;
   };
 
-  // --- Chargement API
+ 
   const load = async () => {
     setLoading(true); setErr("");
     try {
-      const resp = await adminSalleService.list();
+
+      //Liste des salles
+      const resp = await adminSalleService.list(); 
       const rows = resp?.data ?? [];
       let base = rows.map(r => ({
         id: r.id,
@@ -75,9 +81,11 @@ export default function Salles() {
         batiment: r.batiment,
         etage: r.etage,
         capacite: r.capacite,
-        etat: r.etat,
-        confort: null,
+        etat: r.etat,        
+        confort: null,       
       }));
+
+      //Cotès utilisateur récupére la conformité et calculer le confort par salle
 
       if (!isAdminRole) {
         base = base.filter(s => s.etat === "active");
@@ -103,7 +111,7 @@ export default function Salles() {
 
   useEffect(() => { load(); }, [isAdminRole]);
 
-  // --- Création (FormModal Admin)
+  //Création Form Admin
   const createFields = [
     { name: "nom", label: "Nom de la salle", type: "text", placeholder: "Ex: Salle 404", required: true },
     { name: "batiment", label: "Bâtiment", type: "text", placeholder: "Ex: A, B, C", required: true },
@@ -139,12 +147,14 @@ export default function Salles() {
     }
   };
 
+  // Actions cotés Admin
   const handleDelete = async (row) => {
     if (!window.confirm(`Supprimer la salle "${row.nom}" ?`)) return;
     try {
-      await adminSalleService.remove(row.id); 
+      await adminSalleService.remove(row.id);
       afficherMessageSucces(`Salle "${row.nom}" supprimée avec succès !`);
-      setSalles(prev => prev.filter(s => s.id !== row.id));
+      setSalles(prev => prev.filter(s => s.id !== row.id));  
+
     } catch (e) {
       afficherMessageErreur(e.message || "Erreur lors de la suppression");
       await load();
@@ -192,7 +202,7 @@ export default function Salles() {
     }
   };
 
-  // --- Colonnes tableau
+  // Colonnes tableau
   const adminColumns = [
     { key: "id", label: "ID" },
     { key: "nom", label: "Salle" },
@@ -205,6 +215,7 @@ export default function Salles() {
       type: "status",
       render: (value) => (value === "active" ? "Active" : "Inactive"),
     },
+
     {
       key: "_actions",
       label: "Actions",
@@ -261,6 +272,7 @@ export default function Salles() {
     { key: "batiment", label: "Bâtiment" },
     { key: "etage", label: "Étage" },
     { key: "capacite", label: "Capacité" },
+
     {
       key: "confort",
       label: "Confort",
@@ -281,7 +293,9 @@ export default function Salles() {
 
   const columnsToUse = isAdminRole ? adminColumns : userColumns;
 
-  // --- Filtres & recherche
+
+  // Filtres & recherche 
+
   const [filters, setFilters] = useState({});
   const [search, setSearch] = useState("");
 

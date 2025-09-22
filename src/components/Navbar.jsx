@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { logout } from "../services/auth";
+import { useAuth, logout } from "../auth";
 import { User, LogOut } from "lucide-react";
 import { useContext } from "react";
 import { PreferencesContext } from "../contexts/PreferencesContext";

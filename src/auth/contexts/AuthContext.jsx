@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChange } from '../services/auth';
+import { onAuthStateChange } from '../services/authService';
 import { getUserProfile } from '../services/userService';
 
 const AuthContext = createContext();
@@ -24,24 +24,20 @@ export const AuthProvider = ({ children }) => {
           setUser(firebaseUser);
           
           try {
-            // Récupérer le profil utilisateur depuis Firestore OBLIGATOIREMENT
             const { user: profile, error } = await getUserProfile(firebaseUser.uid);
             
             if (!error && profile) {
-              // Profil existant trouvé avec rôle Firestore
               setUserProfile(profile);
             } else {
-              // Pas de profil Firestore = accès refusé
               console.error('Aucun profil Firestore trouvé pour cet utilisateur');
               setUserProfile({
                 email: firebaseUser.email,
                 displayName: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-                role: 'guest' // Rôle par défaut sans accès
+                role: 'guest'
               });
             }
           } catch (firestoreError) {
             console.error('Erreur Firestore, accès limité:', firestoreError.message);
-            // En cas d'erreur Firestore, rôle guest par défaut
             setUserProfile({
               email: firebaseUser.email,
               displayName: firebaseUser.displayName || firebaseUser.email.split('@')[0],
@@ -54,7 +50,6 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Erreur lors de la récupération du profil:', error);
-        // En cas d'erreur, permettre quand même la connexion avec un profil minimal
         if (firebaseUser) {
           setUser(firebaseUser);
           setUserProfile({

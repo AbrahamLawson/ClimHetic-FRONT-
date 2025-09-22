@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Form from '../form/Form';
-import { loginWithEmail } from '../../services/auth';
+import Form from '../../components/form/Form';
+import { loginWithEmail } from '../services/authService';
 
 export default function LoginForm({ onSuccess, onError }) {
   const [loading, setLoading] = useState(false);

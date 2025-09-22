@@ -1,81 +1,52 @@
-# ==========================================
-# GITHUB ACTIONS - DÉPLOIEMENT AUTOMATIQUE
-# ==========================================
-# Ce fichier déploie automatiquement ton app quand tu push sur GitHub
+name: Deploy ClimHetic
 
-name: 🚀 Déploiement ClimHetic
-
-# Quand déclencher le déploiement
 on:
   push:
-    branches: [ main ]  # À chaque push sur la branche main
-  workflow_dispatch:    # Ou manuellement depuis GitHub
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    name: 📦 Déployer sur le serveur
+    name: Deploy
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Récupérer le code depuis GitHub
-    - name: 📥 Récupérer le code
+    - name: Checkout
       uses: actions/checkout@v4
     
-    # 2. Se connecter au serveur et déployer
-    - name: 🚀 Déployer sur le serveur
+    - name: Deploy
       uses: appleboy/ssh-action@v1.0.3
       with:
-        # Informations de connexion (à configurer dans les secrets GitHub)
         host: admin-hetic.arcplex.tech
         username: abraham
         password: ${{ secrets.SERVER_PASSWORD }}
         port: 2326
-        
-        # Commandes à exécuter sur le serveur
         script: |
-          echo "🚀 Début du déploiement automatique..."
+          echo "🚀 Starting deployment..."
           
-          # Aller dans le répertoire du projet
+          docker stop $(docker ps -q --filter "publish=8080") 2>/dev/null || true
+          docker rm $(docker ps -aq --filter "publish=8080") 2>/dev/null || true
+          
           cd /home/abraham/climhetic-front || {
-            echo "📁 Création du répertoire projet..."
             mkdir -p /home/abraham/climhetic-front
             cd /home/abraham/climhetic-front
           }
           
-          # Cloner ou mettre à jour le code
           if [ -d ".git" ]; then
-            echo "📥 Mise à jour du code..."
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
           else
-            echo "📥 Clonage du projet..."
-            git clone https://github.com/${{ github.repository }}.git .
+            git init
+            git remote add origin https://github.com/${{ github.repository }}.git
+            git fetch origin main
+            git checkout -b main origin/main
           fi
           
-          # Vérifier que Docker est installé
-          if ! command -v docker &> /dev/null; then
-            echo "🐳 Installation de Docker..."
-            sudo apt update
-            sudo apt install -y docker.io docker-compose
-            sudo usermod -aG docker abraham
-            sudo systemctl start docker
-            sudo systemctl enable docker
-          fi
-          
-          # Arrêter l'ancienne version
-          echo "🛑 Arrêt de l'ancienne version..."
-          docker-compose -f deployment/docker-compose.yml down || true
-          
-          # Nettoyer les images Docker anciennes
-          echo "🧹 Nettoyage..."
           docker system prune -f || true
-          
-          # Construire et lancer la nouvelle version
-          echo "🔨 Construction et lancement..."
           docker-compose -f deployment/docker-compose.yml up --build -d
-          
-          # Vérifier que ça marche
-          echo "📊 Vérification..."
+          sleep 15
           docker-compose -f deployment/docker-compose.yml ps
           
-          echo "✅ Déploiement automatique terminé !"
-          echo "🌐 Application accessible sur : http://09.hetic.arcplex.dev"
+          echo "✅ Deployment complete!"
+          echo "🌐 App: http://09.hetic.arcplex.dev"

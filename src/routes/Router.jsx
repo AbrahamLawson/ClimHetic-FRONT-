@@ -10,7 +10,7 @@ import Parametres from "../pages/Parametres";
 import Admin from "../pages/Admin";
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
-import ProtectedRoute from "../components/ProtectedRoute";
+import { ProtectedRoute } from "../auth";
 
 const router = createBrowserRouter([
   {

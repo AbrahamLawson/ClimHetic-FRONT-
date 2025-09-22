@@ -1,4 +1,4 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 import { WeatherProvider } from "../contexts/WeatherContext";
 import WeatherCard from "../components/weather/WeatherCard";
 import WeatherToolbar from "../components/weather/WeatherToolbar";

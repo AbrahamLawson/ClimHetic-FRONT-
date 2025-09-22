@@ -2,8 +2,8 @@
 // À exécuter une seule fois lors de l'initialisation du projet
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../config/firebase-config.js';
-import { createUserProfile } from '../services/userService.js';
+import { auth } from '../auth/config/firebase.js';
+import { createUserProfile } from '../auth/services/userService.js';
 
 export const createFirstAdmin = async (email, password, displayName) => {
   try {
@@ -44,7 +44,7 @@ export const createFirstAdmin = async (email, password, displayName) => {
 // Fonction utilitaire pour vérifier si un admin existe déjà
 export const checkAdminExists = async () => {
   try {
-    const { getAllUsers } = await import('../services/userService.js');
+    const { getAllUsers } = await import('../auth/services/userService.js');
     const { users } = await getAllUsers();
     return users.some(user => user.role === 'admin');
   } catch (error) {

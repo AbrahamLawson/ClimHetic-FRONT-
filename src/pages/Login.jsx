@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoginForm from '../components/auth/LoginForm';
+import { LoginForm } from '../auth';
 
 export default function Login() {
   const [error, setError] = useState('');
