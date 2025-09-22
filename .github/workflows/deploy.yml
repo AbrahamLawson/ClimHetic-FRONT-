@@ -52,13 +52,31 @@ jobs:
           cd "$BASE_DIR"
           git clone https://github.com/${{ github.repository }}.git climhetic-front-new
           
+          # Vérifier que le clonage a réussi
+          if [ ! -d "$NEW_PROJECT_DIR" ]; then
+            echo "❌ Erreur: le clonage a échoué"
+            exit 1
+          fi
+          
           # Remplacer l'ancien répertoire par le nouveau
           echo "🔄 Remplacement de l'ancien code..."
           sudo rm -rf "$OLD_PROJECT_DIR" 2>/dev/null || true
-          mv "$NEW_PROJECT_DIR" "$OLD_PROJECT_DIR"
+          
+          # Déplacer le nouveau répertoire
+          if ! mv "$NEW_PROJECT_DIR" "$OLD_PROJECT_DIR"; then
+            echo "❌ Erreur lors du déplacement du répertoire"
+            echo "📋 État des répertoires:"
+            ls -la "$BASE_DIR"
+            exit 1
+          fi
           
           # Aller dans le répertoire final
           cd "$OLD_PROJECT_DIR"
+          
+          # Vérifier qu'on est dans le bon répertoire
+          echo "📍 Répertoire actuel: $(pwd)"
+          echo "📋 Contenu:"
+          ls -la
           
           # Vérifier que le code est présent
           if [ ! -f "deployment/docker-compose.yml" ]; then
