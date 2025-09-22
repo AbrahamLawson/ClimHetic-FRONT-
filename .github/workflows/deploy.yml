@@ -35,16 +35,17 @@ jobs:
         script: |
           echo "🚀 Début du déploiement automatique..."
           
+          # Arrêter TOUS les conteneurs qui utilisent le port 8080
+          echo "🛑 Nettoyage complet des conteneurs..."
+          docker stop $(docker ps -q --filter "publish=8080") 2>/dev/null || true
+          docker rm $(docker ps -aq --filter "publish=8080") 2>/dev/null || true
+          
           # Aller dans le répertoire du projet
           cd /home/abraham/climhetic-front || {
             echo "📁 Création du répertoire projet..."
             mkdir -p /home/abraham/climhetic-front
             cd /home/abraham/climhetic-front
           }
-          
-          # Arrêter les conteneurs Docker
-          echo "🛑 Arrêt des conteneurs existants..."
-          docker-compose -f deployment/docker-compose.yml down 2>/dev/null || true
           
           # Mise à jour forcée du code
           echo "📥 Mise à jour forcée du code..."
@@ -59,48 +60,21 @@ jobs:
             git checkout -b main origin/main
           fi
           
-          # Vérifier que Docker est installé
-          if ! command -v docker &> /dev/null; then
-            echo "🐳 Installation de Docker..."
-            sudo apt update
-            sudo apt install -y docker.io docker-compose
-            sudo usermod -aG docker abraham
-            sudo systemctl start docker
-            sudo systemctl enable docker
-          fi
-          
-          # Vérifier que les fichiers sont présents
-          echo "🔍 Vérification des fichiers..."
-          ls -la deployment/
-          
           # Nettoyer les images Docker anciennes
           echo "🧹 Nettoyage des images Docker..."
           docker system prune -f || true
           
-          # S'assurer que l'utilisateur peut utiliser Docker
-          echo "🔧 Configuration des permissions Docker..."
-          sudo usermod -aG docker abraham || true
-          
           # Construire et lancer la nouvelle version
           echo "🔨 Construction et lancement..."
-          if ! docker-compose -f deployment/docker-compose.yml up --build -d; then
-            echo "❌ Erreur lors du lancement des conteneurs"
-            echo "📋 Logs d'erreur:"
-            docker-compose -f deployment/docker-compose.yml logs
-            exit 1
-          fi
+          docker-compose -f deployment/docker-compose.yml up --build -d
           
-          # Attendre un peu que les conteneurs démarrent
-          echo "⏳ Attente du démarrage des conteneurs..."
-          sleep 10
+          # Attendre que les conteneurs démarrent
+          echo "⏳ Attente du démarrage..."
+          sleep 15
           
           # Vérifier que ça marche
-          echo "📊 Vérification des conteneurs..."
+          echo "📊 État des conteneurs:"
           docker-compose -f deployment/docker-compose.yml ps
-          
-          # Vérifier les logs en cas de problème
-          echo "📋 Logs des conteneurs:"
-          docker-compose -f deployment/docker-compose.yml logs --tail=20
           
           echo "✅ Déploiement automatique terminé !"
           echo "🌐 Application accessible sur : http://09.hetic.arcplex.dev"
