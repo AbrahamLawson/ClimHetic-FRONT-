@@ -1,6 +1,6 @@
 import React from "react";
 import "../../styles/alert.css";
-import { TriangleAlert } from "lucide-react";
+import { Check, TriangleAlert, AlertTriangle, Skull, CircleAlert, CircleX, CircleCheck, Icon } from "lucide-react";
 
 export default function AlertModal({ alert, onClose }) {
   const getStatusConfig = (type) => {
@@ -9,34 +9,40 @@ export default function AlertModal({ alert, onClose }) {
         return {
           label: "Danger",
           className: "status-danger",
-          color: "#dc2626",
-          bgColor: "#fef2f2"
+          color: "var(--danger-life)",
+          bgColor: "var(--bg-danger-life)",
+          Icon: Skull,
         };
       case "Critical":
         return {
           label: "Critiques",
           className: "status-critical",
-          color: "#dc2626",
-          bgColor: "#fef2f2"
+          color: "var(--critical)",
+          bgColor: "var(--bg-critical)",
+          Icon: TriangleAlert,
         };
       case "Warning":
         return {
           label: "Attention",
           className: "status-warning",
-          color: "#d97706",
-          bgColor: "#fffbeb"
+          color: "var(--warning)",
+          bgColor: "var(--bg-warning)",
+          Icon: CircleAlert,
         };
       default:
         return {
           label: "Attention",
           className: "status-warning",
-          color: "#d97706",
-          bgColor: "#fffbeb"
+          color: "var(--warning)",
+          bgColor: "var(--bg-warning)",
+          Icon: CircleAlert,
         };
     }
   };
 
   const statusConfig = getStatusConfig(alert.type);
+  const StatusIcon = statusConfig.Icon;
+
 
   return (
     <div className="modal-overlay">
@@ -64,7 +70,7 @@ export default function AlertModal({ alert, onClose }) {
           style={{ 
             backgroundColor: statusConfig.bgColor,
             color: statusConfig.color,
-            padding: "0.75rem 1rem",
+            padding: "0.5rem 1rem",
             borderRadius: "6px",
             display: "flex",
             alignItems: "center",
@@ -72,7 +78,7 @@ export default function AlertModal({ alert, onClose }) {
             marginBottom: "1rem"
           }}
         >
-          <TriangleAlert size={16} />
+          <StatusIcon size={16} />
           <span style={{ fontWeight: "600" }}>{statusConfig.label}</span>
         </div>
 
@@ -83,15 +89,9 @@ export default function AlertModal({ alert, onClose }) {
             tabIndex={0} 
             aria-label="Fermer"
             style={{
-              padding: "0.75rem 2rem",
-              borderRadius: "6px",
-              border: "none",
-              backgroundColor: "#7c3aed",
-              color: "#fff",
-              fontWeight: "600",
               cursor: "pointer",
               transition: "background-color 0.2s ease",
-              fontFamily: "var(--font-body)"
+              fontFamily: "var(--font-current)"
             }}
           >
             Fermer

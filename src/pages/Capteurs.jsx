@@ -10,8 +10,10 @@ import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
 import capteurService from "../services/capteurService";
+import { Trash2, Pencil, DoorOpen, CirclePower } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
+import "../styles/global.css";
 
 export default function Capteurs() {
   const navigate = useNavigate();
@@ -22,179 +24,139 @@ export default function Capteurs() {
     { key: "nom", label: "Nom du capteur" },
     { key: "type_capteur", label: "Type" },
     { key: "salle_nom", label: "Salle" },
-    { key: "is_active", label: "Statut", render: (value) => Boolean(value) ? "Actif" : "Inactif" },
+    {
+      key: "is_active",
+      label: "Statut",
+      type : "status",
+      render: (value) => (Boolean(value) ? "Active" : "Inactive"),
+    },
     { key: "derniere_mesure", label: "Dernière mesure" },
-    { 
-      key: "actions", 
-      label: "Actions", 
-      className: "actions-column",
-      render: (value, capteur) => (
-        <div style={{ 
-          display: 'flex', 
-          gap: '0.25rem', 
-          flexWrap: 'nowrap', 
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%'
-        }}>
-          {capteur && (
-            <>
-              {/* Boutons pour capteurs actifs seulement */}
-              {Boolean(capteur.is_active) && (
-                <>
-                  <FormModal
-                    ctaLabel="Changer"
-                    fields={[
-                      { 
-                        name: "nouvelle_salle_id", 
-                        label: "Nouvelle salle", 
-                        type: "select",
-                        options: salles
-                          .filter(salle => salle.id !== capteur?.id_salle)
-                          .map(salle => ({ value: salle.id, label: salle.nom })),
-                        required: true
+  {
+    key: "actions",
+    label: "Actions",
+    className: "actions-column",
+    render: (value, capteur) => (
+      <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'nowrap', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+        {capteur && (
+          <>
+            {Boolean(capteur.is_active) && (
+              <>
+                {/* Changer salle */}
+                <FormModal
+                  ctaLabel={<Pencil size={16} title={`Changer la salle du capteur "${capteur.nom}"`} />}
+                  fields={[{
+                    name: "nouvelle_salle_id",
+                    label: "Nouvelle salle",
+                    type: "select",
+                    options: salles.filter(s => s.id !== capteur.id_salle).map(s => ({ value: s.id, label: s.nom })),
+                    required: true
+                  }]}
+                  onSubmit={async (values) => {
+                    try {
+                      const response = await capteurService.changerSalleCapteur(capteur.id, parseInt(values.nouvelle_salle_id));
+                      if (response.success) {
+                        await chargerDonnees();
+                        const nouvelleSalle = salles.find(s => s.id === parseInt(values.nouvelle_salle_id));
+                        afficherMessageSucces(`Capteur "${capteur.nom}" déplacé vers "${nouvelleSalle?.nom}".`);
+                        return true;
                       }
-                    ]}
-                    onSubmit={async (values) => {
+                    } catch (err) {
+                      setError(err.message);
+                      console.error(err);
+                      throw err;
+                    }
+                  }}
+                  title={`Changer la salle du capteur "${capteur.nom}"`}
+                  submitLabel="Changer"
+                />
+
+                {/* Dissocier */}
+                {capteur.id_salle && (
+                  <FormModal
+                    ctaLabel={<DoorOpen size={16} title={`Dissocier le capteur "${capteur.nom}"`} />}
+                    fields={[]}
+                    onSubmit={async () => {
                       try {
-                        setError(null);
-                        const response = await capteurService.changerSalleCapteur(
-                          capteur.id, 
-                          parseInt(values.nouvelle_salle_id)
-                        );
-                        
+                        const response = await capteurService.dissocierCapteur(capteur.id);
                         if (response.success) {
                           await chargerDonnees();
-                          const nouvelleSalle = salles.find(s => s.id === parseInt(values.nouvelle_salle_id));
-                          afficherMessageSucces(`Changement de salle effectué ! Le capteur "${capteur.nom}" a été déplacé vers "${nouvelleSalle?.nom}".`);
+                          afficherMessageSucces(`Capteur "${capteur.nom}" dissocié.`);
                           return true;
                         }
                       } catch (err) {
                         setError(err.message);
-                        console.error('Erreur lors du changement de salle:', err);
+                        console.error(err);
                         throw err;
                       }
                     }}
-                    title={`Changer la salle du capteur "${capteur.nom}"`}
-                    submitLabel="Changer de salle"
-                    icon="house-wifi"
-                    buttonStyle={{
-                      padding: '0.25rem 0.5rem',
-                      fontSize: '0.75rem',
-                      minWidth: 'auto'
-                    }}
+                    title={`Dissocier le capteur "${capteur.nom}"`}
+                    submitLabel="Dissocier"
                   />
-                  
-                  {capteur.id_salle && (
-                    <FormModal
-                      ctaLabel="Désaffecter"
-                      fields={[]}
-                      onSubmit={async () => {
-                        try {
-                          setError(null);
-                          const response = await capteurService.dissocierCapteur(capteur.id);
-                          
-                          if (response.success) {
-                            await chargerDonnees();
-                            afficherMessageSucces(`Dissociation effectuée ! Le capteur "${capteur.nom}" n'est plus associé à aucune salle.`);
-                            return true;
-                          }
-                        } catch (err) {
-                          setError(err.message);
-                          console.error('Erreur lors de la dissociation:', err);
-                          throw err;
-                        }
-                      }}
-                      title={`Désaffecter le capteur "${capteur.nom}" de sa salle`}
-                      submitLabel="Désaffecter"
-                      icon="user-plus"
-                      buttonStyle={{
-                        padding: '0.25rem 0.5rem',
-                        fontSize: '0.75rem',
-                        minWidth: 'auto'
-                      }}
-                    />
-                  )}
-                </>
-              )}
-              
-              {/* Bouton Activer/Désactiver - toujours visible */}
-              <FormModal
-                ctaLabel={Boolean(capteur.is_active) ? "Désactiver" : "Activer"}
-                fields={[]}
-                onSubmit={async () => {
-                  try {
-                    setError(null);
-                    const isActive = Boolean(capteur.is_active);
-                    const response = isActive 
-                      ? await capteurService.desactiverCapteur(capteur.id)
-                      : await capteurService.reactiverCapteur(capteur.id);
-                    
-                    if (response.success) {
-                      await chargerDonnees();
-                      const action = isActive ? "désactivé" : "réactivé";
-                      afficherMessageSucces(`Capteur "${capteur.nom}" ${action} avec succès !`);
-                      return true;
-                    }
-                  } catch (err) {
-                    setError(err.message);
-                    console.error('Erreur lors du changement de statut:', err);
-                    throw err;
+                )}
+              </>
+            )}
+
+            {/* Activer/Désactiver */}
+            <FormModal
+            buttonStyle={{
+                    backgroundColor: capteur.is_active ? 'var(--success)' : 'var(--bg-danger-life)',
+                    color: capteur.is_active ? 'white' : 'var(--danger-life)',
+                  }}
+
+              ctaLabel={<CirclePower size={16} title={`${capteur.is_active ? "Désactiver" : "Activer"} ${capteur.nom}`} />}
+              fields={[]}
+              onSubmit={async () => {
+                try {
+                  const response = capteur.is_active ? 
+                    await capteurService.desactiverCapteur(capteur.id) :
+                    await capteurService.reactiverCapteur(capteur.id);
+                  if (response.success) {
+                    await chargerDonnees();
+                    afficherMessageSucces(`Capteur "${capteur.nom}" ${capteur.is_active ? "désactivé" : "réactivé"} !`);
+                    return true;
                   }
-                }}
-                title={`${Boolean(capteur.is_active) ? "Désactiver" : "Activer"} le capteur "${capteur.nom}"`}
-                submitLabel={Boolean(capteur.is_active) ? "Désactiver" : "Activer"}
-                icon="circle-gauge"
-                buttonStyle={{
-                padding: '0.25rem 0.5rem',
-                fontSize: '0.75rem',
-                  minWidth: 'auto'
-                }}
-              />
-              
-              {/* Bouton Supprimer - toujours visible */}
-              <FormModal
-                ctaLabel="Supprimer"
-                fields={[]}
-                onSubmit={async () => {
-                  try {
-                    setError(null);
-                    const response = await capteurService.supprimerCapteur(capteur.id);
-                    
-                    if (response.success) {
-                      await chargerDonnees();
-                      afficherMessageSucces(`Capteur "${capteur.nom}" supprimé définitivement avec succès !`);
-                      return true;
-                    }
-                  } catch (err) {
-                    setError(err.message);
-                    console.error('Erreur lors de la suppression:', err);
-                    throw err;
+                } catch (err) {
+                  setError(err.message);
+                  console.error(err);
+                  throw err;
+                }
+              }}
+              title={`${capteur.is_active ? "Désactiver" : "Activer"} le capteur "${capteur.nom}"`}
+              submitLabel={capteur.is_active ? "Désactiver" : "Activer"}
+            />
+
+            {/* Supprimer */}
+            <FormModal
+            buttonStyle={{
+                    backgroundColor: 'var(--danger)',
+                    color: 'white',
+                  }}
+              ctaLabel={<Trash2 size={16} title={`Supprimer ${capteur.nom}`} />}
+              fields={[]}
+              onSubmit={async () => {
+                try {
+                  const response = await capteurService.supprimerCapteur(capteur.id);
+                  if (response.success) {
+                    await chargerDonnees();
+                    afficherMessageSucces(`Capteur "${capteur.nom}" supprimé.`);
+                    return true;
                   }
-                }}
-                title={`Supprimer définitivement le capteur "${capteur.nom}"`}
-                submitLabel="Supprimer définitivement"
-                icon="trash"
-                buttonStyle={{
-                  padding: '0.25rem 0.5rem',
-                  fontSize: '0.75rem',
-                  minWidth: 'auto',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: '1px solid #dc3545'
-                }}
-                modalStyle={{
-                  content: {
-                    borderColor: '#dc3545'
-                  }
-                }}
-              />
-            </>
-          )}
-        </div>
-      )
-    },
-  ];
+                } catch (err) {
+                  setError(err.message);
+                  console.error(err);
+                  throw err;
+                }
+              }}
+              title={`Supprimer le capteur "${capteur.nom}"`}
+              submitLabel="Supprimer définitivement"
+            />
+          </>
+        )}
+      </div>
+    )
+  },
+];
+
 
   // États pour les données et le chargement
   const [capteurs, setCapteurs] = useState([]);
@@ -203,7 +165,7 @@ export default function Capteurs() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [statistiques, setStatistiques] = useState({ total: 0, actifs: 0, inactifs: 0 });
-  
+ 
   // Fonction pour afficher un message de succès temporaire
   const afficherMessageSucces = (message) => {
     setSuccessMessage(message);
@@ -212,13 +174,12 @@ export default function Capteurs() {
     }, 3000); // Masquer après 3 secondes
   };
 
-
   // Champs du formulaire d'ajout de capteur (mis à jour selon l'API)
   const fields = [
     { name: "nom", label: "Nom du capteur", type: "text", placeholder: "Ex: Capteur Température 101", required: true },
-    { 
-      name: "type_capteur", 
-      label: "Type de capteur", 
+    {
+      name: "type_capteur",
+      label: "Type de capteur",
       type: "select",
       options: [
         { value: "temperature", label: "Température" },
@@ -227,14 +188,15 @@ export default function Capteurs() {
       ],
       required: true
     },
-    { 
-      name: "id_salle", 
-      label: "Salle", 
+    {
+      name: "id_salle",
+      label: "Salle",
       type: "select",
       options: salles.map(salle => ({ value: salle.id, label: salle.nom })),
       required: true
     }
   ];
+
 
   // Fonction pour charger les données depuis l'API
   const chargerDonnees = async () => {
@@ -276,7 +238,7 @@ export default function Capteurs() {
       setError(null);
       console.log('Données envoyées pour ajout capteur:', values);
       const response = await capteurService.ajouterCapteur(values);
-      
+     
       if (response.success) {
         // Recharger les données pour avoir la liste à jour
         await chargerDonnees();
@@ -354,22 +316,22 @@ export default function Capteurs() {
       </a>
       <div id="main-content" tabIndex={-1}>
       <h1 className="salle-title">Gestion des capteurs</h1>
-      
+     
       {/* Affichage des erreurs */}
       {error && (
-        <div 
+        <div
         role="alert"
-        aria-live="polite" 
-        style={{ 
-          background: 'var(--bg-danger)', 
-          border: '1px solid var(--danger)', 
-          padding: '1rem', 
+        aria-live="polite"
+        style={{
+          background: 'var(--bg-danger)',
+          border: '1px solid var(--danger)',
+          padding: '1rem',
           borderRadius: '4px',
           marginBottom: '1rem',
           color: 'var(--danger)'
         }}>
           <strong>Erreur:</strong> {error}
-          <button 
+          <button
           className="btn btn-secondary"
             onClick={chargerDonnees}
             style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
@@ -381,13 +343,13 @@ export default function Capteurs() {
 
       {/* Affichage des messages de succès */}
       {successMessage && (
-        <div style={{ 
-          background: '#d4edda', 
-          border: '1px solid #c3e6cb', 
-          padding: '1rem', 
+        <div style={{
+          background: 'var(--bg-success)',
+          border: '1px solid var(--success)',
+          padding: '1rem',
           borderRadius: '4px',
           marginBottom: '1rem',
-          color: '#155724'
+          color: 'var(--success)'
         }}>
           <strong>Succès:</strong> {successMessage}
         </div>
@@ -397,22 +359,22 @@ export default function Capteurs() {
       <h2 id="stats-title" className="visually-hidden">Statistiques</h2>
       <div className="infos-pages" >
         <StatCard
-          aria-label="Nombre de capteurs" 
-          value={statistiques.total} 
-          label="Capteurs" 
-          icon="circle-gauge" 
+          aria-label="Nombre de capteurs"
+          value={statistiques.total}
+          label="Capteurs"
+          icon="circle-gauge"
         />
         <StatCard
-          aria-label="Nombre de capteurs actifs" 
-          value={statistiques.actifs} 
-          label="Actifs" 
-          icon="circle-check" 
+          aria-label="Nombre de capteurs actifs"
+          value={statistiques.actifs}
+          label="Actifs"
+          icon="circle-check"
         />
         <StatCard
-          aria-label="Nombre de capteurs inactifs" 
-          value={statistiques.inactifs} 
-          label="Inactifs" 
-          icon="circle-x" 
+          aria-label="Nombre de capteurs inactifs"
+          value={statistiques.inactifs}
+          label="Inactifs"
+          icon="circle-x"
         />
 
         <FormModal
@@ -429,11 +391,11 @@ export default function Capteurs() {
     <section className="search-section" aria-labelledby="search-title">
       <h2 id="search-title" className="visually-hidden">Recherche et filtres</h2>
       <div className="search-wrapper" style={{ marginTop: "1.5rem" }} aria-label="Recherches capteurs">
-        <Searchbar 
-          placeholder="Rechercher un capteur..." 
-          value={search} 
+        <Searchbar
+          placeholder="Rechercher un capteur..."
+          value={search}
           onChange={setSearch}
-          aria-label="Rechercher un capteur" 
+          aria-label="Rechercher un capteur"
         />
       </div>
 
@@ -447,8 +409,8 @@ export default function Capteurs() {
       <div className="table-container" style={{ marginTop: "2rem" }}>
         {capteursFiltres.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-            {capteurs.length === 0 ? 
-              'Aucun capteur trouvé. Ajoutez-en un nouveau !' : 
+            {capteurs.length === 0 ?
+              'Aucun capteur trouvé. Ajoutez-en un nouveau !' :
               'Aucun capteur ne correspond à vos critères de recherche.'
             }
           </div>

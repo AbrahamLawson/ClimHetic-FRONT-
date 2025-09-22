@@ -10,6 +10,7 @@
 :root {
   --font-body: 'Manrope', Arial, sans-serif;
   --font-dys: 'OpenDyslexic', Arial, sans-serif;
+  --font-current: var(--font-body); 
   --font-size-base: 16px;
   --text-color: #000000;
   --bg--cards: #ffffff;
@@ -32,6 +33,8 @@
   --bg-critical:#fae3c8;
   --danger: #dc3545;
   --bg-danger:#f8d7da;
+  --danger-life: #555454;
+  --bg-danger-life:#b4b4b47e;
   --active : #07beb8;
   --bg-active: #d1f2f1;
   --inactive: #6c757d;
@@ -40,6 +43,18 @@
   --body-tableau : #ffffff;
   --second--tableau : #f9f9f9;
   --focus-outline: 3px solid #4E148C;
+}
+
+body {
+  font-family: var(--font-current);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+body.dyslexic-font {
+  --font-current: var(--font-dys);
 }
 
 body.dark-mode {
@@ -64,6 +79,8 @@ body.dark-mode {
   --bg-critical:#452500;
   --danger: #cf6679;
   --bg-danger:#66000b;
+  --danger-life: #ffffff;
+  --bg-danger-life:#7979797e;
   --active : #03dac6;
   --bg-active: #004d40;
   --inactive: #888888;
@@ -97,6 +114,8 @@ body.dark-mode {
   --bg-critical:#321b00;
   --danger: #ff0000;
   --bg-danger:#330000;
+  --danger-life: #ffffff;
+  --bg-danger-life:#7979797e;
   --active : #00ffff;
   --bg-active: #003333;
   --inactive: #888888;
@@ -138,6 +157,7 @@ body.dark-mode {
   box-shadow: 0 12px 36px rgba(0,0,0,0.18);
   padding: 12px;
   z-index: 1100;
+  font-family: var(--font-current);
 }
 
 .accessibility-panel__header {
@@ -153,6 +173,7 @@ body.dark-mode {
   font-size: 18px;
   cursor: pointer;
   color: var(--primary-dark);
+  font-family: var(--font-current);
 }
 
 .accessibility-panel__row {
@@ -250,14 +271,6 @@ textarea:focus-visible,
 
 #main-content:focus {
   outline: none; 
-}
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  line-height: 1.5;
-  background-color: var(--background-color);
-  color: var(--text-color);
 }
 
 label{
@@ -417,7 +430,7 @@ button.logout-button {
   border: 1.5px solid var(--primary-dark);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
 }
 
 button.logout-button:hover {
@@ -497,7 +510,7 @@ button.logout-button:hover {
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
 }
 
 .btn:hover {
@@ -516,7 +529,7 @@ button.logout-button:hover {
   font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
   margin-top: 0.5rem;
 }
 
@@ -535,7 +548,7 @@ button.logout-button:hover {
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-current);
 }
 
 .btn-danger:hover {
@@ -616,7 +629,6 @@ button.logout-button:hover {
 
 }
 
-/* Style pour le select de filtre */
 .filter-select {
   padding: 0.5rem;
   border: 1px solid var(--line-color);
@@ -638,4 +650,23 @@ button.logout-button:hover {
 
 .filter-select:hover {
   border-color: var(--primary-dark);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--primary-dark); 
+  cursor: pointer;
+}
+input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* width: 2.2rem;
+  height: 2.2rem; */
+  background-color: inherit; 
+  border-radius: 4px;
+  cursor: pointer;
 }

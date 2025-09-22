@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/statcard.css";
-import { User, HouseWifi, CircleGauge, Siren, CircleX, CircleCheck, Skull, TriangleAlert, AlertTriangle } from "lucide-react";
+import { User, HouseWifi, CircleGauge, Siren, CircleX, CircleCheck, Skull, TriangleAlert, AlertTriangle, CircleAlert } from "lucide-react";
 
 export default function StatCard({ value, label, icon, type }) {
   const renderIcon = () => {
@@ -41,16 +41,16 @@ export default function StatCard({ value, label, icon, type }) {
         break;
       case "skull":
         IconComponent = Skull;
-        bgColor = "var(--bg-danger)";
-        iconColor = "var(--danger)";
+        bgColor = "var(--bg-danger-life)";
+        iconColor = "var(--danger-life)";
         break;
       case "triangle-exclamation":
         IconComponent = TriangleAlert;
         bgColor = "var(--bg-critical)";
         iconColor = "var(--critical)";
         break;
-      case "triangle-alert":
-        IconComponent = AlertTriangle;
+      case "circle-alert":
+        IconComponent = CircleAlert;
         bgColor = "var(--bg-warning)";
         iconColor = "var(--warning)";
         break;
