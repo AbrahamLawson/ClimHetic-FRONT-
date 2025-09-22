@@ -26,27 +26,29 @@ git push
 
 ## 📚 Documentation
 
-- **[GitHub Actions](deployment/GITHUB-ACTIONS.md)** - Déploiement automatique
-- **[Dossier Deployment](deployment/)** - Fichiers Docker et configuration
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Architecture détaillée du projet
+- **[src/auth/README.md](src/auth/README.md)** - Module d'authentification Firebase
+- **[DEPLOY.md](DEPLOY.md)** - Guide de déploiement complet
+- **[deployment/](deployment/)** - Configuration Docker
 - **Accès production** : http://09.hetic.arcplex.dev
 
 ## 📦 Structure du projet
 
 ```
 ClimHetic-FRONT/
-├── src/                    # Code source React
-├── public/                 # Assets statiques
-├── deployment/             # 🚀 Fichiers de déploiement
-│   ├── Dockerfile         # Configuration Docker
-│   ├── docker-compose.yml # Lance l'application
-│   ├── nginx.conf         # Configuration serveur web
-│   ├── .env.production    # Variables de production
-│   ├── GITHUB-ACTIONS.md  # Guide déploiement automatique
-│   └── README.md          # Documentation du dossier
-├── .github/workflows/     # 🤖 GitHub Actions
-│   └── deploy.yml         # Déploiement automatique
-└── README.md              # Ce fichier
+├── 🔐 src/auth/            # Module d'authentification Firebase
+├── 🧩 src/components/      # Composants React réutilisables  
+├── 📄 src/pages/          # Pages de l'application
+├── 🎨 src/styles/         # Fichiers CSS organisés
+├── ⚙️ src/services/       # Services API et logique métier
+├── 🌐 src/contexts/       # Contextes React
+├── 🚀 deployment/         # Configuration Docker
+├── 🤖 .github/workflows/  # CI/CD GitHub Actions
+├── 📋 PROJECT_STRUCTURE.md # Documentation détaillée
+└── 🧹 cleanup.sh          # Script de nettoyage
 ```
+
+> 📖 **Voir [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) pour la documentation complète**
 
 ## 🛠️ Technologies
 
