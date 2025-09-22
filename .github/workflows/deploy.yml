@@ -1,54 +1,37 @@
-# ==========================================
-# GITHUB ACTIONS - DÉPLOIEMENT AUTOMATIQUE
-# ==========================================
-# Ce fichier déploie automatiquement ton app quand tu push sur GitHub
+name: Deploy ClimHetic
 
-name: 🚀 Déploiement ClimHetic
-
-# Quand déclencher le déploiement
 on:
   push:
-    branches: [ main ]  # À chaque push sur la branche main
-  workflow_dispatch:    # Ou manuellement depuis GitHub
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    name: 📦 Déployer sur le serveur
+    name: Deploy
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Récupérer le code depuis GitHub
-    - name: 📥 Récupérer le code
+    - name: Checkout
       uses: actions/checkout@v4
     
-    # 2. Se connecter au serveur et déployer
-    - name: 🚀 Déployer sur le serveur
+    - name: Deploy
       uses: appleboy/ssh-action@v1.0.3
       with:
-        # Informations de connexion (à configurer dans les secrets GitHub)
         host: admin-hetic.arcplex.tech
         username: abraham
         password: ${{ secrets.SERVER_PASSWORD }}
         port: 2326
-        
-        # Commandes à exécuter sur le serveur
         script: |
-          echo "🚀 Début du déploiement automatique..."
+          echo "🚀 Starting deployment..."
           
-          # Arrêter TOUS les conteneurs qui utilisent le port 8080
-          echo "🛑 Nettoyage complet des conteneurs..."
           docker stop $(docker ps -q --filter "publish=8080") 2>/dev/null || true
           docker rm $(docker ps -aq --filter "publish=8080") 2>/dev/null || true
           
-          # Aller dans le répertoire du projet
           cd /home/abraham/climhetic-front || {
-            echo "📁 Création du répertoire projet..."
             mkdir -p /home/abraham/climhetic-front
             cd /home/abraham/climhetic-front
           }
           
-          # Mise à jour forcée du code
-          echo "📥 Mise à jour forcée du code..."
           if [ -d ".git" ]; then
             git fetch origin main
             git reset --hard origin/main
@@ -60,21 +43,10 @@ jobs:
             git checkout -b main origin/main
           fi
           
-          # Nettoyer les images Docker anciennes
-          echo "🧹 Nettoyage des images Docker..."
           docker system prune -f || true
-          
-          # Construire et lancer la nouvelle version
-          echo "🔨 Construction et lancement..."
           docker-compose -f deployment/docker-compose.yml up --build -d
-          
-          # Attendre que les conteneurs démarrent
-          echo "⏳ Attente du démarrage..."
           sleep 15
-          
-          # Vérifier que ça marche
-          echo "📊 État des conteneurs:"
           docker-compose -f deployment/docker-compose.yml ps
           
-          echo "✅ Déploiement automatique terminé !"
-          echo "🌐 Application accessible sur : http://09.hetic.arcplex.dev"
+          echo "✅ Deployment complete!"
+          echo "🌐 App: http://09.hetic.arcplex.dev"

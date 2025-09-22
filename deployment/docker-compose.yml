@@ -1,25 +1,11 @@
-# ==========================================
-# DOCKER COMPOSE SIMPLE POUR CLIMHETIC
-# ==========================================
-# Ce fichier lance ton application en un seul conteneur
-
 version: '3.8'
 
 services:
-  # Notre application web
   climhetic:
-    # Construire l'image depuis le Dockerfile dans deployment/
     build:
       context: ..
       dockerfile: deployment/Dockerfile
-    
-    # Nom du conteneur (plus facile à identifier)
     container_name: climhetic-app
-    
-    # Redirection de port: 
-    # Port 8080 sur ton serveur → Port 80 dans le conteneur
     ports:
       - "8080:80"
-    
-    # Redémarrer automatiquement si le conteneur s'arrête
     restart: unless-stopped
