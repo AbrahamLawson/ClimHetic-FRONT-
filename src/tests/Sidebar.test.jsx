@@ -10,7 +10,7 @@ vi.mock("../contexts/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../auth";
 
 describe("Sidebar - affichage selon rôle", () => {
   const renderSidebarWithUser = (user) => {

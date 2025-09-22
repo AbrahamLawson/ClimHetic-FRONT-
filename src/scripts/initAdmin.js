@@ -44,7 +44,7 @@ export const createFirstAdmin = async (email, password, displayName) => {
 // Fonction utilitaire pour vérifier si un admin existe déjà
 export const checkAdminExists = async () => {
   try {
-    const { getAllUsers } = await import('../services/userService.js');
+    const { getAllUsers } = await import('../auth/services/userService.js');
     const { users } = await getAllUsers();
     return users.some(user => user.role === 'admin');
   } catch (error) {

@@ -14,7 +14,7 @@ import StatCard from "../components/StatCard";
 import { WeatherProvider } from "../contexts/WeatherContext";
 import WeatherCard from "../components/weather/WeatherCard";
 import capteurService from "../services/capteurService";
-import { getAllUsers } from "../services/userService";
+import { getAllUsers } from "../auth";
 import "../styles/statcard.css";
 import "../styles/global.css";
 

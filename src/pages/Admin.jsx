@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../services/auth";
-import { getAllUsers } from "../services/userService";
+import { createUser, getAllUsers } from "../auth";
 import Tableau from "../components/Tableau";
 import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
