@@ -63,3 +63,7 @@
 .card-graphiques .card-title {
   color: var(--quaternary);
 }
+
+.card-meteo .card-title {
+  color: var(--weather);
+}

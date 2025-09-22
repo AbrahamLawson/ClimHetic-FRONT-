@@ -23,7 +23,7 @@ export default function AlertList({ alerts, onAlertClick, selectedAlert }) {
   };
 
   return (
-    <div className="alert-list">
+    <div className="alert-list" role="list">
       {alertList.map((alert, idx) => (
         <AlertItem key={idx} alert={alert} onClick={() => handleClick(alert)} />
       ))}

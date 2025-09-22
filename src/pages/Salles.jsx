@@ -10,7 +10,8 @@ import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
-import { Pencil, Trash2, CirclePower, Plus, HousePlus } from "lucide-react";
+import SectionLoader from "../components/SectionLoader";
+import { Pencil, Trash2, CirclePower, HousePlus } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 import adminSalleService from "../services/AdminSalle";
@@ -110,6 +111,14 @@ export default function Salles() {
   };
 
   useEffect(() => { load(); }, [isAdminRole]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      load();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [isAdminRole]);
+
 
   //Création Form Admin
   const createFields = [
@@ -329,7 +338,7 @@ export default function Salles() {
   }, [salles, search, filters, isAdminRole]);
 
   return (
-    <main className="page-container page-wrapper" tabIndex={-1}>
+    <main className="page-container page-wrapper " tabIndex={-1}>
       <div id="main-content" tabIndex={-1}>
         <a href="#main-content" className="skip-link visually-hidden">Aller au contenu principal</a>
 
@@ -389,12 +398,16 @@ export default function Salles() {
         </div>
 
         <div className="table-container" style={{ marginTop: "2rem" }}>
+          {loading ? (
+            <SectionLoader message="Chargement des salles…" />
+          ) : (
           <Tableau
             columns={columnsToUse}
             data={loading ? [] : sallesFiltrees}
             loading={loading}
             onRowClick={(row) => navigate(`/salles/${row.id}`)}
           />
+        )}
         </div>
       </div>
     </main>

@@ -11,7 +11,7 @@ export default function Parametres() {
   }
 
   return (
-    <div className="page-wrapper">
+    <main className="page-wrapper fade-in" tabIndex={-1}>
       <h1>Paramètres</h1>
       
       <div className="settings-container">
@@ -24,6 +24,6 @@ export default function Parametres() {
           </WeatherProvider>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

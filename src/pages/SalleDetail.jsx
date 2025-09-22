@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import Status from "../components/Status";
 import SliderWrapper from "../components/SliderWrapper";
+import SectionLoader from "../components/SectionLoader";
 import Gauge from "../components/Gauge";
 import Graphique from "../components/Graphique";
 import { ArrowLeft } from "lucide-react";
@@ -159,6 +160,14 @@ export default function SalleDetail() {
   useEffect(() => {
     load();
   }, [id]);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    if (document.visibilityState === "visible") load();
+  }, 5 * 60 * 1000);
+
+  return () => clearInterval(interval);
+  }, [id]);
+
 
   const currentMetrics = useMemo(() => {
     return {
@@ -178,7 +187,7 @@ export default function SalleDetail() {
   }, [moyennes]);
 
   return (
-    <main className="page-wrapper" aria-labelledby="salle-detail-title" tabIndex={-1}>
+    <main className="page-wrapper fade-in" aria-labelledby="salle-detail-title" tabIndex={-1}>
       <div id="main-content" tabIndex={-1}>
         <a href="#main-content" className="skip-link visually-hidden">
           Aller au contenu principal
@@ -190,14 +199,14 @@ export default function SalleDetail() {
             {salle ? `Salle ${salle.nom}` : "Détails de la salle"}
           </h1>
           {confort && (
-            <div style={{ marginLeft: "auto" }}>
+            <div className="fade-in" style={{ marginLeft: "auto" }}>
               <Status value={statusToPillValue(confort)} />
             </div>
           )}
         </div>
 
         {err && (
-          <div className="mt-3 text-red-600" role="alert">
+          <div className="mt-3 text-red-600" role="alert" aria-live="polite">
             Erreur : {err}
           </div>
         )}
@@ -219,9 +228,9 @@ export default function SalleDetail() {
               </div>
 
               {loading ? (
-                <div style={{ textAlign: "center", padding: "2rem" }}>Chargement…</div>
-              ) : (
-                <div className="salle-graphs" data-testid="chart-container" aria-label="Données de la salle">
+                  <SectionLoader text="Chargement des données de la salle" />
+                ) : (
+                <div className="salle-graphs fade-in" data-testid="chart-container" aria-label="Données de la salle">
                   <section className="metrics-section" aria-labelledby="metrics-title">
                     <h2 id="metrics-title" className="visually-hidden">Métriques et graphiques</h2>
 

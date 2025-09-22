@@ -6,7 +6,7 @@ export default function Ressources() {
   const { isAuthenticated, isAdmin } = useAuth();
 
   return (
-    <main className="page-wrapper" tabIndex={-1}>
+    <main className="page-wrapper fade-in" tabIndex={-1}>
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
       </a>
