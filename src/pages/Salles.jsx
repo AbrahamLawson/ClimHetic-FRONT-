@@ -10,7 +10,7 @@ import FormModal from "../components/form/FormModal";
 import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
-import { Pencil, Trash2, CirclePower } from "lucide-react";
+import { Pencil, Trash2, CirclePower, Plus, HousePlus } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 import adminSalleService from "../services/AdminSalle";
@@ -368,7 +368,7 @@ export default function Salles() {
 
           {isAdminRole && (
             <FormModal
-              ctaLabel="+ Ajouter une salle"
+              ctaLabel={<><HousePlus size={16} /> Ajouter une salle</>}
               fields={createFields}
               onSubmit={handleAddSalle}
               title="Ajouter une salle"

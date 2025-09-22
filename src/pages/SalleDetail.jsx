@@ -9,6 +9,7 @@ import Status from "../components/Status";
 import SliderWrapper from "../components/SliderWrapper";
 import Gauge from "../components/Gauge";
 import Graphique from "../components/Graphique";
+import { ArrowLeft } from "lucide-react";
 
 import adminSalleService from "../services/AdminSalle";
 import capteurService from "../services/capteurService";
@@ -35,7 +36,6 @@ const toObject = (resp) => {
   if (resp && typeof resp === "object") return resp;
   return null;
 };
-
 
 function mapBackendToUIStatus(item) {
   let status = "Confortable";
@@ -185,7 +185,7 @@ export default function SalleDetail() {
         </a>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <button className="btn" onClick={() => navigate(-1)}>← Retour</button>
+          <button className="btn" onClick={() => navigate(-1)}><ArrowLeft size={16}/> Retour</button>
           <h1 id="salle-detail-title" className="salle-detail-title" style={{ margin: 0 }}>
             {salle ? `Salle ${salle.nom}` : "Détails de la salle"}
           </h1>
@@ -205,69 +205,72 @@ export default function SalleDetail() {
         {salle && (
           <section className="info-section" aria-labelledby="info-title" style={{ marginTop: "1rem" }}>
             <h2 id="info-title" className="visually-hidden">Informations générales</h2>
-            <div className="salle-fiche" aria-label="Informations salle">
-              <Card title="Informations" category="informations">
-                <p><strong>Nom :</strong> {salle.nom}</p>
-                <p><strong>Bâtiment :</strong> {salle.batiment ?? "—"}</p>
-                {"etage" in salle && <p><strong>Étage :</strong> {salle.etage}</p>}
-                {"capacite" in salle && <p><strong>Capacité :</strong> {salle.capacite}</p>}
-                {"etat" in salle && <p><strong>Statut :</strong> {salle.etat}</p>}
-                {confort && <p><strong>État de confort :</strong> {confort}</p>}
-              </Card>
+
+            <div className="salle-detail-container">
+              <div className="salle-fiche" aria-label="Informations salle">
+                <Card title="Informations" category="informations">
+                  <p><strong>Nom :</strong> {salle.nom}</p>
+                  <p><strong>Bâtiment :</strong> {salle.batiment ?? "—"}</p>
+                  {"etage" in salle && <p><strong>Étage :</strong> {salle.etage}</p>}
+                  {"capacite" in salle && <p><strong>Capacité :</strong> {salle.capacite}</p>}
+                  {"etat" in salle && <p><strong>Statut :</strong> {salle.etat}</p>}
+                  {confort && <p><strong>État de confort :</strong> {confort}</p>}
+                </Card>
+              </div>
+
+              {loading ? (
+                <div style={{ textAlign: "center", padding: "2rem" }}>Chargement…</div>
+              ) : (
+                <div className="salle-graphs" data-testid="chart-container" aria-label="Données de la salle">
+                  <section className="metrics-section" aria-labelledby="metrics-title">
+                    <h2 id="metrics-title" className="visually-hidden">Métriques et graphiques</h2>
+
+                    <SliderWrapper>
+                      <Card title="Température" category="graphiques">
+                        <Gauge metric="temperature" value={currentMetrics.temperature ?? 0} aria-label="Gauge de la température" />
+                      </Card>
+                      <Card title="Température" category="graphiques">
+                        <Graphique
+                          data={historique}
+                          metrics={["temperature"]}
+                          alertZone={alertZones.temperature}
+                          aria-label="Graphique de la température"
+                        />
+                      </Card>
+                    </SliderWrapper>
+
+                    <SliderWrapper>
+                      <Card title="Humidité" category="graphiques">
+                        <Gauge metric="humidite" value={currentMetrics.humidite ?? 0} aria-label="Gauge de l'humidité" />
+                      </Card>
+                      <Card title="Humidité" category="graphiques">
+                        <Graphique
+                          data={historique}
+                          metrics={["humidite"]}
+                          alertZone={alertZones.humidite}
+                          aria-label="Graphique de l'humidité"
+                        />
+                      </Card>
+                    </SliderWrapper>
+
+                    <SliderWrapper>
+                      <Card title="Pression" category="graphiques">
+                        <Gauge metric="pressure" value={currentMetrics.pression ?? 0} aria-label="Gauge de la pression" />
+                      </Card>
+                      <Card title="Pression" category="graphiques">
+                        <Graphique
+                          data={historique}
+                          metrics={["pression"]}
+                          alertZone={alertZones.pression}
+                          aria-label="Graphique de la pression"
+                        />
+                      </Card>
+                    </SliderWrapper>
+                  </section>
+                </div>
+              )}
             </div>
           </section>
-        )}
-
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "2rem" }}>Chargement…</div>
-        ) : (
-          <div className="salle-graphs" data-testid="chart-container" aria-label="Données de la salle">
-            <section className="metrics-section" aria-labelledby="metrics-title">
-              <h2 id="metrics-title" className="visually-hidden">Métriques et graphiques</h2>
-
-              <SliderWrapper>
-                <Card title="Température" category="graphiques">
-                  <Gauge metric="temperature" value={currentMetrics.temperature ?? 0} aria-label="Gauge de la température" />
-                </Card>
-                <Card title="Température" category="graphiques">
-                  <Graphique
-                    data={historique}
-                    metrics={["temperature"]}
-                    alertZone={alertZones.temperature}
-                    aria-label="Graphique de la température"
-                  />
-                </Card>
-              </SliderWrapper>
-
-              <SliderWrapper>
-                <Card title="Humidité" category="graphiques">
-                  <Gauge metric="humidite" value={currentMetrics.humidite ?? 0} aria-label="Gauge de l'humidité" />
-                </Card>
-                <Card title="Humidité" category="graphiques">
-                  <Graphique
-                    data={historique}
-                    metrics={["humidite"]}
-                    alertZone={alertZones.humidite}
-                    aria-label="Graphique de l'humidité"
-                  />
-                </Card>
-              </SliderWrapper>
-
-              <SliderWrapper>
-                <Card title="Pression" category="graphiques">
-                  <Gauge metric="pressure" value={currentMetrics.pression ?? 0} aria-label="Gauge de la pression" />
-                </Card>
-                <Card title="Pression" category="graphiques">
-                  <Graphique
-                    data={historique}
-                    metrics={["pression"]}
-                    alertZone={alertZones.pression}
-                    aria-label="Graphique de la pression"
-                  />
-                </Card>
-              </SliderWrapper>
-            </section>
-          </div>
         )}
       </div>
     </main>

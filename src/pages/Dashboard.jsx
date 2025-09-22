@@ -332,7 +332,7 @@ const filteredData = data;
         )}
       </Card>
       <Card
-        title="Température moyenne par bâtiment (H24 fictif)"
+        title="Température moyenne par bâtiment (24h)"
         category="graphiques"
         aria-labelledby="data-graphs"
         >

@@ -164,7 +164,7 @@ export default function Alertes() {
               Chargement des alertes...
             </div>
           ) : filteredAlerts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-color)' }}>
               Aucune alerte ! Toutes les salles sont conformes.
             </div>
           ) : (
