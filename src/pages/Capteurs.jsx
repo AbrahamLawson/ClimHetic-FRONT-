@@ -10,7 +10,7 @@ import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
 import capteurService from "../services/capteurService";
-import { Trash2, Pencil, DoorOpen, CirclePower } from "lucide-react";
+import { Trash2, Pencil, DoorOpen, CirclePower, Plus } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
 import "../styles/global.css";
@@ -378,7 +378,7 @@ export default function Capteurs() {
         />
 
         <FormModal
-          ctaLabel="+ Ajouter un capteur"
+          ctaLabel={<><Plus size={16} /> Ajouter un capteur</>}
           fields={fields}
           onSubmit={handleAddCapteur}
           title="Ajouter un capteur"

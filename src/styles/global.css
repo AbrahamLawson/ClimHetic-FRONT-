@@ -68,9 +68,9 @@ body.dark-mode {
   --bg--primary-light: #1e1e1e;
   --secondary: #cfcfcf;
   --line-color: #333;
-  --terciary: #03dac6;
+  --terciary: #07daff;
   --bg--terciary: #003532;
-  --quaternary: #03dac6;
+  --quaternary: #0379da;
   --success: #03dac6;
   --bg-success:#004d40;
   --warning: #ffb300;
@@ -321,22 +321,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar-cta a {
+  display: inline-flex;          
+  align-items: center;           
+  gap: 0.5rem;                   
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   font-weight: 600;
   font-size: 0.9rem;
   color: #fff;
   background-color: var(--primary-dark);
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  font-family: var(--font-current);
 }
 
 .navbar-cta a:hover {
-  background-color: var(--secondary);
-  transform: scale(1.05);
+  background-color: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
 }
 
 .sidebar {
@@ -500,6 +504,9 @@ button.logout-button:hover {
 }
 
 .btn {
+  display: inline-flex;          
+  align-items: center;           
+  gap: 0.5rem;                   
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: 600;

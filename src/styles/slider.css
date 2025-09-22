@@ -29,8 +29,9 @@
 }
 
 .slider-arrow {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  background-color: var(--bg--cards);
+  border: 1px solid var(--line-color);
+  color: var(--text-color);
   border-radius: 50%;
   width: 35px;
   height: 35px;

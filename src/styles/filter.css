@@ -14,7 +14,7 @@
 .filter-trigger {
   background: var(--bg--cards);
   border: 1px solid var(--line-color);
-  color: var(--primary-dark);
+  color: var(--text-color);
   border-radius: 6px;
   padding: 0.4rem 0.75rem;
   font-size: 0.9rem;
