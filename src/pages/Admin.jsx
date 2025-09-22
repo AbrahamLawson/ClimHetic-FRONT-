@@ -151,7 +151,7 @@ export default function Admin() {
   }, [users, search, filters]);
 
   return (
-    <main className="page-container page-wrapper" tabIndex={-1}>
+    <main className="page-container page-wrapper fade-in" tabIndex={-1}>
     
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal

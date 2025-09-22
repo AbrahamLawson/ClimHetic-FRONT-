@@ -25,6 +25,7 @@
   --terciary: #1F3A93;
   --bg--terciary: #E3F2FD;
   --quaternary: #007EA7;
+  --weather: #a34801;
   --success: #28a745;
   --bg-success:#d4edda;
   --warning: #ffc107;
@@ -71,6 +72,7 @@ body.dark-mode {
   --terciary: #07daff;
   --bg--terciary: #003532;
   --quaternary: #0379da;
+  --weather: #c93e07;
   --success: #03dac6;
   --bg-success:#004d40;
   --warning: #ffb300;
@@ -104,6 +106,7 @@ body.dark-mode {
   --secondary: #ff0000;
   --terciary: #00ffff;
   --quaternary: #00ff00;
+  --weather: #ffff00;
   --bg--cards: #000000;
   --bg--navbar: #000000;
   --success: #00ff00;
@@ -530,6 +533,7 @@ button.logout-button:hover {
   background: transparent;
   color: var(--primary-dark);
   border: 1.5px solid var(--primary-dark);
+  width: 100%;
   font-weight: 600;
   border-radius: 8px;
   padding: 0.6rem 1rem;
@@ -677,3 +681,43 @@ input[type="checkbox"]:hover {
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* .fade-in {
+  opacity: 0;
+  animation: simpleFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes simpleFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+} */
+
+/* @keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} */
+

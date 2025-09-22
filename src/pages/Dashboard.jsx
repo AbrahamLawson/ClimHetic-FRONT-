@@ -11,6 +11,7 @@ import Tableau from "../components/Tableau";
 import AlertList from "../components/alerts/AlertList";
 import AlertModal from "../components/alerts/AlertModal";
 import StatCard from "../components/StatCard";
+import SectionLoader from "../components/SectionLoader";
 import { WeatherProvider } from "../contexts/WeatherContext";
 import WeatherCard from "../components/weather/WeatherCard";
 import capteurService from "../services/capteurService";
@@ -251,6 +252,13 @@ export default function Dashboard() {
   useEffect(() => {
     chargerDonnees();
   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      chargerDonnees();
+    }, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
 
   const columns = [
     { key: "id", label: "ID" },
@@ -288,7 +296,7 @@ const filteredData = data;
 
   return (
 
-    <main className="page-wrapper" tabIndex={-1}>
+    <main className="page-wrapper fade-in" tabIndex={-1}>
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
       </a>
@@ -298,7 +306,7 @@ const filteredData = data;
 
       <section className="top-dashboard" aria-label="Statistiques et météo">
         <div className="stats-column" aria-label="Section statistiques">
-          <div className="stat-cards-grid">
+          <div className="stat-cards-grid fade-in">
             <StatCard value={salles.length + alertesCritiques.length} label="Salles" icon="house-wifi" aria-label="Nombre de salles" />
             {role !== "guest" && (
               <StatCard value={alertesCritiques.length} label="Alertes" icon="siren" aria-label="Nombre d'alertes" />
@@ -312,21 +320,23 @@ const filteredData = data;
           </div>
         </div>
 
-        <section className="weather-column" aria-label="Section météo">
+        <section className="weather-column fade-in" aria-label="Section météo">
           <WeatherProvider>
             <Card title="Météo locale" category="meteo">
+              {loading ? (
+                <SectionLoader text="Chargement de la météo" />
+              ) : ( 
               <WeatherCard />
+        )}
             </Card>
           </WeatherProvider>
         </section>
         </section>
 
-    <div className="card-container">
+    <div className="card-container fade-in">
       <Card title="Données capteurs" category="tableau" aria-labelledby="data-heading" fullWidth>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            Chargement des données...
-          </div>
+          <SectionLoader text="Chargement des données" />
         ) : (
           <Tableau columns={columns} data={filteredData} aria-label="Tableau des salles" />
         )}
@@ -336,17 +346,25 @@ const filteredData = data;
         category="graphiques"
         aria-labelledby="data-graphs"
         >
+        {loading ? (
+          <SectionLoader text="Chargement des données" />
+        ) : ( 
         <SimpleChart
           data={graphData}
           metrics={["Bat A", "Bat B", "Bat C"]}
           alertZone={{ min: 20, max: 25 }}
           aria-label="Graphiques des salles"
           />
+          )}
       </Card>
 
       {role !== "guest" && (
         <Card title="Alertes critiques" category="alertes" aria-labelledby="data-alert">
+          {loading ? (
+          <SectionLoader text="Chargement des alertes" />
+        ) : ( 
           <AlertList alerts={alertesCritiques} onAlertClick={handleAlertClick} />
+        )}
         </Card>
       )}
 

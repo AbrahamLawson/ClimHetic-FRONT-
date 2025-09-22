@@ -10,6 +10,7 @@ import Filter from "../components/Filter";
 import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
 import capteurService from "../services/capteurService";
+import SectionLoader from "../components/SectionLoader";
 import { Trash2, Pencil, DoorOpen, CirclePower, Plus } from "lucide-react";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
@@ -231,6 +232,13 @@ export default function Capteurs() {
   useEffect(() => {
     chargerDonnees();
   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      chargerDonnees();
+    }, 5 * 60 * 1000); 
+    return () => clearInterval(interval);
+  }, []);
+
 
   // Fonction pour ajouter un capteur
   const handleAddCapteur = async (values) => {
@@ -298,19 +306,8 @@ export default function Capteurs() {
     });
   }, [capteurs, search, filters]);
 
-  // Affichage conditionnel selon l'état de chargement
-  if (loading) {
-    return (
-      <div className="page-container page-wrapper">
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <p>Chargement des capteurs...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <main className="page-container page-wrapper" tabIndex={-1}>
+    <main className="page-container page-wrapper fade-in" tabIndex={-1}>
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
       </a>
@@ -404,22 +401,23 @@ export default function Capteurs() {
       </div>
     </section>
 
-    <section className="data-section" aria-labelledby="data-title">
-      <h2 id="data-title" className="visually-hidden">Liste des capteurs</h2>
-      <div className="table-container" style={{ marginTop: "2rem" }}>
-        {capteursFiltres.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-            {capteurs.length === 0 ?
-              'Aucun capteur trouvé. Ajoutez-en un nouveau !' :
-              'Aucun capteur ne correspond à vos critères de recherche.'
-            }
-          </div>
-        ) : (
-
-          <Tableau columns={columns} data={capteursFiltres} aria-label="Tableau des capteurs"/>
-        )}
+<section className="data-section" aria-labelledby="data-title">
+  <h2 id="data-title" className="visually-hidden">Liste des capteurs</h2>
+  <div className="table-container" style={{ marginTop: "2rem" }}>
+    {loading ? (
+      <SectionLoader text="Chargement du tableau des capteurs..." />
+    ) : capteursFiltres.length === 0 ? (
+      <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+        {capteurs.length === 0
+          ? 'Aucun capteur trouvé. Ajoutez-en un nouveau !'
+          : 'Aucun capteur ne correspond à vos critères de recherche.'}
       </div>
-      </section>
+    ) : (
+      <Tableau columns={columns} data={capteursFiltres} aria-label="Tableau des capteurs"/>
+    )}
+  </div>
+</section>
+
       </div>
     </main>
   );
