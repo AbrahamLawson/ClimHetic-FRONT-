@@ -40,6 +40,18 @@
   padding-right: 0.5rem;
 }
 
+.card-tableau .card-content {
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
+.card-alertes .card-content {
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
 .card-tableau .card-title {
   color: var(--terciary);
 }
