@@ -13,13 +13,13 @@
   fill: var(--primary-dark); 
   text-anchor: middle;
   dominant-baseline: middle;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
 }
 
 .gauge-wrapper text {
   font-size: 0.85rem; 
   fill: var(--gauge--text);          
-  font-family: var(--font-body);
+  font-family: var(--font-current);
 }
 
 .gauge-wrapper .segment {

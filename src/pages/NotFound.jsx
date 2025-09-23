@@ -9,7 +9,7 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <main className="notfound-content " style={{ textAlign: "center", padding: "6rem" }} tabIndex={-1} aria-labelledby="notfound-title">
+    <main className="notfound-content fade-in" style={{ textAlign: "center", padding: "6rem" }} tabIndex={-1} aria-labelledby="notfound-title">
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
       </a>

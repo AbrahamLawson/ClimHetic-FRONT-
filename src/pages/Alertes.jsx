@@ -6,6 +6,7 @@ import StatCard from "../components/StatCard";
 import Searchbar from "../components/Searchbar";
 import Filter from "../components/Filter";
 import alertService from "../services/alertService";
+import SectionLoader from "../components/SectionLoader";
 import "../styles/statcard.css";
 import "../styles/global.css";
 import "../styles/searchbar.css";
@@ -64,6 +65,17 @@ export default function Alertes() {
     }
   }, [isAuthenticated]);
 
+  useEffect(() => {
+  if (!isAuthenticated) return;
+
+  const interval = setInterval(() => {
+    chargerAlertes();
+  }, 3 * 60 * 1000);
+
+  return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+
   const handleAlertClick = (alert) => {
     setAlerts((prev) =>
       prev.map((a) => (a.id === alert.id ? { ...a, read: true } : a))
@@ -94,7 +106,7 @@ export default function Alertes() {
 
   if (!isAuthenticated) {
     return (
-      <main className="page-wrapper" tabIndex={-1}>
+      <main className="page-wrapper fade-in" tabIndex={-1}>
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h1>Accès non autorisé</h1>
           <p>Vous devez être connecté pour voir les alertes.</p>
@@ -104,7 +116,7 @@ export default function Alertes() {
   }
 
   return (
-    <main className="page-wrapper" tabIndex={-1}>
+    <main className="page-wrapper fade-in" tabIndex={-1}>
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
       </a>
@@ -115,7 +127,7 @@ export default function Alertes() {
 
         <section aria-labelledby="stats-section">
           <h2 id="stats-section" className="visually-hidden">Statistiques</h2>
-          <div className="stat-cards-container" style={{ marginBottom: "2rem" }}>
+          <div className="stat-cards-container fade-in" style={{ marginBottom: "2rem" }}>
             <StatCard 
               aria-label="Nombre total d'alertes" 
               value={stats.total} 
@@ -138,7 +150,7 @@ export default function Alertes() {
               aria-label="Alertes attention" 
               value={stats.warning} 
               label="Attention" 
-              icon="triangle-alert" 
+              icon="circle-alert" 
             />
           </div>
         </section>
@@ -157,15 +169,12 @@ export default function Alertes() {
           </div>
         </div>
 
-        {/* Liste des alertes */}
         <section aria-labelledby="alerts-section">
           <h2 id="alerts-section" className="visually-hidden">Liste des alertes</h2>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
-              Chargement des alertes...
-            </div>
+            <SectionLoader message="Chargement des alertes" />
           ) : filteredAlerts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-color)' }}>
               Aucune alerte ! Toutes les salles sont conformes.
             </div>
           ) : (

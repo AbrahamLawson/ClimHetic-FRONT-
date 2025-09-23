@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/filter.css";
+import { ChevronDown } from "lucide-react";
 
 export default function Filter({ categories, onChange }) {
   const [selectedValues, setSelectedValues] = useState({});
@@ -27,7 +28,7 @@ export default function Filter({ categories, onChange }) {
         <div key={cat.title} className="filter-dropdown">
           <button className="filter-trigger">
             {cat.title}
-            <span className="chevron">▼</span>
+            <span className="chevron"><ChevronDown size={18}/></span>
           </button>
 
           <div className="filter-menu">

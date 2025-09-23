@@ -8,6 +8,7 @@ import Searchbar from "../components/Searchbar";
 import StatCard from "../components/StatCard";
 import "../styles/searchbar.css";
 import "../styles/salle.css";
+import { UserRoundPlus } from "lucide-react";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -150,7 +151,7 @@ export default function Admin() {
   }, [users, search, filters]);
 
   return (
-    <main className="page-container page-wrapper" tabIndex={-1}>
+    <main className="page-container page-wrapper fade-in" tabIndex={-1}>
     
       <a href="#main-content" className="skip-link visually-hidden">
         Aller au contenu principal
@@ -192,7 +193,7 @@ export default function Admin() {
         <StatCard value={users.length} label="Utilisateurs" icon="user" />
 
         <FormModal
-          ctaLabel="+ Ajouter un utilisateur"
+          ctaLabel={<><UserRoundPlus size={16} /> Ajouter un utilisateur</>}
           fields={fields}
           onSubmit={handleAddUser}
           title="Ajouter un utilisateur"

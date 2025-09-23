@@ -24,7 +24,7 @@
   outline: none;
   padding: 0.5rem 0;
   font-size: 0.95rem;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
   color: var(--text-color);
   background-color: transparent;
 }

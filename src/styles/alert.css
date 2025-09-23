@@ -61,6 +61,7 @@
 .alert-metric {
   font-weight: 700;
   white-space: nowrap;
+  
 }
 
 .alert-sensors {
@@ -125,7 +126,7 @@
 }
 
 .modal-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--primary-light);
@@ -147,7 +148,7 @@
 }
 
 .modal-metric {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
@@ -168,7 +169,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-family: var(--font-body);
+  font-family: var(--font-current);
 }
 
 .modal-actions button:hover {
