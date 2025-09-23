@@ -1,42 +1,75 @@
-const BASE_URL =
-  import.meta?.env?.VITE_API_URL || 
-  process.env.REACT_APP_API_URL ||   
-  "http://127.0.0.1:5000";
+import axios from 'axios';
+import API_CONFIG from '../config/api';
 
-async function jsonFetch(url, options = {}) {
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
-    ...options,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || data?.success === false) {
-    throw new Error(data?.message || `HTTP ${res.status}`);
+// Client API centralisé
+const apiClient = axios.create({
+  baseURL: API_CONFIG.BASE_URL,
+  headers: API_CONFIG.DEFAULT_HEADERS,
+  timeout: API_CONFIG.TIMEOUT,
+});
+
+// Intercepteur pour gérer les erreurs globalement
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Erreur API Salles:', error);
+    return Promise.reject(error);
   }
-  return data;
-}
+);
 
 // ADMIN SALLES
 export const AdminSalleAPI = {
-  list:  ({ limit = 50, offset = 0 } = {}) =>
-    jsonFetch(`${BASE_URL}/api/admin/salles/?limit=${limit}&offset=${offset}`),
+  async list({ limit = 50, offset = 0 } = {}) {
+    try {
+      const response = await apiClient.get(`/admin/salles/?limit=${limit}&offset=${offset}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération des salles: ${error.message}`);
+    }
+  },
 
-  get:   (id) =>
-    jsonFetch(`${BASE_URL}/api/admin/salles/${id}`),
+  async get(id) {
+    try {
+      const response = await apiClient.get(`/admin/salles/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erreur lors de la récupération de la salle: ${error.message}`);
+    }
+  },
 
-  create: (payload) =>
-    jsonFetch(`${BASE_URL}/api/admin/salles/`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  async create(payload) {
+    try {
+      const response = await apiClient.post('/admin/salles/', payload);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(`Erreur lors de la création de la salle: ${error.message}`);
+    }
+  },
 
-  patch: (id, payload) =>
-    jsonFetch(`${BASE_URL}/api/admin/salles/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    }),
+  async patch(id, payload) {
+    try {
+      const response = await apiClient.patch(`/admin/salles/${id}`, payload);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(`Erreur lors de la mise à jour de la salle: ${error.message}`);
+    }
+  },
 
-  remove: (id, { hard = false } = {}) =>
-    jsonFetch(`${BASE_URL}/api/admin/salles/${id}?hard=${hard ? "true" : "false"}`, {
-      method: "DELETE",
-    }),
+  async remove(id, { hard = false } = {}) {
+    try {
+      const response = await apiClient.delete(`/admin/salles/${id}?hard=${hard ? "true" : "false"}`);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(`Erreur lors de la suppression de la salle: ${error.message}`);
+    }
+  },
 };
