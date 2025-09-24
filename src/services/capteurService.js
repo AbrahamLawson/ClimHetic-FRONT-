@@ -1,21 +1,4 @@
-import axios from 'axios';
-import API_CONFIG from '../config/api';
-
-
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  headers: API_CONFIG.DEFAULT_HEADERS,
-  timeout: API_CONFIG.TIMEOUT,
-});
-
-// Intercepteur pour gérer les erreurs globalement
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('Erreur API:', error);
-    return Promise.reject(error);
-  }
-);
+import apiClient from './apiClient';
 
 export const capteurService = {
   

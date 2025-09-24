@@ -1,21 +1,4 @@
-import axios from 'axios';
-import API_CONFIG from '../config/api';
-
-// Client API centralisé
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  headers: API_CONFIG.DEFAULT_HEADERS,
-  timeout: API_CONFIG.TIMEOUT,
-});
-
-// Intercepteur pour gérer les erreurs globalement
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('Erreur API Salles:', error);
-    return Promise.reject(error);
-  }
-);
+import apiClient from './apiClient';
 
 // ADMIN SALLES
 export const AdminSalleAPI = {
