@@ -5,6 +5,8 @@
   margin-bottom: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--line-color);
+  display: flex;
+  flex-direction: column;
 }
 
 .card-container {
@@ -35,17 +37,12 @@
 
 .card-content {
   color: var(--text-color);
-  max-height: 300px;       
-  overflow: hidden;        
+  max-height: 300px;
+  overflow: hidden;
   padding-right: 0.5rem;
 }
 
-.card-tableau .card-content {
-  max-height: none;
-  overflow: visible;
-  padding-right: 0;
-}
-
+.card-tableau .card-content,
 .card-alertes .card-content {
   max-height: none;
   overflow: visible;
@@ -66,4 +63,32 @@
 
 .card-meteo .card-title {
   color: var(--weather);
+}
+
+@media (max-width: 768px) {
+  .card-half {
+    flex: 1 1 calc(50% - 1rem); 
+    margin-bottom: 1rem;
+  }
+
+  .card-full {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-half,
+  .card-full {
+    flex: 1 1 100%; 
+  }
+
+  .card {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
 }

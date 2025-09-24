@@ -1,7 +1,7 @@
 import "../styles/card.css";
 import { useNavigate } from "react-router-dom";
 
-export default function Card({ title, children, fullWidth = false, category, to }) {
+export default function Card({ title, children, fullWidth = false, category, to, className = "" }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -10,7 +10,7 @@ export default function Card({ title, children, fullWidth = false, category, to 
 
   return (
     <div
-      className={`card ${fullWidth ? "card-full" : "card-half"} ${category ? `card-${category}` : ""}`}
+      className={`card ${fullWidth ? "card-full" : "card-half"} ${category ? `card-${category}` : ""} ${className}`}
       onClick={handleClick}
       style={{ cursor: to ? "pointer" : "default" }}
       role={to ? "button" : undefined}

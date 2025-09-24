@@ -345,6 +345,7 @@ const filteredData = data;
         title="Température moyenne par bâtiment (24h)"
         category="graphiques"
         aria-labelledby="data-graphs"
+        className="hide-on-mobile"
         >
         {loading ? (
           <SectionLoader text="Chargement des données" />

@@ -312,7 +312,7 @@ export default function Capteurs() {
         Aller au contenu principal
       </a>
       <div id="main-content" tabIndex={-1}>
-      <h1 className="salle-title">Gestion des capteurs</h1>
+      <h1 className="salle-title" style={{ marginBottom: "1.5rem" }}>Gestion des capteurs</h1>
      
       {/* Affichage des erreurs */}
       {error && (
@@ -329,7 +329,7 @@ export default function Capteurs() {
         }}>
           <strong>Erreur:</strong> {error}
           <button
-          className="btn btn-secondary"
+          className="btn"
             onClick={chargerDonnees}
             style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
           >

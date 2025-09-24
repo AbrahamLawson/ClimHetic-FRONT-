@@ -21,6 +21,37 @@
   flex-direction: column;
   gap: 2rem;
 }
+.infos-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between; 
+  margin-bottom: 2rem;
+}
+
+.infos-pages > .form-modal-cta {
+  flex-shrink: 0; 
+  margin-left: auto; 
+}
+
+@media (max-width: 768px) {
+  .infos-pages {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .infos-pages > .form-modal-cta {
+    margin-left: 0;
+    margin-bottom: 1rem; 
+  }
+}
+
+@media (max-width: 480px) {
+  .infos-pages .stat-card {
+    width: 100%;
+  }
+}
 
 @media (max-width: 768px) {
   .salle-detail-container {

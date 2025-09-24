@@ -342,7 +342,7 @@ export default function Salles() {
       <div id="main-content" tabIndex={-1}>
         <a href="#main-content" className="skip-link visually-hidden">Aller au contenu principal</a>
 
-        <h1 className="salle-title">Salles</h1>
+        <h1 className="salle-title" style={{ marginBottom: "1.5rem" }}>Salles</h1>
 
         {successMessage && (
           <div style={{

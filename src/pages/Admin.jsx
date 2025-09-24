@@ -157,7 +157,7 @@ export default function Admin() {
         Aller au contenu principal
       </a>
       <div id="main-content" tabIndex={-1}>
-      <h1 className="salle-title">Gestion des utilisateurs</h1>
+      <h1 className="salle-title" style={{ marginBottom: "1.5rem" }}>Gestion des utilisateurs</h1>
 
       {message.text && (
         <div
