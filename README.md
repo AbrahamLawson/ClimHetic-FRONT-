@@ -55,9 +55,12 @@ ClimHetic-FRONT/
 - **React 19** - Interface utilisateur
 - **Vite 7** - Build tool
 - **Firebase** - Authentification et base de données
+- **React Router** - Pour la navigation
+- **Testing Library** - Pour les tests
 - **Docker** - Conteneurisation
 - **Nginx** - Serveur web
 - **GitHub Actions** - Déploiement automatique
+- **OpenWeatherMap API** - Pour les données météo
 
 ## 🔧 Commandes utiles
 
@@ -91,5 +94,9 @@ git push             # Déclenche le déploiement automatique
 ```
 
 ---
+
+### Repo GitHub 
+
+- https://github.com/AbrahamLawson/ClimHetic-FRONT-.git
 
 *Déploiement 100% automatique avec GitHub Actions* 🤖✨
