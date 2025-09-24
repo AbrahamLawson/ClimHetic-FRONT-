@@ -111,7 +111,6 @@
     z-index: 1000;
     overflow-y: auto;
     animation: slideIn 0.3s ease-out;
-    height: 100%;
     font-family: var(--font-current);
 }
 
@@ -174,7 +173,6 @@
     min-width: 0;
 }
 
-
 .weather-search-results {
     max-height: 500px;
     overflow-y: auto;
@@ -183,7 +181,7 @@
 }
 
 .weather-location-item {
-    padding: 0.5rem 1rem; 
+    padding: 0.5rem 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--primary-dark);
@@ -204,7 +202,7 @@
 .weather-location-item:focus {
     background-color: var(--primary-dark);
     color: white;
-    border-radius: 6px; 
+    border-radius: 6px;
 }
 
 .weather-location-item:focus {

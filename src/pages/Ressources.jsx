@@ -12,7 +12,7 @@ export default function Ressources() {
       </a>
 
       <div id="main-content" tabIndex={-1} aria-labelledby="page-title">
-        <h1 id="page-title">Ressources</h1>
+        <h1 id="page-title" style={{ marginBottom: "1.5rem" }}>Ressources</h1>
 
         <div className="resources-grid">
           <Card title="Sources de données" category="data">

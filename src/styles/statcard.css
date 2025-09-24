@@ -47,3 +47,49 @@
   flex-wrap: wrap; 
   margin-bottom: 20px; 
 }
+
+
+@media (max-width: 768px) {
+  .stat-cards-container {
+    justify-content: center; 
+  }
+
+  .stat-card {
+    max-width: 320px;
+    width: calc(50% - 12px); 
+    padding: 10px 14px;
+    height: 65px;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .stat-icon {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    width: 100%; 
+    padding: 8px 12px;
+    height: 60px;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-icon {
+    padding: 3px;
+  }
+}
