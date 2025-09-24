@@ -4,7 +4,7 @@ export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'https://nonlosable-mouthy-adolph.ngrok-free.dev/api',
   
   // Timeout par défaut pour les requêtes
-  TIMEOUT: 10000, // 10 secondes
+  TIMEOUT: 30000, // 30 secondes (pour ngrok + latence réseau)
   
   // Headers par défaut
   DEFAULT_HEADERS: {
